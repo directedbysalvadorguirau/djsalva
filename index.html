@@ -7,14 +7,14 @@
 
 <style>
 :root{
-  /* Pantalla del portátil (más pequeña y desplazada a la izquierda) */
-  --screen-left: 5.6%;
-  --screen-top: 19.0%;
-  --screen-width: 72.2%;
-  --screen-height: 30.5%;
+  /* Pantalla del portátil (más pequeña y más a la izquierda) */
+  --screen-left: 3.8%;
+  --screen-top: 18.2%;
+  --screen-width: 66.5%;
+  --screen-height: 27.8%;
 
-  /* Botón más arriba */
-  --btn-bottom: 19%;
+  /* Botón mucho más arriba */
+  --btn-bottom: 28%;
 }
 
 html, body{
@@ -60,9 +60,10 @@ html, body{
   top:var(--screen-top);
   width:var(--screen-width);
   height:var(--screen-height);
-  border-radius:8px;
+  border-radius:10px;
   overflow:hidden;
   background:#fff;
+  box-shadow:0 10px 25px rgba(0,0,0,0.35);
 }
 
 .screen video{
@@ -74,14 +75,14 @@ html, body{
   background:#000;
 }
 
-/* Botón Play */
+/* Botón Play gigante */
 .play-btn{
   position:absolute;
   left:50%;
   bottom:var(--btn-bottom);
   transform:translateX(-50%);
-  width:80px;
-  height:80px;
+  width:140px;
+  height:140px;
   border:none;
   background:transparent;
   display:grid;
@@ -92,14 +93,14 @@ html, body{
 }
 
 .play-btn:active{
-  transform:translateX(-50%) scale(0.96);
+  transform:translateX(-50%) scale(0.95);
 }
 
 .icon{
-  width:60px;
-  height:60px;
+  width:120px;
+  height:120px;
   fill:#fff;
-  filter:drop-shadow(0 8px 18px rgba(0,0,0,0.45));
+  filter:drop-shadow(0 12px 30px rgba(0,0,0,0.6));
 }
 
 .sr{
@@ -116,12 +117,12 @@ html, body{
 
 @media (max-width:600px){
   .play-btn{
-    width:70px;
-    height:70px;
+    width:110px;
+    height:110px;
   }
   .icon{
-    width:52px;
-    height:52px;
+    width:95px;
+    height:95px;
   }
 }
 </style>
@@ -132,31 +133,25 @@ html, body{
 <div class="stage">
   <div class="frame">
 
-    <!-- Fondo -->
     <img class="bg" src="laptop-session.png" alt="DJ SALVA #01">
 
-    <!-- Pantalla portátil -->
     <div class="screen">
       <video id="vid" playsinline muted preload="auto" loop>
         <source src="https://djsalva-cdn.b-cdn.net/video.mp4" type="video/mp4">
       </video>
     </div>
 
-    <!-- Audio -->
     <audio id="aud" preload="auto">
       <source src="https://djsalva-cdn.b-cdn.net/audio.mp3" type="audio/mpeg">
     </audio>
 
-    <!-- Botón -->
     <button id="toggle" class="play-btn" aria-label="Reproducir">
       <span class="sr">Play/Pause</span>
 
-      <!-- Play -->
       <svg id="iconPlay" class="icon" viewBox="0 0 24 24">
         <path d="M8 5v14l11-7z"></path>
       </svg>
 
-      <!-- Pause -->
       <svg id="iconPause" class="icon" viewBox="0 0 24 24" style="display:none;">
         <path d="M6 5h4v14H6zm8 0h4v14h-4z"></path>
       </svg>
