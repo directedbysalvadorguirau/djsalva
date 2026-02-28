@@ -1,249 +1,231 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DJ SALVA #01</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>DJ SALVA #01</title>
 
-  <style>
-    :root{
-      /* Ajusta estos valores si hiciera falta para encajar PERFECTO en la pantalla blanca */
-      --screen-left: 8.5%;
-      --screen-top: 20.4%;
-      --screen-width: 83.0%;
-      --screen-height: 33.6%;
+<style>
+:root{
+  /* Pantalla del portátil (más pequeña y desplazada a la izquierda) */
+  --screen-left: 5.6%;
+  --screen-top: 19.0%;
+  --screen-width: 72.2%;
+  --screen-height: 30.5%;
 
-      /* Botón play encima del texto */
-      --btn-bottom: 13.5%;
-    }
+  /* Botón más arriba */
+  --btn-bottom: 19%;
+}
 
-    html, body {
-      height: 100%;
-      margin: 0;
-      background: #000;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      overflow: hidden;
-    }
+html, body{
+  height:100%;
+  margin:0;
+  background:#000;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  overflow:hidden;
+}
 
-    /* Contenedor que mantiene el aspecto de la imagen (story 9:16) y se adapta */
-    .stage {
-      height: 100vh;
-      width: 100vw;
-      display: grid;
-      place-items: center;
-      background: #000;
-    }
+.stage{
+  height:100vh;
+  width:100vw;
+  display:grid;
+  place-items:center;
+  background:#000;
+}
 
-    /* Wrapper con relación 9:16 (story). En desktop se centra con márgenes negros. */
-    .frame {
-      position: relative;
-      height: 100vh;
-      width: calc(100vh * 9 / 16);
-      max-width: 100vw;
-      max-height: 100vh;
-      aspect-ratio: 9 / 16;
-      overflow: hidden;
-      background: #000;
-    }
+.frame{
+  position:relative;
+  height:100vh;
+  width:calc(100vh * 9 / 16);
+  max-width:100vw;
+  max-height:100vh;
+  aspect-ratio:9/16;
+  overflow:hidden;
+}
 
-    /* Imagen de fondo */
-    .bg {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      user-select: none;
-      pointer-events: none;
-    }
+.bg{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  pointer-events:none;
+  user-select:none;
+}
 
-    /* Vídeo dentro del “rectángulo blanco” del portátil */
-    .screen {
-      position: absolute;
-      left: var(--screen-left);
-      top: var(--screen-top);
-      width: var(--screen-width);
-      height: var(--screen-height);
-      border-radius: 6px;        /* opcional */
-      overflow: hidden;
-      background: #fff;
-    }
+/* Pantalla portátil */
+.screen{
+  position:absolute;
+  left:var(--screen-left);
+  top:var(--screen-top);
+  width:var(--screen-width);
+  height:var(--screen-height);
+  border-radius:8px;
+  overflow:hidden;
+  background:#fff;
+}
 
-    .screen video {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-      background: #000;
-    }
+.screen video{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center;
+  display:block;
+  background:#000;
+}
 
-    /* Botón play/pause (solo icono blanco) */
-    .play-btn {
-      position: absolute;
-      left: 50%;
-      bottom: var(--btn-bottom);
-      transform: translateX(-50%);
-      width: 74px;
-      height: 74px;
-      border: none;
-      background: transparent;
-      display: grid;
-      place-items: center;
-      cursor: pointer;
-      z-index: 20;
-      -webkit-tap-highlight-color: transparent;
-    }
+/* Botón Play */
+.play-btn{
+  position:absolute;
+  left:50%;
+  bottom:var(--btn-bottom);
+  transform:translateX(-50%);
+  width:80px;
+  height:80px;
+  border:none;
+  background:transparent;
+  display:grid;
+  place-items:center;
+  cursor:pointer;
+  z-index:20;
+  -webkit-tap-highlight-color:transparent;
+}
 
-    .play-btn:active {
-      transform: translateX(-50%) scale(0.98);
-    }
+.play-btn:active{
+  transform:translateX(-50%) scale(0.96);
+}
 
-    /* Iconos SVG */
-    .icon {
-      width: 54px;
-      height: 54px;
-      fill: #fff;
-      filter: drop-shadow(0 6px 16px rgba(0,0,0,0.45));
-    }
+.icon{
+  width:60px;
+  height:60px;
+  fill:#fff;
+  filter:drop-shadow(0 8px 18px rgba(0,0,0,0.45));
+}
 
-    .sr {
-      position: absolute;
-      width: 1px; height: 1px;
-      padding: 0; margin: -1px;
-      overflow: hidden; clip: rect(0,0,0,0);
-      white-space: nowrap; border: 0;
-    }
+.sr{
+  position:absolute;
+  width:1px;
+  height:1px;
+  padding:0;
+  margin:-1px;
+  overflow:hidden;
+  clip:rect(0,0,0,0);
+  white-space:nowrap;
+  border:0;
+}
 
-    @media (min-width: 900px) {
-      .play-btn { width: 86px; height: 86px; }
-      .icon { width: 60px; height: 60px; }
-    }
-  </style>
+@media (max-width:600px){
+  .play-btn{
+    width:70px;
+    height:70px;
+  }
+  .icon{
+    width:52px;
+    height:52px;
+  }
+}
+</style>
 </head>
 
 <body>
-  <div class="stage">
-    <div class="frame">
 
-      <!-- Fondo (local en tu web) -->
-      <img class="bg" src="laptop-session.png" alt="DJ SALVA #01" />
+<div class="stage">
+  <div class="frame">
 
-      <!-- “Pantalla” del portátil -->
-      <div class="screen">
-        <!-- Video desde Bunny -->
-        <video id="vid" playsinline muted preload="auto" loop>
-          <source src="https://djsalva-cdn.b-cdn.net/video.mp4" type="video/mp4">
-        </video>
-      </div>
+    <!-- Fondo -->
+    <img class="bg" src="laptop-session.png" alt="DJ SALVA #01">
 
-      <!-- Audio desde Bunny (sin UI) -->
-      <audio id="aud" preload="auto">
-        <source src="https://djsalva-cdn.b-cdn.net/audio.mp3" type="audio/mpeg">
-      </audio>
-
-      <!-- Botón Play/Pause -->
-      <button id="toggle" class="play-btn" aria-label="Reproducir">
-        <span class="sr">Play/Pause</span>
-
-        <!-- PLAY -->
-        <svg id="iconPlay" class="icon" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M8 5v14l11-7z"></path>
-        </svg>
-
-        <!-- PAUSE -->
-        <svg id="iconPause" class="icon" viewBox="0 0 24 24" aria-hidden="true" style="display:none;">
-          <path d="M6 5h4v14H6zm8 0h4v14h-4z"></path>
-        </svg>
-      </button>
-
+    <!-- Pantalla portátil -->
+    <div class="screen">
+      <video id="vid" playsinline muted preload="auto" loop>
+        <source src="https://djsalva-cdn.b-cdn.net/video.mp4" type="video/mp4">
+      </video>
     </div>
+
+    <!-- Audio -->
+    <audio id="aud" preload="auto">
+      <source src="https://djsalva-cdn.b-cdn.net/audio.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Botón -->
+    <button id="toggle" class="play-btn" aria-label="Reproducir">
+      <span class="sr">Play/Pause</span>
+
+      <!-- Play -->
+      <svg id="iconPlay" class="icon" viewBox="0 0 24 24">
+        <path d="M8 5v14l11-7z"></path>
+      </svg>
+
+      <!-- Pause -->
+      <svg id="iconPause" class="icon" viewBox="0 0 24 24" style="display:none;">
+        <path d="M6 5h4v14H6zm8 0h4v14h-4z"></path>
+      </svg>
+    </button>
+
   </div>
+</div>
 
-  <script>
-    const vid = document.getElementById('vid');
-    const aud = document.getElementById('aud');
-    const btn = document.getElementById('toggle');
-    const iconPlay = document.getElementById('iconPlay');
-    const iconPause = document.getElementById('iconPause');
+<script>
+const vid = document.getElementById('vid');
+const aud = document.getElementById('aud');
+const btn = document.getElementById('toggle');
+const iconPlay = document.getElementById('iconPlay');
+const iconPause = document.getElementById('iconPause');
 
-    const SHOW_PLAY = () => {
-      iconPlay.style.display = 'block';
-      iconPause.style.display = 'none';
-      btn.setAttribute('aria-label', 'Reproducir');
-    };
+const SHOW_PLAY = () => {
+  iconPlay.style.display='block';
+  iconPause.style.display='none';
+};
 
-    const SHOW_PAUSE = () => {
-      iconPlay.style.display = 'none';
-      iconPause.style.display = 'block';
-      btn.setAttribute('aria-label', 'Pausar');
-    };
+const SHOW_PAUSE = () => {
+  iconPlay.style.display='none';
+  iconPause.style.display='block';
+};
 
-    // Mantener el vídeo en bucle siempre (visual), el audio manda el final
-    vid.loop = true;
+vid.loop = true;
 
-    // Si el usuario hace play:
-    async function playAll() {
-      try {
-        // sincroniza tiempos (por si se pausó y se reanuda)
-        if (Math.abs(vid.currentTime - aud.currentTime) > 0.25) {
-          vid.currentTime = aud.currentTime;
-        }
-
-        await aud.play();      // iOS exige interacción: esto va porque viene del botón
-        await vid.play();
-
-        SHOW_PAUSE();
-      } catch (e) {
-        // Si iOS bloquea algo, normalmente es porque no fue interacción directa (aquí sí lo es)
-        console.log(e);
-        SHOW_PLAY();
-      }
-    }
-
-    function pauseAll() {
-      aud.pause();
-      vid.pause();
-      SHOW_PLAY();
-    }
-
-    // Toggle
-    btn.addEventListener('click', () => {
-      if (aud.paused) playAll();
-      else pauseAll();
-    });
-
-    // Si el usuario busca en el audio (por gestos/sistema), mantenemos sincronía
-    aud.addEventListener('seeking', () => {
+async function playAll(){
+  try{
+    if(Math.abs(vid.currentTime - aud.currentTime) > 0.25){
       vid.currentTime = aud.currentTime;
-    });
+    }
+    await aud.play();
+    await vid.play();
+    SHOW_PAUSE();
+  }catch(e){
+    SHOW_PLAY();
+  }
+}
 
-    // Si el audio se para por cualquier motivo, paramos vídeo y mostramos play
-    aud.addEventListener('pause', () => {
-      if (!aud.ended) {
-        // solo si no terminó (si terminó lo manejamos abajo)
-        vid.pause();
-        SHOW_PLAY();
-      }
-    });
+function pauseAll(){
+  aud.pause();
+  vid.pause();
+  SHOW_PLAY();
+}
 
-    // Cuando termine el audio:
-    aud.addEventListener('ended', () => {
-      // reiniciar ambos y mostrar play
-      aud.currentTime = 0;
-      vid.currentTime = 0;
-      vid.pause();
-      SHOW_PLAY();
-    });
+btn.addEventListener('click',()=>{
+  if(aud.paused) playAll();
+  else pauseAll();
+});
 
-    // Si por lo que sea el vídeo llega a pause (no debería, está loop), reflejar UI
-    vid.addEventListener('pause', () => {
-      if (!aud.paused) {
-        // si el video se pauso pero el audio sigue, lo reanudamos
-        vid.play().catch(()=>{});
-      } else {
-        SHOW_PLAY();
-      }
-    });
-  </script>
+aud.addEventListener('seeking',()=>{
+  vid.currentTime = aud.currentTime;
+});
+
+aud.addEventListener('ended',()=>{
+  aud.currentTime = 0;
+  vid.currentTime = 0;
+  vid.pause();
+  SHOW_PLAY();
+});
+
+aud.addEventListener('pause',()=>{
+  if(!aud.ended){
+    vid.pause();
+    SHOW_PLAY();
+  }
+});
+</script>
+
 </body>
 </html>
