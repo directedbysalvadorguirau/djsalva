@@ -1,226 +1,247 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>DJ SALVA #01</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DJ SALVA #01</title>
 
-<style>
-:root{
-  --screen-left: 0%;
-  --screen-top: 20%;
-  --screen-width: 70%;
-  --screen-height: 26.9%;
-  --btn-bottom: 18.5%;
-  --video-scale: 1.2;
-}
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="theme-color" content="#000000">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
 
-html, body{
-  height:100%;
-  margin:0;
-  background:#000;
-  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-  overflow:hidden;
-}
+  <style>
+    :root{
+      --screen-left: 0%;
+      --screen-top: 20%;
+      --screen-width: 70%;
+      --screen-height: 26.9%;
+      --btn-bottom: 18.5%;
+      --video-scale: 1.2;
+    }
 
-.stage{
-  height:100vh;
-  width:100vw;
-  display:grid;
-  place-items:center;
-  background:#000;
-}
+    html, body{
+      height:100%;
+      margin:0;
+      background:#000;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      overflow:hidden;
+    }
 
-.frame{
-  position:relative;
-  height:100vh;
-  width:calc(100vh * 9 / 16);
-  max-width:100vw;
-  max-height:100vh;
-  aspect-ratio:9/16;
-  overflow:hidden;
-}
+    .stage{
+      height:100vh;
+      width:100vw;
+      display:grid;
+      place-items:center;
+      background:#000;
+    }
 
-.bg{
-  position:absolute;
-  inset:0;
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  pointer-events:none;
-  user-select:none;
-}
+    .frame{
+      position:relative;
+      height:100vh;
+      width:calc(100vh * 9 / 16);
+      max-width:100vw;
+      max-height:100vh;
+      aspect-ratio:9/16;
+      overflow:hidden;
+    }
 
-/* Pantalla portátil SIN bordes redondeados */
-.screen{
-  position:absolute;
-  left:var(--screen-left);
-  top:var(--screen-top);
-  width:var(--screen-width);
-  height:var(--screen-height);
-  border-radius:0;        /* ← quitado redondeado */
-  overflow:hidden;
-  background:#fff;
-}
+    .bg{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      pointer-events:none;
+      user-select:none;
+    }
 
-/* Vídeo */
-.screen video{
-  width:100%;
-  height:100%;
-  display:block;
-  background:#000;
-  object-fit:cover;
-  object-position:center;
-  transform:scale(var(--video-scale));
-  transform-origin:center;
-}
+    /* Pantalla portátil SIN bordes redondeados */
+    .screen{
+      position:absolute;
+      left:var(--screen-left);
+      top:var(--screen-top);
+      width:var(--screen-width);
+      height:var(--screen-height);
+      border-radius:0;
+      overflow:hidden;
+      background:#fff;
+    }
 
-/* Botón Play */
-.play-btn{
-  position:absolute;
-  left:50%;
-  bottom:var(--btn-bottom);
-  transform:translateX(-50%);
-  width:140px;
-  height:140px;
-  border:none;
-  background:transparent;
-  display:grid;
-  place-items:center;
-  cursor:pointer;
-  z-index:20;
-  -webkit-tap-highlight-color:transparent;
-}
+    /* Vídeo */
+    .screen video{
+      width:100%;
+      height:100%;
+      display:block;
+      background:#000;
+      object-fit:cover;
+      object-position:center;
+      transform:scale(var(--video-scale));
+      transform-origin:center;
+    }
 
-.play-btn:active{
-  transform:translateX(-50%) scale(0.95);
-}
+    /* Botón Play */
+    .play-btn{
+      position:absolute;
+      left:50%;
+      bottom:var(--btn-bottom);
+      transform:translateX(-50%);
+      width:140px;
+      height:140px;
+      border:none;
+      background:transparent;
+      display:grid;
+      place-items:center;
+      cursor:pointer;
+      z-index:20;
+      -webkit-tap-highlight-color:transparent;
+    }
 
-.icon{
-  width:120px;
-  height:120px;
-  fill:#fff;
-  filter:drop-shadow(0 12px 30px rgba(0,0,0,0.6));
-}
+    .play-btn:active{
+      transform:translateX(-50%) scale(0.95);
+    }
 
-.sr{
-  position:absolute;
-  width:1px;
-  height:1px;
-  padding:0;
-  margin:-1px;
-  overflow:hidden;
-  clip:rect(0,0,0,0);
-  white-space:nowrap;
-  border:0;
-}
+    .icon{
+      width:120px;
+      height:120px;
+      fill:#fff;
+      filter:drop-shadow(0 12px 30px rgba(0,0,0,0.6));
+    }
 
-@media (max-width:600px){
-  .play-btn{
-    width:110px;
-    height:110px;
-  }
-  .icon{
-    width:95px;
-    height:95px;
-  }
-}
-</style>
+    .sr{
+      position:absolute;
+      width:1px;
+      height:1px;
+      padding:0;
+      margin:-1px;
+      overflow:hidden;
+      clip:rect(0,0,0,0);
+      white-space:nowrap;
+      border:0;
+    }
+
+    @media (max-width:600px){
+      .play-btn{
+        width:110px;
+        height:110px;
+      }
+      .icon{
+        width:95px;
+        height:95px;
+      }
+    }
+  </style>
 </head>
 
 <body>
+  <div class="stage">
+    <div class="frame">
 
-<div class="stage">
-  <div class="frame">
+      <img class="bg" src="laptop-session.png" alt="DJ SALVA #01">
 
-    <img class="bg" src="laptop-session.png" alt="DJ SALVA #01">
+      <div class="screen">
+        <video id="vid" playsinline muted preload="auto" loop>
+          <source src="https://djsalva-cdn.b-cdn.net/video.mp4" type="video/mp4">
+        </video>
+      </div>
 
-    <div class="screen">
-      <video id="vid" playsinline muted preload="auto" loop>
-        <source src="https://djsalva-cdn.b-cdn.net/video.mp4" type="video/mp4">
-      </video>
+      <audio id="aud" preload="auto">
+        <source src="https://djsalva-cdn.b-cdn.net/audio.mp3" type="audio/mpeg">
+      </audio>
+
+      <button id="toggle" class="play-btn" aria-label="Reproducir">
+        <span class="sr">Play/Pause</span>
+
+        <svg id="iconPlay" class="icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M8 5v14l11-7z"></path>
+        </svg>
+
+        <svg id="iconPause" class="icon" viewBox="0 0 24 24" aria-hidden="true" style="display:none;">
+          <path d="M6 5h4v14H6zm8 0h4v14h-4z"></path>
+        </svg>
+      </button>
+
     </div>
-
-    <audio id="aud" preload="auto">
-      <source src="https://djsalva-cdn.b-cdn.net/audio.mp3" type="audio/mpeg">
-    </audio>
-
-    <button id="toggle" class="play-btn" aria-label="Reproducir">
-      <span class="sr">Play/Pause</span>
-
-      <svg id="iconPlay" class="icon" viewBox="0 0 24 24">
-        <path d="M8 5v14l11-7z"></path>
-      </svg>
-
-      <svg id="iconPause" class="icon" viewBox="0 0 24 24" style="display:none;">
-        <path d="M6 5h4v14H6zm8 0h4v14h-4z"></path>
-      </svg>
-    </button>
-
   </div>
-</div>
 
-<script>
-const vid = document.getElementById('vid');
-const aud = document.getElementById('aud');
-const btn = document.getElementById('toggle');
-const iconPlay = document.getElementById('iconPlay');
-const iconPause = document.getElementById('iconPause');
-
-const SHOW_PLAY = () => {
-  iconPlay.style.display='block';
-  iconPause.style.display='none';
-};
-
-const SHOW_PAUSE = () => {
-  iconPlay.style.display='none';
-  iconPause.style.display='block';
-};
-
-vid.loop = true;
-
-async function playAll(){
-  try{
-    if(Math.abs(vid.currentTime - aud.currentTime) > 0.25){
-      vid.currentTime = aud.currentTime;
+  <script>
+    // PWA: registrar Service Worker (si existe sw.js en raíz)
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("/sw.js").catch(console.log);
+      });
     }
-    await aud.play();
-    await vid.play();
-    SHOW_PAUSE();
-  }catch(e){
-    SHOW_PLAY();
-  }
-}
 
-function pauseAll(){
-  aud.pause();
-  vid.pause();
-  SHOW_PLAY();
-}
+    const vid = document.getElementById('vid');
+    const aud = document.getElementById('aud');
+    const btn = document.getElementById('toggle');
+    const iconPlay = document.getElementById('iconPlay');
+    const iconPause = document.getElementById('iconPause');
 
-btn.addEventListener('click',()=>{
-  if(aud.paused) playAll();
-  else pauseAll();
-});
+    const SHOW_PLAY = () => {
+      iconPlay.style.display='block';
+      iconPause.style.display='none';
+      btn.setAttribute('aria-label', 'Reproducir');
+    };
 
-aud.addEventListener('seeking',()=>{
-  vid.currentTime = aud.currentTime;
-});
+    const SHOW_PAUSE = () => {
+      iconPlay.style.display='none';
+      iconPause.style.display='block';
+      btn.setAttribute('aria-label', 'Pausar');
+    };
 
-aud.addEventListener('ended',()=>{
-  aud.currentTime = 0;
-  vid.currentTime = 0;
-  vid.pause();
-  SHOW_PLAY();
-});
+    vid.loop = true;
 
-aud.addEventListener('pause',()=>{
-  if(!aud.ended){
-    vid.pause();
-    SHOW_PLAY();
-  }
-});
-</script>
+    async function playAll(){
+      try{
+        if(Math.abs(vid.currentTime - aud.currentTime) > 0.25){
+          vid.currentTime = aud.currentTime;
+        }
+        await aud.play();
+        await vid.play();
+        SHOW_PAUSE();
+      }catch(e){
+        SHOW_PLAY();
+      }
+    }
 
+    function pauseAll(){
+      aud.pause();
+      vid.pause();
+      SHOW_PLAY();
+    }
+
+    btn.addEventListener('click',()=>{
+      if(aud.paused) playAll();
+      else pauseAll();
+    });
+
+    aud.addEventListener('seeking',()=>{
+      vid.currentTime = aud.currentTime;
+    });
+
+    aud.addEventListener('ended',()=>{
+      aud.currentTime = 0;
+      vid.currentTime = 0;
+      vid.pause();
+      SHOW_PLAY();
+    });
+
+    aud.addEventListener('pause',()=>{
+      if(!aud.ended){
+        vid.pause();
+        SHOW_PLAY();
+      }
+    });
+
+    // Si el video se pausa pero el audio sigue, lo reanudamos (por si acaso)
+    vid.addEventListener('pause', ()=>{
+      if(!aud.paused && !aud.ended){
+        vid.play().catch(()=>{});
+      }
+    });
+  </script>
 </body>
 </html>
