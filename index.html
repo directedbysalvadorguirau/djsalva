@@ -1,259 +1,249 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>DJ SALVA #01</title>
 
   <style>
-    body{
-      margin:0; background:#fff; font-family:Arial, Helvetica, sans-serif;
-      display:flex; min-height:100vh; align-items:center; justify-content:center;
-    }
-    .wrap{ width:min(980px, 92vw); text-align:center; }
-    h1{
-      margin:0 0 18px 0;
-      font-size:42px; letter-spacing:4px; font-weight:900;
+    :root{
+      /* Ajusta estos valores si hiciera falta para encajar PERFECTO en la pantalla blanca */
+      --screen-left: 8.5%;
+      --screen-top: 20.4%;
+      --screen-width: 83.0%;
+      --screen-height: 33.6%;
+
+      /* Botón play encima del texto */
+      --btn-bottom: 13.5%;
     }
 
-    .player{
-      position:relative;
-      width:100%;
-      aspect-ratio:16/9;
-      border-radius:18px;
-      overflow:hidden;
-      background:#000;
-      box-shadow:0 18px 60px rgba(0,0,0,.10);
-    }
-    video{
-      width:100%;
-      height:100%;
-      object-fit:cover;
-      display:block;
+    html, body {
+      height: 100%;
+      margin: 0;
+      background: #000;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      overflow: hidden;
     }
 
-    /* Botón CD */
-    .cd-btn{
-      position:absolute;
-      left:50%; top:50%;
-      transform:translate(-50%,-50%);
-      width:120px; height:120px;
-      border-radius:999px;
-      border:none;
-      cursor:pointer;
-      background: radial-gradient(circle at 30% 30%, #fff 0 12%, #ddd 13% 35%, #f7f7f7 36% 60%, #cfcfcf 61% 100%);
-      box-shadow:0 14px 35px rgba(0,0,0,.25);
-      display:grid;
-      place-items:center;
-      transition:transform .12s ease, opacity .2s ease;
-    }
-    .cd-btn:active{ transform:translate(-50%,-50%) scale(.98); }
-    .cd-btn::before{
-      content:"";
-      width:18px; height:18px;
-      border-radius:999px;
-      background:#111;
-      box-shadow: inset 0 0 0 4px #eee;
-      display:block;
+    /* Contenedor que mantiene el aspecto de la imagen (story 9:16) y se adapta */
+    .stage {
+      height: 100vh;
+      width: 100vw;
+      display: grid;
+      place-items: center;
+      background: #000;
     }
 
-    /* Rotación del CD cuando suena */
-    .spinning{
-      animation:spin 1.2s linear infinite;
-    }
-    @keyframes spin{
-      to{ transform:translate(-50%,-50%) rotate(360deg); }
-    }
-
-    /* Icono play/pausa (se coloca encima del CD) */
-    .icon{
-      position:absolute;
-      width:44px; height:44px;
-      display:grid; place-items:center;
-      pointer-events:none;
-    }
-    .icon svg{ width:44px; height:44px; }
-
-    .hint{
-      margin-top:14px;
-      font-size:14px;
-      color:#444;
-      letter-spacing:1px;
+    /* Wrapper con relación 9:16 (story). En desktop se centra con márgenes negros. */
+    .frame {
+      position: relative;
+      height: 100vh;
+      width: calc(100vh * 9 / 16);
+      max-width: 100vw;
+      max-height: 100vh;
+      aspect-ratio: 9 / 16;
+      overflow: hidden;
+      background: #000;
     }
 
-    .bar{
-      margin:18px auto 0;
-      width:100%;
-      display:flex;
-      gap:12px;
-      align-items:center;
-      justify-content:center;
+    /* Imagen de fondo */
+    .bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      user-select: none;
+      pointer-events: none;
     }
-    .time{
-      font-variant-numeric:tabular-nums;
-      font-size:13px;
-      color:#111;
-      min-width:80px;
-      text-align:center;
+
+    /* Vídeo dentro del “rectángulo blanco” del portátil */
+    .screen {
+      position: absolute;
+      left: var(--screen-left);
+      top: var(--screen-top);
+      width: var(--screen-width);
+      height: var(--screen-height);
+      border-radius: 6px;        /* opcional */
+      overflow: hidden;
+      background: #fff;
     }
-    input[type="range"]{
-      width:min(680px, 80vw);
+
+    .screen video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      background: #000;
+    }
+
+    /* Botón play/pause (solo icono blanco) */
+    .play-btn {
+      position: absolute;
+      left: 50%;
+      bottom: var(--btn-bottom);
+      transform: translateX(-50%);
+      width: 74px;
+      height: 74px;
+      border: none;
+      background: transparent;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      z-index: 20;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .play-btn:active {
+      transform: translateX(-50%) scale(0.98);
+    }
+
+    /* Iconos SVG */
+    .icon {
+      width: 54px;
+      height: 54px;
+      fill: #fff;
+      filter: drop-shadow(0 6px 16px rgba(0,0,0,0.45));
+    }
+
+    .sr {
+      position: absolute;
+      width: 1px; height: 1px;
+      padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0,0,0,0);
+      white-space: nowrap; border: 0;
+    }
+
+    @media (min-width: 900px) {
+      .play-btn { width: 86px; height: 86px; }
+      .icon { width: 60px; height: 60px; }
     }
   </style>
 </head>
 
 <body>
-  <div class="wrap">
-    <h1>DJ SALVA #01</h1>
+  <div class="stage">
+    <div class="frame">
 
-    <div class="player">
-      <!-- Vídeo mudo -->
-      <video id="vid" src="video.mp4" preload="metadata" playsinline></video>
+      <!-- Fondo (local en tu web) -->
+      <img class="bg" src="laptop-session.png" alt="DJ SALVA #01" />
 
-      <!-- Botón CD -->
-      <button id="cdBtn" class="cd-btn" aria-label="Reproducir/Pausar">
-        <span class="icon">
-          <!-- PLAY -->
-          <svg id="playIcon" viewBox="0 0 64 64" fill="none" style="display:block;">
-            <path d="M26 20 L48 32 L26 44 Z" fill="#111"/>
-          </svg>
-          <!-- PAUSE -->
-          <svg id="pauseIcon" viewBox="0 0 64 64" fill="none" style="display:none;">
-            <rect x="22" y="18" width="6" height="28" fill="#111"/>
-            <rect x="36" y="18" width="6" height="28" fill="#111"/>
-          </svg>
-        </span>
+      <!-- “Pantalla” del portátil -->
+      <div class="screen">
+        <!-- Video desde Bunny -->
+        <video id="vid" playsinline muted preload="auto" loop>
+          <source src="https://djsalva-cdn.b-cdn.net/video.mp4" type="video/mp4">
+        </video>
+      </div>
+
+      <!-- Audio desde Bunny (sin UI) -->
+      <audio id="aud" preload="auto">
+        <source src="https://djsalva-cdn.b-cdn.net/audio.mp3" type="audio/mpeg">
+      </audio>
+
+      <!-- Botón Play/Pause -->
+      <button id="toggle" class="play-btn" aria-label="Reproducir">
+        <span class="sr">Play/Pause</span>
+
+        <!-- PLAY -->
+        <svg id="iconPlay" class="icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M8 5v14l11-7z"></path>
+        </svg>
+
+        <!-- PAUSE -->
+        <svg id="iconPause" class="icon" viewBox="0 0 24 24" aria-hidden="true" style="display:none;">
+          <path d="M6 5h4v14H6zm8 0h4v14h-4z"></path>
+        </svg>
       </button>
+
     </div>
-
-    <!-- Audio (master) -->
-    <audio id="aud" src="audio.mp3" preload="metadata"></audio>
-
-    <!-- Barra simple -->
-    <div class="bar">
-      <span class="time" id="tCur">0:00</span>
-      <input id="seek" type="range" min="0" max="1000" value="0" />
-      <span class="time" id="tDur">0:00</span>
-    </div>
-
-    <div class="hint">Pulsa el CD para reproducir</div>
   </div>
 
   <script>
     const vid = document.getElementById('vid');
     const aud = document.getElementById('aud');
-    const cdBtn = document.getElementById('cdBtn');
-    const playIcon = document.getElementById('playIcon');
-    const pauseIcon = document.getElementById('pauseIcon');
-    const seek = document.getElementById('seek');
-    const tCur = document.getElementById('tCur');
-    const tDur = document.getElementById('tDur');
+    const btn = document.getElementById('toggle');
+    const iconPlay = document.getElementById('iconPlay');
+    const iconPause = document.getElementById('iconPause');
 
-    let isPlaying = false;
-    let userSeeking = false;
-
-    const fmt = (s) => {
-      if (!isFinite(s)) return "0:00";
-      s = Math.max(0, Math.floor(s));
-      const m = Math.floor(s / 60);
-      const r = s % 60;
-      return `${m}:${String(r).padStart(2,'0')}`;
+    const SHOW_PLAY = () => {
+      iconPlay.style.display = 'block';
+      iconPause.style.display = 'none';
+      btn.setAttribute('aria-label', 'Reproducir');
     };
 
-    function setUI(playing){
-      isPlaying = playing;
-      playIcon.style.display = playing ? "none" : "block";
-      pauseIcon.style.display = playing ? "block" : "none";
-      cdBtn.classList.toggle('spinning', playing);
-    }
+    const SHOW_PAUSE = () => {
+      iconPlay.style.display = 'none';
+      iconPause.style.display = 'block';
+      btn.setAttribute('aria-label', 'Pausar');
+    };
 
-    // Mantén el vídeo sincronizado con el audio
-    function syncVideoToAudio(force=false){
-      if (!isFinite(aud.currentTime) || !isFinite(vid.duration)) return;
-      const diff = (vid.currentTime || 0) - aud.currentTime;
+    // Mantener el vídeo en bucle siempre (visual), el audio manda el final
+    vid.loop = true;
 
-      // Si hay deriva notable, corrige (buffering, saltos, etc.)
-      if (force || Math.abs(diff) > 0.18) {
-        try { vid.currentTime = aud.currentTime; } catch(e){}
-      }
-    }
-
-    async function playBoth(){
-      // Asegura que el vídeo esté listo para reproducir
-      syncVideoToAudio(true);
-
-      // Reproduce audio y vídeo
+    // Si el usuario hace play:
+    async function playAll() {
       try {
-        await aud.play();
-      } catch(e){
-        // Si el navegador bloquea autoplay, aquí no debería pasar porque es por click
-        console.warn(e);
-      }
+        // sincroniza tiempos (por si se pausó y se reanuda)
+        if (Math.abs(vid.currentTime - aud.currentTime) > 0.25) {
+          vid.currentTime = aud.currentTime;
+        }
 
-      try {
+        await aud.play();      // iOS exige interacción: esto va porque viene del botón
         await vid.play();
-      } catch(e){
-        console.warn(e);
-      }
 
-      setUI(true);
+        SHOW_PAUSE();
+      } catch (e) {
+        // Si iOS bloquea algo, normalmente es porque no fue interacción directa (aquí sí lo es)
+        console.log(e);
+        SHOW_PLAY();
+      }
     }
 
-    function pauseBoth(){
+    function pauseAll() {
       aud.pause();
       vid.pause();
-      setUI(false);
+      SHOW_PLAY();
     }
 
-    cdBtn.addEventListener('click', async () => {
-      if (!isPlaying) await playBoth();
-      else pauseBoth();
+    // Toggle
+    btn.addEventListener('click', () => {
+      if (aud.paused) playAll();
+      else pauseAll();
     });
 
-    // Cuando carga metadata, setea duración
-    aud.addEventListener('loadedmetadata', () => {
-      tDur.textContent = fmt(aud.duration);
+    // Si el usuario busca en el audio (por gestos/sistema), mantenemos sincronía
+    aud.addEventListener('seeking', () => {
+      vid.currentTime = aud.currentTime;
     });
 
-    // Actualiza barra y sincroniza
-    aud.addEventListener('timeupdate', () => {
-      if (!userSeeking && isFinite(aud.duration)) {
-        seek.value = Math.floor((aud.currentTime / aud.duration) * 1000);
-      }
-      tCur.textContent = fmt(aud.currentTime);
-      syncVideoToAudio(false);
-    });
-
-    // Si el vídeo se queda atrás por buffering, el audio manda
-    vid.addEventListener('waiting', () => {
-      // el vídeo está bufferizando; al reanudar, lo re-sincronizamos
-    });
-    vid.addEventListener('playing', () => syncVideoToAudio(true));
-    vid.addEventListener('seeked', () => syncVideoToAudio(true));
-
-    // Seek manual
-    seek.addEventListener('input', () => { userSeeking = true; });
-    seek.addEventListener('change', () => {
-      if (!isFinite(aud.duration)) return;
-      const target = (seek.value / 1000) * aud.duration;
-      aud.currentTime = target;
-      syncVideoToAudio(true);
-      userSeeking = false;
-    });
-
-    // Si el audio acaba, para todo
-    aud.addEventListener('ended', pauseBoth);
-
-    // Si el usuario pausa con controles del sistema (auriculares)
+    // Si el audio se para por cualquier motivo, paramos vídeo y mostramos play
     aud.addEventListener('pause', () => {
-      if (isPlaying) pauseBoth();
-    });
-    aud.addEventListener('play', () => {
-      if (!isPlaying) playBoth();
+      if (!aud.ended) {
+        // solo si no terminó (si terminó lo manejamos abajo)
+        vid.pause();
+        SHOW_PLAY();
+      }
     });
 
-    // IMPORTANTE: el vídeo NO debe mostrar controles
-    vid.controls = false;
+    // Cuando termine el audio:
+    aud.addEventListener('ended', () => {
+      // reiniciar ambos y mostrar play
+      aud.currentTime = 0;
+      vid.currentTime = 0;
+      vid.pause();
+      SHOW_PLAY();
+    });
+
+    // Si por lo que sea el vídeo llega a pause (no debería, está loop), reflejar UI
+    vid.addEventListener('pause', () => {
+      if (!aud.paused) {
+        // si el video se pauso pero el audio sigue, lo reanudamos
+        vid.play().catch(()=>{});
+      } else {
+        SHOW_PLAY();
+      }
+    });
   </script>
 </body>
 </html>
