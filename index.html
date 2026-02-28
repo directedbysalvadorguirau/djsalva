@@ -7,14 +7,17 @@
 
 <style>
 :root{
-  /* Pantalla del portátil (más pequeña y más a la izquierda) */
-  --screen-left: 3.8%;
-  --screen-top: 18.2%;
-  --screen-width: 66.5%;
-  --screen-height: 27.8%;
+  /* Pantalla del portátil (más a la izquierda y un poco más pequeña) */
+  --screen-left: 2.9%;
+  --screen-top: 18.35%;
+  --screen-width: 64.6%;
+  --screen-height: 26.9%;
 
-  /* Botón mucho más arriba */
-  --btn-bottom: 28%;
+  /* Botón más abajo (pero sin tocar el portátil) */
+  --btn-bottom: 18.5%;
+
+  /* “Zoom” del vídeo dentro del marco para tapar bordes/blancos */
+  --video-scale: 1.08;
 }
 
 html, body{
@@ -66,13 +69,16 @@ html, body{
   box-shadow:0 10px 25px rgba(0,0,0,0.35);
 }
 
+/* Vídeo dentro, con zoom para que nunca asome blanco */
 .screen video{
   width:100%;
   height:100%;
-  object-fit:cover;
-  object-position:center;
   display:block;
   background:#000;
+  object-fit:cover;
+  object-position:center;
+  transform: scale(var(--video-scale));
+  transform-origin:center;
 }
 
 /* Botón Play gigante */
@@ -181,6 +187,7 @@ vid.loop = true;
 
 async function playAll(){
   try{
+    // sync suave
     if(Math.abs(vid.currentTime - aud.currentTime) > 0.25){
       vid.currentTime = aud.currentTime;
     }
