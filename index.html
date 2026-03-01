@@ -20,6 +20,10 @@
       --screen-height: 26.9%;
       --btn-bottom: 18.5%;
       --video-scale: 1.2;
+
+      /* panel/library */
+      --ui-pad: 14px;
+      --panel-w: min(420px, 86vw);
     }
 
     html, body{
@@ -82,7 +86,7 @@
       transform-origin:center;
     }
 
-    /* Botón Play */
+    /* === CONTROLES (sin mover el play) === */
     .play-btn{
       position:absolute;
       left:50%;
@@ -98,16 +102,202 @@
       z-index:20;
       -webkit-tap-highlight-color:transparent;
     }
-
-    .play-btn:active{
-      transform:translateX(-50%) scale(0.95);
-    }
+    .play-btn:active{ transform:translateX(-50%) scale(0.95); }
 
     .icon{
       width:120px;
       height:120px;
       fill:#fff;
       filter:drop-shadow(0 12px 30px rgba(0,0,0,0.6));
+    }
+
+    /* Botones secundarios alrededor del play (no mueven el play) */
+    .mini-btn{
+      position:absolute;
+      bottom:calc(var(--btn-bottom) + 20px);
+      width:56px;
+      height:56px;
+      border:none;
+      background:rgba(0,0,0,0.25);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      border-radius:14px;
+      display:grid;
+      place-items:center;
+      cursor:pointer;
+      z-index:21;
+      -webkit-tap-highlight-color:transparent;
+    }
+    .mini-btn:active{ transform:scale(0.96); }
+
+    .mini-icon{
+      width:26px;
+      height:26px;
+      fill:#fff;
+      filter:drop-shadow(0 8px 18px rgba(0,0,0,0.55));
+    }
+
+    /* Atras / Adelante */
+    #back10{ left:calc(50% - 170px); }
+    #fwd10{  left:calc(50% + 114px); }
+
+    /* Share */
+    #shareBtn{
+      left:calc(50% + 190px);
+      width:56px;
+      height:56px;
+      border-radius:14px;
+    }
+
+    /* Menú (dos barras) arriba derecha */
+    .menu-btn{
+      position:absolute;
+      top:var(--ui-pad);
+      right:var(--ui-pad);
+      width:48px;
+      height:48px;
+      border:none;
+      background:rgba(0,0,0,0.25);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      border-radius:14px;
+      display:grid;
+      place-items:center;
+      cursor:pointer;
+      z-index:50;
+      -webkit-tap-highlight-color:transparent;
+    }
+    .menu-btn:active{ transform:scale(0.96); }
+
+    .bars{
+      width:22px;
+      height:18px;
+      display:grid;
+      align-content:center;
+      gap:6px;
+    }
+    .bars span{
+      display:block;
+      height:3px;
+      background:#fff;
+      border-radius:999px;
+      filter:drop-shadow(0 8px 18px rgba(0,0,0,0.55));
+    }
+
+    /* === LIBRARY DRAWER === */
+    .overlay{
+      position:absolute;
+      inset:0;
+      background:rgba(0,0,0,0.55);
+      opacity:0;
+      pointer-events:none;
+      transition:opacity .18s ease;
+      z-index:60;
+    }
+
+    .drawer{
+      position:absolute;
+      top:0;
+      right:0;
+      height:100%;
+      width:var(--panel-w);
+      background:rgba(10,10,10,0.92);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      transform:translateX(102%);
+      transition:transform .22s ease;
+      z-index:61;
+      display:flex;
+      flex-direction:column;
+      border-left:1px solid rgba(255,255,255,0.08);
+    }
+
+    .drawer header{
+      padding:18px 18px 12px 18px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .drawer-title{
+      color:#fff;
+      font-weight:800;
+      letter-spacing:0.2px;
+      font-size:18px;
+    }
+    .close-btn{
+      width:40px;
+      height:40px;
+      border:none;
+      background:rgba(255,255,255,0.08);
+      border-radius:12px;
+      display:grid;
+      place-items:center;
+      cursor:pointer;
+    }
+    .close-btn svg{ width:18px; height:18px; fill:#fff; }
+
+    .tracks{
+      padding:6px 10px 16px 10px;
+      overflow:auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .track{
+      width:100%;
+      display:flex;
+      gap:12px;
+      align-items:center;
+      padding:10px 10px;
+      border-radius:14px;
+      border:none;
+      background:transparent;
+      cursor:pointer;
+      text-align:left;
+    }
+    .track:hover{ background:rgba(255,255,255,0.06); }
+    .cover{
+      width:46px;
+      height:46px;
+      border-radius:12px;
+      background:#111;
+      flex:0 0 auto;
+      overflow:hidden;
+    }
+    .cover img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    }
+    .meta{
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+      min-width:0;
+      flex:1 1 auto;
+    }
+    .name{
+      color:#fff;
+      font-weight:700;
+      font-size:15px;
+      line-height:1.1;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .time{
+      color:rgba(255,255,255,0.7);
+      font-size:13px;
+      font-weight:600;
+    }
+
+    .open .overlay{
+      opacity:1;
+      pointer-events:auto;
+    }
+    .open .drawer{
+      transform:translateX(0);
     }
 
     .sr{
@@ -123,21 +313,26 @@
     }
 
     @media (max-width:600px){
-      .play-btn{
-        width:110px;
-        height:110px;
+      .play-btn{ width:110px; height:110px; }
+      .icon{ width:95px; height:95px; }
+
+      .mini-btn{
+        width:50px; height:50px;
+        bottom:calc(var(--btn-bottom) + 16px);
+        border-radius:13px;
       }
-      .icon{
-        width:95px;
-        height:95px;
-      }
+      #back10{ left:calc(50% - 150px); }
+      #fwd10{  left:calc(50% + 100px); }
+      #shareBtn{ left:calc(50% + 160px); }
+
+      .menu-btn{ width:44px; height:44px; }
     }
   </style>
 </head>
 
 <body>
   <div class="stage">
-    <div class="frame">
+    <div class="frame" id="app">
 
       <img class="bg" src="laptop-session.png" alt="DJ SALVA #01">
 
@@ -151,6 +346,35 @@
         <source src="https://djsalva-cdn.b-cdn.net/audio.mp3" type="audio/mpeg">
       </audio>
 
+      <!-- Menú arriba derecha -->
+      <button class="menu-btn" id="openLibrary" aria-label="Abrir biblioteca">
+        <span class="sr">Abrir biblioteca</span>
+        <div class="bars" aria-hidden="true">
+          <span></span>
+          <span></span>
+        </div>
+      </button>
+
+      <!-- Botones de panel (sin mover el play) -->
+      <button class="mini-btn" id="back10" aria-label="Atrasar 10 segundos" title="Atrasar 10s">
+        <svg class="mini-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M11 19l-9-7 9-7v14zm2-14h2v14h-2V5zm4 0h2v14h-2V5z"></path>
+        </svg>
+      </button>
+
+      <button class="mini-btn" id="fwd10" aria-label="Adelantar 10 segundos" title="Adelantar 10s">
+        <svg class="mini-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M13 5l9 7-9 7V5zM9 5h2v14H9V5zM5 5h2v14H5V5z"></path>
+        </svg>
+      </button>
+
+      <button class="mini-btn" id="shareBtn" aria-label="Compartir" title="Compartir">
+        <svg class="mini-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7a2.5 2.5 0 0 0 0-1.39l7-4.11A2.99 2.99 0 1 0 14 5a3 3 0 0 0 .05.5l-7 4.11a3 3 0 1 0 0 4.78l7.05 4.14c-.03.16-.05.31-.05.47a3 3 0 1 0 3-2.92z"></path>
+        </svg>
+      </button>
+
+      <!-- Play/Pause (igual que antes) -->
       <button id="toggle" class="play-btn" aria-label="Reproducir">
         <span class="sr">Play/Pause</span>
 
@@ -163,6 +387,22 @@
         </svg>
       </button>
 
+      <!-- Overlay + Drawer (biblioteca) -->
+      <div class="overlay" id="overlay"></div>
+
+      <aside class="drawer" id="drawer" aria-label="Biblioteca">
+        <header>
+          <div class="drawer-title">DJ SALVA #01</div>
+          <button class="close-btn" id="closeLibrary" aria-label="Cerrar">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M18.3 5.7 12 12l6.3 6.3-1.4 1.4L10.6 13.4 4.3 19.7 2.9 18.3 9.2 12 2.9 5.7 4.3 4.3l6.3 6.3 6.3-6.3z"></path>
+            </svg>
+          </button>
+        </header>
+
+        <div class="tracks" id="tracks"></div>
+      </aside>
+
     </div>
   </div>
 
@@ -174,12 +414,91 @@
       });
     }
 
+    const app = document.getElementById('app');
     const vid = document.getElementById('vid');
     const aud = document.getElementById('aud');
+
     const btn = document.getElementById('toggle');
     const iconPlay = document.getElementById('iconPlay');
     const iconPause = document.getElementById('iconPause');
 
+    const back10 = document.getElementById('back10');
+    const fwd10  = document.getElementById('fwd10');
+    const shareBtn = document.getElementById('shareBtn');
+
+    const openLibrary = document.getElementById('openLibrary');
+    const closeLibrary = document.getElementById('closeLibrary');
+    const overlay = document.getElementById('overlay');
+    const tracksEl = document.getElementById('tracks');
+
+    const COVER_SRC = "djsalva-icon.png"; // portada para todas
+
+    const TRACKS = [
+      { t:"FIEL", at:"0:16" },
+      { t:"QUE PASARÍA", at:"2:06" },
+      { t:"DIABLITA", at:"3:02" },
+      { t:"SI SE DA", at:"4:07" },
+      { t:"MEDUSA", at:"6:42" },
+      { t:"WYA", at:"7:19" },
+      { t:"QUE VAS A HACER HOY ?", at:"7:58" },
+      { t:"SOLTERA REMIX", at:"10:05" },
+      { t:"MEMORIAS", at:"11:53" },
+      { t:"SIN FRENOS", at:"13:20" },
+      { t:"TIAGO BZRP", at:"15:00" },
+      { t:"MODELITO", at:"17:32" },
+      { t:"PUSH UP", at:"18:45" },
+      { t:"2PA2", at:"20:05" },
+      { t:"GENTLY", at:"21:10" },
+      { t:"REAL GANGSTA LOVE", at:"22:17" },
+      { t:"DIABÓLICA", at:"23:28" },
+      { t:"IGUALES", at:"24:10" },
+      { t:"GOTEO", at:"24:50" },
+      { t:"SHE DON’T GIVE A FO", at:"26:25" },
+      { t:"SE VUELVE LOCA", at:"27:56" },
+      { t:"CANDY", at:"30:15" },
+      { t:"IA", at:"33:39" },
+      { t:"NO PUEDO RESPONDER", at:"35:47" },
+      { t:"SE PONE LAS NIKE", at:"36:13" },
+      { t:"COCO CHANEL", at:"38:15" },
+      { t:"DAME LA VERDE", at:"39:31" },
+      { t:"SIN SEÑAL", at:"43:28" },
+      { t:"TAROT", at:"45:12" },
+      { t:"DIABLA", at:"48:30" },
+      { t:"GIRL", at:"50:00" },
+      { t:"HASTA QUE DIOS DIGA", at:"52:08" },
+      { t:"SERIO CON ESE Q", at:"56:00" },
+      { t:"LAS BRATZ REMIX", at:"1:00:18" },
+      { t:"BAD GYAL", at:"1:00:39" },
+      { t:"PERROS SALVAJES", at:"1:04:40" },
+      { t:"SOLTAD A LOS PERROS", at:"1:06:00" },
+      { t:"DURO", at:"1:07:14" },
+      { t:"SUPERMAN SIN CAPA", at:"1:07:36" },
+      { t:"EL TAXI", at:"1:09:40" },
+      { t:"LOS APARATOS", at:"1:10:24" },
+      { t:"MARIANELA", at:"1:12:32" },
+      { t:"LA DESPEDIDA", at:"1:13:51" },
+      { t:"COLUMBIA", at:"1:14:18" },
+      { t:"ESCLAVA", at:"1:19:54" },
+      { t:"STAR", at:"1:23:30" },
+      { t:"DAKITI", at:"1:25:55" },
+      { t:"HOLANDA", at:"1:28:52" },
+      { t:"LEVELS", at:"1:31:08" },
+      { t:"ME PORTO BONITO", at:"1:32:28" },
+      { t:"PUNTO G", at:"1:35:21" },
+      { t:"LA ZONA", at:"1:38:29" },
+      { t:"NTCM", at:"1:40:48" },
+      { t:"EL FARSANTE", at:"1:42:54" },
+      { t:"CHAMBEA", at:"1:45:35" },
+      { t:"NUEVA ERA", at:"1:46:30" },
+      { t:"MALBEC", at:"1:47:45" },
+      { t:"THE NIGHTS", at:"1:48:15" },
+      { t:"MANDANGA STYLE", at:"1:51:16" },
+      { t:"HALO", at:"1:53:20" },
+      { t:"PRRRUM", at:"1:55:40" },
+      { t:"SOLITA", at:"1:57:18" },
+    ];
+
+    // ===== UI play/pause =====
     const SHOW_PLAY = () => {
       iconPlay.style.display='block';
       iconPause.style.display='none';
@@ -192,11 +511,13 @@
       btn.setAttribute('aria-label', 'Pausar');
     };
 
+    // vídeo visual en loop, el audio manda
     vid.loop = true;
 
     async function playAll(){
       try{
-        if(Math.abs(vid.currentTime - aud.currentTime) > 0.25){
+        // sync suave
+        if (Math.abs(vid.currentTime - aud.currentTime) > 0.25) {
           vid.currentTime = aud.currentTime;
         }
         await aud.play();
@@ -242,6 +563,97 @@
         vid.play().catch(()=>{});
       }
     });
+
+    // ===== Panel: atras/adelante =====
+    function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
+
+    function seekTo(seconds, autoplay=true){
+      // si aún no hay metadata, igual seteamos: el navegador aplicará cuando pueda
+      aud.currentTime = seconds;
+      vid.currentTime = seconds;
+
+      if (autoplay) {
+        playAll();
+      } else {
+        // si estaba en pause, mantenemos play icon
+        if (aud.paused) SHOW_PLAY();
+      }
+    }
+
+    back10.addEventListener('click', () => {
+      const target = clamp((aud.currentTime || 0) - 10, 0, (aud.duration || Infinity));
+      seekTo(target, !aud.paused); // si está sonando, mantiene; si no, no fuerza
+    });
+
+    fwd10.addEventListener('click', () => {
+      const target = clamp((aud.currentTime || 0) + 10, 0, (aud.duration || Infinity));
+      seekTo(target, !aud.paused);
+    });
+
+    // ===== Share =====
+    shareBtn.addEventListener('click', async () => {
+      const url = location.href;
+      try{
+        if (navigator.share) {
+          await navigator.share({ title: "DJ SALVA #01", text: "DJ SALVA #01", url });
+        } else {
+          await navigator.clipboard.writeText(url);
+          // feedback mínimo sin mover UI: vibración si existe
+          if (navigator.vibrate) navigator.vibrate(30);
+        }
+      }catch(e){ /* ignore */ }
+    });
+
+    // ===== Library drawer =====
+    function openDrawer(){
+      app.classList.add('open');
+    }
+    function closeDrawer(){
+      app.classList.remove('open');
+    }
+    openLibrary.addEventListener('click', openDrawer);
+    closeLibrary.addEventListener('click', closeDrawer);
+    overlay.addEventListener('click', closeDrawer);
+
+    function timeToSeconds(str){
+      // "m:ss" o "h:mm:ss"
+      const parts = str.split(':').map(p => p.trim());
+      if (parts.length === 2) {
+        const m = parseInt(parts[0],10) || 0;
+        const s = parseInt(parts[1],10) || 0;
+        return m*60 + s;
+      }
+      if (parts.length === 3) {
+        const h = parseInt(parts[0],10) || 0;
+        const m = parseInt(parts[1],10) || 0;
+        const s = parseInt(parts[2],10) || 0;
+        return h*3600 + m*60 + s;
+      }
+      return 0;
+    }
+
+    function renderTracks(){
+      tracksEl.innerHTML = "";
+      for (const tr of TRACKS){
+        const btn = document.createElement('button');
+        btn.className = "track";
+        btn.type = "button";
+        btn.innerHTML = `
+          <span class="cover"><img src="${COVER_SRC}" alt=""></span>
+          <span class="meta">
+            <span class="name">${tr.t}</span>
+            <span class="time">${tr.at}</span>
+          </span>
+        `;
+        btn.addEventListener('click', () => {
+          const sec = timeToSeconds(tr.at);
+          seekTo(sec, true);     // al tocar: salta y reproduce
+          closeDrawer();
+        });
+        tracksEl.appendChild(btn);
+      }
+    }
+    renderTracks();
   </script>
 </body>
 </html>
