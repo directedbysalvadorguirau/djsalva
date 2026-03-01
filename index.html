@@ -67,7 +67,7 @@
       top:var(--screen-top);
       width:var(--screen-width);
       height:var(--screen-height);
-      border-radius:16px; /* bordes redondeados para el video */
+      border-radius:0; /* sin redondear */
       overflow:hidden;
       background:#fff;
     }
@@ -81,7 +81,9 @@
       object-position:center;
       transform:scale(var(--video-scale));
       transform-origin:center;
-      border-radius:16px;
+      border-radius:0;
+      will-change:transform;
+      backface-visibility:hidden;
     }
 
     .top-actions{
@@ -134,26 +136,24 @@
       filter:drop-shadow(0 8px 18px rgba(0,0,0,0.55));
     }
 
-    /* Tiempo de audio encima del play */
+    /* Tiempo arriba a la izquierda, blanco, grande, sin fondo */
     .audio-time{
       position:absolute;
-      left:50%;
-      bottom:calc(var(--btn-bottom) + 150px);
-      transform:translateX(-50%);
-      min-width:56px;
-      padding:4px 10px;
+      top:var(--ui-pad);
+      left:var(--ui-pad);
+      transform:none;
       color:#fff;
-      font-size:13px;
-      font-weight:700;
-      text-align:center;
+      font-size:48px;
+      font-weight:900;
+      line-height:1;
+      text-align:left;
       text-shadow:0 8px 18px rgba(0,0,0,0.55);
       user-select:none;
       pointer-events:none;
-      background:rgba(0,0,0,0.22);
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
-      border-radius:999px;
-      z-index:22;
+      background:transparent;
+      padding:0;
+      min-width:auto;
+      z-index:55;
     }
 
     .play-btn{
@@ -318,9 +318,7 @@
       .icon{ width:95px; height:95px; }
 
       .audio-time{
-        bottom:calc(var(--btn-bottom) + 128px);
-        font-size:12px;
-        min-width:48px;
+        font-size:36px;
       }
 
       .top-btn, .menu-btn{
@@ -499,6 +497,8 @@
     };
 
     vid.loop = true;
+    vid.defaultPlaybackRate = 1.2;
+    vid.playbackRate = 1.2;
 
     function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
 
@@ -520,6 +520,7 @@
 
     async function ensureVideoRunning(){
       if (!videoStarted || vid.paused) {
+        vid.playbackRate = 1.2;
         await vid.play();
         videoStarted = true;
       }
@@ -571,9 +572,16 @@
       updateSeekUI(0);
     });
 
-    // Si por cualquier motivo se pausa el video, lo reanudamos
+    // Mantener video siempre activo tras primer play
     vid.addEventListener("pause", () => {
       if (videoStarted) {
+        vid.playbackRate = 1.2;
+        vid.play().catch(() => {});
+      }
+    });
+
+    vid.addEventListener("stalled", () => {
+      if (videoStarted && vid.paused) {
         vid.play().catch(() => {});
       }
     });
