@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -67,7 +68,7 @@
       top:var(--screen-top);
       width:var(--screen-width);
       height:var(--screen-height);
-      border-radius:0;
+      border-radius:16px; /* bordes redondeados para el video */
       overflow:hidden;
       background:#fff;
     }
@@ -81,6 +82,7 @@
       object-position:center;
       transform:scale(var(--video-scale));
       transform-origin:center;
+      border-radius:16px;
     }
 
     .top-actions{
@@ -133,68 +135,26 @@
       filter:drop-shadow(0 8px 18px rgba(0,0,0,0.55));
     }
 
-    .seek-wrap{
+    /* Tiempo de audio encima del play */
+    .audio-time{
       position:absolute;
       left:50%;
-      bottom:calc(var(--btn-bottom) + 88px); /* bajada */
+      bottom:calc(var(--btn-bottom) + 150px);
       transform:translateX(-50%);
-      width:min(470px, 82%);
-      display:flex;
-      align-items:center;
-      gap:10px;
-      z-index:22;
-    }
-
-    .seek-line{
-      flex:1 1 auto;
-      width:100%;
-      appearance:none;
-      -webkit-appearance:none;
-      background:transparent;
-      cursor:pointer;
-      height:22px;
-    }
-
-    .seek-line::-webkit-slider-runnable-track{
-      height:3px;
-      background:#fff;
-      border-radius:999px;
-    }
-
-    .seek-line::-moz-range-track{
-      height:3px;
-      background:#fff;
-      border-radius:999px;
-    }
-
-    .seek-line::-webkit-slider-thumb{
-      -webkit-appearance:none;
-      width:12px;
-      height:12px;
-      border-radius:50%;
-      background:#fff;
-      border:none;
-      margin-top:-4.5px;
-      box-shadow:0 0 0 2px rgba(0,0,0,0.25);
-    }
-
-    .seek-line::-moz-range-thumb{
-      width:12px;
-      height:12px;
-      border-radius:50%;
-      background:#fff;
-      border:none;
-      box-shadow:0 0 0 2px rgba(0,0,0,0.25);
-    }
-
-    .seek-time{
       min-width:56px;
+      padding:4px 10px;
       color:#fff;
       font-size:13px;
       font-weight:700;
-      text-align:right;
+      text-align:center;
       text-shadow:0 8px 18px rgba(0,0,0,0.55);
       user-select:none;
+      pointer-events:none;
+      background:rgba(0,0,0,0.22);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      border-radius:999px;
+      z-index:22;
     }
 
     .play-btn{
@@ -358,14 +318,10 @@
       .play-btn{ width:110px; height:110px; }
       .icon{ width:95px; height:95px; }
 
-      .seek-wrap{
-        bottom:calc(var(--btn-bottom) + 72px); /* bajada en móvil */
-        width:min(370px, 84%);
-      }
-
-      .seek-time{
-        min-width:48px;
+      .audio-time{
+        bottom:calc(var(--btn-bottom) + 128px);
         font-size:12px;
+        min-width:48px;
       }
 
       .top-btn, .menu-btn{
@@ -408,19 +364,7 @@
         </button>
       </div>
 
-      <div class="seek-wrap">
-        <input
-          id="seekBar"
-          class="seek-line"
-          type="range"
-          min="0"
-          max="0"
-          step="0.1"
-          value="0"
-          aria-label="Barra de progreso del audio"
-        />
-        <div class="seek-time"><span id="currentTime">0:00</span></div>
-      </div>
+      <div class="audio-time"><span id="currentTime">0:00</span></div>
 
       <button id="toggle" class="play-btn" aria-label="Reproducir">
         <span class="sr">Play/Pause</span>
@@ -468,7 +412,6 @@
     const iconPause = document.getElementById("iconPause");
 
     const shareBtn = document.getElementById("shareBtn");
-    const seekBar = document.getElementById("seekBar");
     const currentTimeEl = document.getElementById("currentTime");
 
     const openLibrary = document.getElementById("openLibrary");
@@ -573,9 +516,6 @@
     }
 
     function updateSeekUI(time = aud.currentTime || 0){
-      const duration = Number.isFinite(aud.duration) ? aud.duration : 0;
-      seekBar.max = duration || 0;
-      seekBar.value = clamp(time, 0, duration || 0);
       currentTimeEl.textContent = formatTime(time);
     }
 
@@ -619,16 +559,6 @@
     btn.addEventListener("click", () => {
       if (aud.paused) playAll();
       else pauseAll();
-    });
-
-    seekBar.addEventListener("input", () => {
-      const t = Number(seekBar.value) || 0;
-      currentTimeEl.textContent = formatTime(t);
-    });
-
-    seekBar.addEventListener("change", () => {
-      const target = Number(seekBar.value) || 0;
-      seekTo(target, !aud.paused);
     });
 
     aud.addEventListener("loadedmetadata", () => updateSeekUI());
