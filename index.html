@@ -21,7 +21,6 @@
       --btn-bottom: 18.5%;
       --video-scale: 1.2;
 
-      /* panel/library */
       --ui-pad: 14px;
       --panel-w: min(420px, 86vw);
     }
@@ -62,7 +61,6 @@
       user-select:none;
     }
 
-    /* Pantalla portátil SIN bordes redondeados */
     .screen{
       position:absolute;
       left:var(--screen-left);
@@ -74,7 +72,6 @@
       background:#fff;
     }
 
-    /* Vídeo */
     .screen video{
       width:100%;
       height:100%;
@@ -86,7 +83,120 @@
       transform-origin:center;
     }
 
-    /* === CONTROLES (sin mover el play) === */
+    .top-actions{
+      position:absolute;
+      top:var(--ui-pad);
+      right:var(--ui-pad);
+      display:flex;
+      align-items:center;
+      gap:10px;
+      z-index:50;
+    }
+
+    .top-btn,
+    .menu-btn{
+      width:48px;
+      height:48px;
+      border:none;
+      background:rgba(0,0,0,0.25);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      border-radius:14px;
+      display:grid;
+      place-items:center;
+      cursor:pointer;
+      -webkit-tap-highlight-color:transparent;
+    }
+
+    .top-btn:active,
+    .menu-btn:active{ transform:scale(0.96); }
+
+    .mini-icon{
+      width:24px;
+      height:24px;
+      fill:#fff;
+      filter:drop-shadow(0 8px 18px rgba(0,0,0,0.55));
+    }
+
+    .bars{
+      width:22px;
+      height:18px;
+      display:grid;
+      align-content:center;
+      gap:6px;
+    }
+    .bars span{
+      display:block;
+      height:3px;
+      background:#fff;
+      border-radius:999px;
+      filter:drop-shadow(0 8px 18px rgba(0,0,0,0.55));
+    }
+
+    .seek-wrap{
+      position:absolute;
+      left:50%;
+      bottom:calc(var(--btn-bottom) + 118px);
+      transform:translateX(-50%);
+      width:min(470px, 82%);
+      display:flex;
+      align-items:center;
+      gap:10px;
+      z-index:22;
+    }
+
+    .seek-line{
+      flex:1 1 auto;
+      width:100%;
+      appearance:none;
+      -webkit-appearance:none;
+      background:transparent;
+      cursor:pointer;
+      height:22px;
+    }
+
+    .seek-line::-webkit-slider-runnable-track{
+      height:3px;
+      background:#fff;
+      border-radius:999px;
+    }
+
+    .seek-line::-moz-range-track{
+      height:3px;
+      background:#fff;
+      border-radius:999px;
+    }
+
+    .seek-line::-webkit-slider-thumb{
+      -webkit-appearance:none;
+      width:12px;
+      height:12px;
+      border-radius:50%;
+      background:#fff;
+      border:none;
+      margin-top:-4.5px;
+      box-shadow:0 0 0 2px rgba(0,0,0,0.25);
+    }
+
+    .seek-line::-moz-range-thumb{
+      width:12px;
+      height:12px;
+      border-radius:50%;
+      background:#fff;
+      border:none;
+      box-shadow:0 0 0 2px rgba(0,0,0,0.25);
+    }
+
+    .seek-time{
+      min-width:88px;
+      color:#fff;
+      font-size:13px;
+      font-weight:700;
+      text-align:right;
+      text-shadow:0 8px 18px rgba(0,0,0,0.55);
+      user-select:none;
+    }
+
     .play-btn{
       position:absolute;
       left:50%;
@@ -111,80 +221,6 @@
       filter:drop-shadow(0 12px 30px rgba(0,0,0,0.6));
     }
 
-    /* Botones secundarios alrededor del play (no mueven el play) */
-    .mini-btn{
-      position:absolute;
-      bottom:calc(var(--btn-bottom) + 20px);
-      width:56px;
-      height:56px;
-      border:none;
-      background:rgba(0,0,0,0.25);
-      backdrop-filter: blur(6px);
-      -webkit-backdrop-filter: blur(6px);
-      border-radius:14px;
-      display:grid;
-      place-items:center;
-      cursor:pointer;
-      z-index:21;
-      -webkit-tap-highlight-color:transparent;
-    }
-    .mini-btn:active{ transform:scale(0.96); }
-
-    .mini-icon{
-      width:26px;
-      height:26px;
-      fill:#fff;
-      filter:drop-shadow(0 8px 18px rgba(0,0,0,0.55));
-    }
-
-    /* Atras / Adelante */
-    #back10{ left:calc(50% - 170px); }
-    #fwd10{  left:calc(50% + 114px); }
-
-    /* Share */
-    #shareBtn{
-      left:calc(50% + 190px);
-      width:56px;
-      height:56px;
-      border-radius:14px;
-    }
-
-    /* Menú (dos barras) arriba derecha */
-    .menu-btn{
-      position:absolute;
-      top:var(--ui-pad);
-      right:var(--ui-pad);
-      width:48px;
-      height:48px;
-      border:none;
-      background:rgba(0,0,0,0.25);
-      backdrop-filter: blur(6px);
-      -webkit-backdrop-filter: blur(6px);
-      border-radius:14px;
-      display:grid;
-      place-items:center;
-      cursor:pointer;
-      z-index:50;
-      -webkit-tap-highlight-color:transparent;
-    }
-    .menu-btn:active{ transform:scale(0.96); }
-
-    .bars{
-      width:22px;
-      height:18px;
-      display:grid;
-      align-content:center;
-      gap:6px;
-    }
-    .bars span{
-      display:block;
-      height:3px;
-      background:#fff;
-      border-radius:999px;
-      filter:drop-shadow(0 8px 18px rgba(0,0,0,0.55));
-    }
-
-    /* === LIBRARY DRAWER === */
     .overlay{
       position:absolute;
       inset:0;
@@ -219,12 +255,14 @@
       justify-content:space-between;
       gap:10px;
     }
+
     .drawer-title{
       color:#fff;
       font-weight:800;
       letter-spacing:0.2px;
       font-size:18px;
     }
+
     .close-btn{
       width:40px;
       height:40px;
@@ -256,6 +294,7 @@
       text-align:left;
     }
     .track:hover{ background:rgba(255,255,255,0.06); }
+
     .cover{
       width:46px;
       height:46px;
@@ -270,6 +309,7 @@
       object-fit:cover;
       display:block;
     }
+
     .meta{
       display:flex;
       flex-direction:column;
@@ -277,6 +317,7 @@
       min-width:0;
       flex:1 1 auto;
     }
+
     .name{
       color:#fff;
       font-weight:700;
@@ -286,6 +327,7 @@
       overflow:hidden;
       text-overflow:ellipsis;
     }
+
     .time{
       color:rgba(255,255,255,0.7);
       font-size:13px;
@@ -316,16 +358,20 @@
       .play-btn{ width:110px; height:110px; }
       .icon{ width:95px; height:95px; }
 
-      .mini-btn{
-        width:50px; height:50px;
-        bottom:calc(var(--btn-bottom) + 16px);
-        border-radius:13px;
+      .seek-wrap{
+        bottom:calc(var(--btn-bottom) + 98px);
+        width:min(370px, 84%);
       }
-      #back10{ left:calc(50% - 150px); }
-      #fwd10{  left:calc(50% + 100px); }
-      #shareBtn{ left:calc(50% + 160px); }
 
-      .menu-btn{ width:44px; height:44px; }
+      .seek-time{
+        min-width:78px;
+        font-size:12px;
+      }
+
+      .top-btn, .menu-btn{
+        width:44px;
+        height:44px;
+      }
     }
   </style>
 </head>
@@ -346,35 +392,39 @@
         <source src="https://djsalva-cdn.b-cdn.net/audio.mp3" type="audio/mpeg">
       </audio>
 
-      <!-- Menú arriba derecha -->
-      <button class="menu-btn" id="openLibrary" aria-label="Abrir biblioteca">
-        <span class="sr">Abrir biblioteca</span>
-        <div class="bars" aria-hidden="true">
-          <span></span>
-          <span></span>
-        </div>
-      </button>
+      <!-- Share + Menú arriba derecha (share a la izquierda de las dos líneas) -->
+      <div class="top-actions">
+        <button class="top-btn" id="shareBtn" aria-label="Compartir" title="Compartir">
+          <svg class="mini-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7a2.5 2.5 0 0 0 0-1.39l7-4.11A2.99 2.99 0 1 0 14 5a3 3 0 0 0 .05.5l-7 4.11a3 3 0 1 0 0 4.78l7.05 4.14c-.03.16-.05.31-.05.47a3 3 0 1 0 3-2.92z"></path>
+          </svg>
+        </button>
 
-      <!-- Botones de panel (sin mover el play) -->
-      <button class="mini-btn" id="back10" aria-label="Atrasar 10 segundos" title="Atrasar 10s">
-        <svg class="mini-icon" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M11 19l-9-7 9-7v14zm2-14h2v14h-2V5zm4 0h2v14h-2V5z"></path>
-        </svg>
-      </button>
+        <button class="menu-btn" id="openLibrary" aria-label="Abrir biblioteca">
+          <span class="sr">Abrir biblioteca</span>
+          <div class="bars" aria-hidden="true">
+            <span></span>
+            <span></span>
+          </div>
+        </button>
+      </div>
 
-      <button class="mini-btn" id="fwd10" aria-label="Adelantar 10 segundos" title="Adelantar 10s">
-        <svg class="mini-icon" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M13 5l9 7-9 7V5zM9 5h2v14H9V5zM5 5h2v14H5V5z"></path>
-        </svg>
-      </button>
+      <!-- Línea de progreso + tiempo -->
+      <div class="seek-wrap">
+        <input
+          id="seekBar"
+          class="seek-line"
+          type="range"
+          min="0"
+          max="0"
+          step="0.1"
+          value="0"
+          aria-label="Barra de progreso del audio"
+        />
+        <div class="seek-time"><span id="currentTime">0:00</span> / <span id="totalTime">0:00</span></div>
+      </div>
 
-      <button class="mini-btn" id="shareBtn" aria-label="Compartir" title="Compartir">
-        <svg class="mini-icon" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7a2.5 2.5 0 0 0 0-1.39l7-4.11A2.99 2.99 0 1 0 14 5a3 3 0 0 0 .05.5l-7 4.11a3 3 0 1 0 0 4.78l7.05 4.14c-.03.16-.05.31-.05.47a3 3 0 1 0 3-2.92z"></path>
-        </svg>
-      </button>
-
-      <!-- Play/Pause (igual que antes) -->
+      <!-- Play/Pause -->
       <button id="toggle" class="play-btn" aria-label="Reproducir">
         <span class="sr">Play/Pause</span>
 
@@ -387,7 +437,7 @@
         </svg>
       </button>
 
-      <!-- Overlay + Drawer (biblioteca) -->
+      <!-- Overlay + Drawer -->
       <div class="overlay" id="overlay"></div>
 
       <aside class="drawer" id="drawer" aria-label="Biblioteca">
@@ -414,32 +464,33 @@
       });
     }
 
-    const app = document.getElementById('app');
-    const vid = document.getElementById('vid');
-    const aud = document.getElementById('aud');
+    const app = document.getElementById("app");
+    const vid = document.getElementById("vid");
+    const aud = document.getElementById("aud");
 
-    const btn = document.getElementById('toggle');
-    const iconPlay = document.getElementById('iconPlay');
-    const iconPause = document.getElementById('iconPause');
+    const btn = document.getElementById("toggle");
+    const iconPlay = document.getElementById("iconPlay");
+    const iconPause = document.getElementById("iconPause");
 
-    const back10 = document.getElementById('back10');
-    const fwd10  = document.getElementById('fwd10');
-    const shareBtn = document.getElementById('shareBtn');
+    const shareBtn = document.getElementById("shareBtn");
+    const seekBar = document.getElementById("seekBar");
+    const currentTimeEl = document.getElementById("currentTime");
+    const totalTimeEl = document.getElementById("totalTime");
 
-    const openLibrary = document.getElementById('openLibrary');
-    const closeLibrary = document.getElementById('closeLibrary');
-    const overlay = document.getElementById('overlay');
-    const tracksEl = document.getElementById('tracks');
+    const openLibrary = document.getElementById("openLibrary");
+    const closeLibrary = document.getElementById("closeLibrary");
+    const overlay = document.getElementById("overlay");
+    const tracksEl = document.getElementById("tracks");
 
-    const COVER_SRC = "djsalva-icon.png"; // portada para todas
+    const COVER_SRC = "djsalva-icon.png";
 
     const TRACKS = [
       { t:"FIEL", at:"0:16" },
-      { t:"QUE PASARÍA", at:"2:06" },
+      { t:"QUE PASARÍA...", at:"2:06" },
       { t:"DIABLITA", at:"3:02" },
       { t:"SI SE DA", at:"4:07" },
       { t:"MEDUSA", at:"6:42" },
-      { t:"WYA", at:"7:19" },
+      { t:"WYA REMIX RED", at:"7:19" },
       { t:"QUE VAS A HACER HOY ?", at:"7:58" },
       { t:"SOLTERA REMIX", at:"10:05" },
       { t:"MEMORIAS", at:"11:53" },
@@ -480,13 +531,13 @@
       { t:"COLUMBIA", at:"1:14:18" },
       { t:"ESCLAVA", at:"1:19:54" },
       { t:"STAR", at:"1:23:30" },
-      { t:"DAKITI", at:"1:25:55" },
+      { t:"DÁKITI", at:"1:25:55" },
       { t:"HOLANDA", at:"1:28:52" },
       { t:"LEVELS", at:"1:31:08" },
       { t:"ME PORTO BONITO", at:"1:32:28" },
       { t:"PUNTO G", at:"1:35:21" },
       { t:"LA ZONA", at:"1:38:29" },
-      { t:"NTCM", at:"1:40:48" },
+      { t:"NO TE QUIEREN CONMIGO", at:"1:40:48" },
       { t:"EL FARSANTE", at:"1:42:54" },
       { t:"CHAMBEA", at:"1:45:35" },
       { t:"NUEVA ERA", at:"1:46:30" },
@@ -498,25 +549,44 @@
       { t:"SOLITA", at:"1:57:18" },
     ];
 
-    // ===== UI play/pause =====
     const SHOW_PLAY = () => {
-      iconPlay.style.display='block';
-      iconPause.style.display='none';
-      btn.setAttribute('aria-label', 'Reproducir');
+      iconPlay.style.display = "block";
+      iconPause.style.display = "none";
+      btn.setAttribute("aria-label", "Reproducir");
     };
 
     const SHOW_PAUSE = () => {
-      iconPlay.style.display='none';
-      iconPause.style.display='block';
-      btn.setAttribute('aria-label', 'Pausar');
+      iconPlay.style.display = "none";
+      iconPause.style.display = "block";
+      btn.setAttribute("aria-label", "Pausar");
     };
 
-    // vídeo visual en loop, el audio manda
     vid.loop = true;
+
+    function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
+
+    function formatTime(sec){
+      if (!Number.isFinite(sec) || sec < 0) return "0:00";
+      const h = Math.floor(sec / 3600);
+      const m = Math.floor((sec % 3600) / 60);
+      const s = Math.floor(sec % 60);
+
+      if (h > 0) {
+        return `${h}:${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
+      }
+      return `${m}:${String(s).padStart(2,"0")}`;
+    }
+
+    function updateSeekUI(time = aud.currentTime || 0){
+      const duration = Number.isFinite(aud.duration) ? aud.duration : 0;
+      seekBar.max = duration || 0;
+      seekBar.value = clamp(time, 0, duration || 0);
+      currentTimeEl.textContent = formatTime(time);
+      totalTimeEl.textContent = formatTime(duration);
+    }
 
     async function playAll(){
       try{
-        // sync suave
         if (Math.abs(vid.currentTime - aud.currentTime) > 0.25) {
           vid.currentTime = aud.currentTime;
         }
@@ -534,100 +604,95 @@
       SHOW_PLAY();
     }
 
-    btn.addEventListener('click',()=>{
-      if(aud.paused) playAll();
-      else pauseAll();
-    });
-
-    aud.addEventListener('seeking',()=>{
-      vid.currentTime = aud.currentTime;
-    });
-
-    aud.addEventListener('ended',()=>{
-      aud.currentTime = 0;
-      vid.currentTime = 0;
-      vid.pause();
-      SHOW_PLAY();
-    });
-
-    aud.addEventListener('pause',()=>{
-      if(!aud.ended){
-        vid.pause();
-        SHOW_PLAY();
-      }
-    });
-
-    // Si el video se pausa pero el audio sigue, lo reanudamos (por si acaso)
-    vid.addEventListener('pause', ()=>{
-      if(!aud.paused && !aud.ended){
-        vid.play().catch(()=>{});
-      }
-    });
-
-    // ===== Panel: atras/adelante =====
-    function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
-
-    function seekTo(seconds, autoplay=true){
-      // si aún no hay metadata, igual seteamos: el navegador aplicará cuando pueda
+    function seekTo(seconds, autoplay = true){
       aud.currentTime = seconds;
       vid.currentTime = seconds;
 
       if (autoplay) {
         playAll();
-      } else {
-        // si estaba en pause, mantenemos play icon
-        if (aud.paused) SHOW_PLAY();
+      } else if (aud.paused) {
+        SHOW_PLAY();
       }
+
+      updateSeekUI(seconds);
     }
 
-    back10.addEventListener('click', () => {
-      const target = clamp((aud.currentTime || 0) - 10, 0, (aud.duration || Infinity));
-      seekTo(target, !aud.paused); // si está sonando, mantiene; si no, no fuerza
+    btn.addEventListener("click", () => {
+      if (aud.paused) playAll();
+      else pauseAll();
     });
 
-    fwd10.addEventListener('click', () => {
-      const target = clamp((aud.currentTime || 0) + 10, 0, (aud.duration || Infinity));
+    seekBar.addEventListener("input", () => {
+      const t = Number(seekBar.value) || 0;
+      currentTimeEl.textContent = formatTime(t);
+    });
+
+    seekBar.addEventListener("change", () => {
+      const target = Number(seekBar.value) || 0;
       seekTo(target, !aud.paused);
     });
 
-    // ===== Share =====
-    shareBtn.addEventListener('click', async () => {
+    aud.addEventListener("loadedmetadata", () => updateSeekUI());
+    aud.addEventListener("durationchange", () => updateSeekUI());
+    aud.addEventListener("timeupdate", () => updateSeekUI());
+
+    aud.addEventListener("seeking", () => {
+      vid.currentTime = aud.currentTime;
+      updateSeekUI(aud.currentTime);
+    });
+
+    aud.addEventListener("ended", () => {
+      aud.currentTime = 0;
+      vid.currentTime = 0;
+      vid.pause();
+      SHOW_PLAY();
+      updateSeekUI(0);
+    });
+
+    aud.addEventListener("pause", () => {
+      if (!aud.ended) {
+        vid.pause();
+        SHOW_PLAY();
+      }
+    });
+
+    vid.addEventListener("pause", () => {
+      if (!aud.paused && !aud.ended) {
+        vid.play().catch(() => {});
+      }
+    });
+
+    shareBtn.addEventListener("click", async () => {
       const url = location.href;
       try{
         if (navigator.share) {
           await navigator.share({ title: "DJ SALVA #01", text: "DJ SALVA #01", url });
         } else {
           await navigator.clipboard.writeText(url);
-          // feedback mínimo sin mover UI: vibración si existe
           if (navigator.vibrate) navigator.vibrate(30);
         }
-      }catch(e){ /* ignore */ }
+      }catch(e){ }
     });
 
-    // ===== Library drawer =====
-    function openDrawer(){
-      app.classList.add('open');
-    }
-    function closeDrawer(){
-      app.classList.remove('open');
-    }
-    openLibrary.addEventListener('click', openDrawer);
-    closeLibrary.addEventListener('click', closeDrawer);
-    overlay.addEventListener('click', closeDrawer);
+    function openDrawer(){ app.classList.add("open"); }
+    function closeDrawer(){ app.classList.remove("open"); }
+
+    openLibrary.addEventListener("click", openDrawer);
+    closeLibrary.addEventListener("click", closeDrawer);
+    overlay.addEventListener("click", closeDrawer);
 
     function timeToSeconds(str){
-      // "m:ss" o "h:mm:ss"
-      const parts = str.split(':').map(p => p.trim());
+      const parts = str.split(":").map(p => p.trim());
       if (parts.length === 2) {
-        const m = parseInt(parts[0],10) || 0;
-        const s = parseInt(parts[1],10) || 0;
-        return m*60 + s;
+        const m = parseInt(parts[0], 10) || 0;
+        const s = parseInt(parts[1], 10) || 0;
+        return m * 60 + s;
       }
       if (parts.length === 3) {
-        const h = parseInt(parts[0],10) || 0;
-        const m = parseInt(parts[1],10) || 0;
-        const s = parseInt(parts[2],10) || 0;
-        return h*3600 + m*60 + s;
+        const h = parseInt(parts[0], 10) || 0;
+        const m = parseInt(parts[1], 10) || 0;
+        const s = parseInt(parts[2], 10) || 0;
+        return h * 3600 + m * 60 + s;
       }
       return 0;
     }
@@ -635,7 +700,7 @@
     function renderTracks(){
       tracksEl.innerHTML = "";
       for (const tr of TRACKS){
-        const btn = document.createElement('button');
+        const btn = document.createElement("button");
         btn.className = "track";
         btn.type = "button";
         btn.innerHTML = `
@@ -645,15 +710,17 @@
             <span class="time">${tr.at}</span>
           </span>
         `;
-        btn.addEventListener('click', () => {
+        btn.addEventListener("click", () => {
           const sec = timeToSeconds(tr.at);
-          seekTo(sec, true);     // al tocar: salta y reproduce
+          seekTo(sec, true);
           closeDrawer();
         });
         tracksEl.appendChild(btn);
       }
     }
+
     renderTracks();
+    updateSeekUI(0);
   </script>
 </body>
 </html>
