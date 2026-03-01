@@ -12,6 +12,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="apple-touch-icon" href="/icons/icon-192.png">
 
+  <!-- HLS (para reproducir playlist.m3u8 en Chrome/Firefox) -->
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
   <style>
     :root{
       --screen-left: 0%;
@@ -330,9 +333,9 @@
       <img class="bg" src="laptop-session.png" alt="DJ SALVA #01">
 
       <div class="screen">
-        <video id="vid" playsinline webkit-playsinline muted autoplay preload="auto" loop>
-          <source src="https://djsalva-cdn.b-cdn.net/video.mp4" type="video/mp4">
-        </video>
+        <!-- IMPORTANTE:
+             Quitamos el <source mp4> y cargamos HLS (m3u8) por JS para que vaya fluido -->
+        <video id="vid" playsinline webkit-playsinline muted autoplay preload="auto" loop></video>
       </div>
 
       <audio id="aud" preload="auto">
@@ -388,6 +391,7 @@
   </div>
 
   <script>
+    // PWA / SW
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
         navigator.serviceWorker.register("/sw.js").catch(console.log);
@@ -397,6 +401,42 @@
     const app = document.getElementById("app");
     const vid = document.getElementById("vid");
     const aud = document.getElementById("aud");
+
+    // ====== HLS SETUP (Bunny Stream) ======
+    const HLS_URL = "https://vz-938ede5b-1c2.b-cdn.net/4296b47d-58a1-4bfe-b343-1ae512064f0d/playlist.m3u8";
+
+    let hlsInstance = null;
+
+    function setupHls(){
+      // Safari (incluye iOS) soporta HLS nativo
+      if (vid.canPlayType("application/vnd.apple.mpegurl")) {
+        vid.src = HLS_URL;
+        return;
+      }
+
+      // Chrome/Firefox/Edge: Hls.js
+      if (window.Hls && Hls.isSupported()) {
+        hlsInstance = new Hls({
+          // Buffers razonables para evitar cortes
+          maxBufferLength: 30,
+          maxMaxBufferLength: 60,
+          lowLatencyMode: false
+        });
+
+        hlsInstance.loadSource(HLS_URL);
+        hlsInstance.attachMedia(vid);
+
+        // Si quieres ver errores en consola:
+        // hlsInstance.on(Hls.Events.ERROR, (evt, data) => console.log("HLS error", data));
+        return;
+      }
+
+      // Fallback (muy raro)
+      console.warn("Este navegador no soporta HLS.");
+    }
+
+    setupHls();
+    // =====================================
 
     const btn = document.getElementById("toggle");
     const iconPlay = document.getElementById("iconPlay");
@@ -534,11 +574,13 @@
     }
 
     async function ensureVideoRunning(){
-      vid.playbackRate = VIDEO_RATE;
-      if (vid.paused) {
-        await vid.play();
+      try{
+        vid.playbackRate = VIDEO_RATE;
+        if (vid.paused) await vid.play();
+        videoStarted = true;
+      }catch(e){
+        // Autoplay puede fallar en algunos navegadores hasta interacción
       }
-      videoStarted = true;
     }
 
     async function playAll(){
@@ -596,14 +638,13 @@
       updateSeekUI(0);
     });
 
+    // Mantener el vídeo rodando (visual)
     vid.addEventListener("pause", () => {
       if (videoStarted) vid.play().catch(() => {});
     });
-
     vid.addEventListener("stalled", () => {
       if (videoStarted) vid.play().catch(() => {});
     });
-
     vid.addEventListener("waiting", () => {
       if (videoStarted) vid.play().catch(() => {});
     });
