@@ -333,8 +333,6 @@
       <img class="bg" src="laptop-session.png" alt="DJ SALVA #01">
 
       <div class="screen">
-        <!-- IMPORTANTE:
-             Quitamos el <source mp4> y cargamos HLS (m3u8) por JS para que vaya fluido -->
         <video id="vid" playsinline webkit-playsinline muted autoplay preload="auto" loop></video>
       </div>
 
@@ -404,20 +402,16 @@
 
     // ====== HLS SETUP (Bunny Stream) ======
     const HLS_URL = "https://vz-938ede5b-1c2.b-cdn.net/4296b47d-58a1-4bfe-b343-1ae512064f0d/playlist.m3u8";
-
     let hlsInstance = null;
 
     function setupHls(){
-      // Safari (incluye iOS) soporta HLS nativo
       if (vid.canPlayType("application/vnd.apple.mpegurl")) {
         vid.src = HLS_URL;
         return;
       }
 
-      // Chrome/Firefox/Edge: Hls.js
       if (window.Hls && Hls.isSupported()) {
         hlsInstance = new Hls({
-          // Buffers razonables para evitar cortes
           maxBufferLength: 30,
           maxMaxBufferLength: 60,
           lowLatencyMode: false
@@ -425,13 +419,9 @@
 
         hlsInstance.loadSource(HLS_URL);
         hlsInstance.attachMedia(vid);
-
-        // Si quieres ver errores en consola:
-        // hlsInstance.on(Hls.Events.ERROR, (evt, data) => console.log("HLS error", data));
         return;
       }
 
-      // Fallback (muy raro)
       console.warn("Este navegador no soporta HLS.");
     }
 
@@ -452,6 +442,8 @@
 
     const COVER_SRC = "djsalva-icon.png";
     const VIDEO_RATE = 1.25;
+    const STORAGE_KEY = "djsalva_unlocked_tracks_v1";
+
     let videoStarted = false;
     const trackNameEls = [];
 
@@ -520,7 +512,30 @@
       { t:"SOLITA", at:"1:57:18", unlocked:false },
     ];
 
-    for (const tr of TRACKS) tr.sec = timeToSeconds(tr.at);
+    for (let i = 0; i < TRACKS.length; i++) {
+      TRACKS[i].sec = timeToSeconds(TRACKS[i].at);
+      TRACKS[i].id = `${TRACKS[i].at}__${TRACKS[i].t}`;
+    }
+
+    function loadUnlockedState(){
+      try{
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+        const unlockedIds = JSON.parse(raw);
+        if (!Array.isArray(unlockedIds)) return;
+        const set = new Set(unlockedIds);
+        for (const tr of TRACKS) {
+          tr.unlocked = set.has(tr.id);
+        }
+      }catch(e){}
+    }
+
+    function persistUnlockedState(){
+      try{
+        const unlockedIds = TRACKS.filter(tr => tr.unlocked).map(tr => tr.id);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(unlockedIds));
+      }catch(e){}
+    }
 
     const SHOW_PLAY = () => {
       iconPlay.style.display = "block";
@@ -562,15 +577,8 @@
       tr.unlocked = true;
       const nameEl = trackNameEls[index];
       if (nameEl) nameEl.textContent = tr.t;
+      persistUnlockedState();
       return true;
-    }
-
-    function unlockTracksByTime(currentSec){
-      for (let i = 0; i < TRACKS.length; i++) {
-        if (!TRACKS[i].unlocked && currentSec >= TRACKS[i].sec) {
-          unlockTrack(i);
-        }
-      }
     }
 
     async function ensureVideoRunning(){
@@ -578,9 +586,7 @@
         vid.playbackRate = VIDEO_RATE;
         if (vid.paused) await vid.play();
         videoStarted = true;
-      }catch(e){
-        // Autoplay puede fallar en algunos navegadores hasta interacción
-      }
+      }catch(e){}
     }
 
     async function playAll(){
@@ -610,7 +616,6 @@
         SHOW_PLAY();
       }
 
-      unlockTracksByTime(aud.currentTime);
       updateSeekUI(aud.currentTime);
     }
 
@@ -621,16 +626,8 @@
 
     aud.addEventListener("loadedmetadata", () => updateSeekUI());
     aud.addEventListener("durationchange", () => updateSeekUI());
-    aud.addEventListener("timeupdate", () => {
-      const now = aud.currentTime || 0;
-      updateSeekUI(now);
-      unlockTracksByTime(now);
-    });
-    aud.addEventListener("seeking", () => {
-      const now = aud.currentTime || 0;
-      updateSeekUI(now);
-      unlockTracksByTime(now);
-    });
+    aud.addEventListener("timeupdate", () => updateSeekUI(aud.currentTime || 0));
+    aud.addEventListener("seeking", () => updateSeekUI(aud.currentTime || 0));
 
     aud.addEventListener("ended", () => {
       aud.currentTime = 0;
@@ -638,7 +635,6 @@
       updateSeekUI(0);
     });
 
-    // Mantener el vídeo rodando (visual)
     vid.addEventListener("pause", () => {
       if (videoStarted) vid.play().catch(() => {});
     });
@@ -666,7 +662,7 @@
           await navigator.clipboard.writeText(url);
           if (navigator.vibrate) navigator.vibrate(30);
         }
-      }catch(e){ }
+      }catch(e){}
     });
 
     function openDrawer(){ app.classList.add("open"); }
@@ -715,7 +711,6 @@
 
         trackBtn.addEventListener("click", () => {
           unlockTrack(i);
-          unlockTracksByTime(tr.sec);
           seekTo(tr.sec, true);
           closeDrawer();
         });
@@ -724,6 +719,7 @@
       }
     }
 
+    loadUnlockedState();
     renderTracks();
     updateSeekUI(0);
   </script>
