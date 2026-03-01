@@ -67,7 +67,7 @@
       top:var(--screen-top);
       width:var(--screen-width);
       height:var(--screen-height);
-      border-radius:0; /* sin redondear */
+      border-radius:0;
       overflow:hidden;
       background:#fff;
     }
@@ -136,23 +136,17 @@
       filter:drop-shadow(0 8px 18px rgba(0,0,0,0.55));
     }
 
-    /* Tiempo arriba a la izquierda, blanco, grande, sin fondo */
     .audio-time{
       position:absolute;
       top:var(--ui-pad);
       left:var(--ui-pad);
-      transform:none;
       color:#fff;
       font-size:48px;
       font-weight:900;
       line-height:1;
-      text-align:left;
       text-shadow:0 8px 18px rgba(0,0,0,0.55);
       user-select:none;
       pointer-events:none;
-      background:transparent;
-      padding:0;
-      min-width:auto;
       z-index:55;
     }
 
@@ -336,7 +330,7 @@
       <img class="bg" src="laptop-session.png" alt="DJ SALVA #01">
 
       <div class="screen">
-        <video id="vid" playsinline muted preload="auto" loop>
+        <video id="vid" playsinline webkit-playsinline muted autoplay preload="auto" loop>
           <source src="https://djsalva-cdn.b-cdn.net/video.mp4" type="video/mp4">
         </video>
       </div>
@@ -417,71 +411,72 @@
     const tracksEl = document.getElementById("tracks");
 
     const COVER_SRC = "djsalva-icon.png";
+    const VIDEO_RATE = 1.25;
     let videoStarted = false;
 
     const TRACKS = [
-      { t:"FIEL", at:"0:16" },
-      { t:"QUE PASARÍA...", at:"2:06" },
-      { t:"DIABLITA", at:"3:02" },
-      { t:"SI SE DA", at:"4:07" },
-      { t:"MEDUSA", at:"6:42" },
-      { t:"WYA REMIX RED", at:"7:19" },
-      { t:"QUE VAS A HACER HOY ?", at:"7:58" },
-      { t:"SOLTERA REMIX", at:"10:05" },
-      { t:"MEMORIAS", at:"11:53" },
-      { t:"SIN FRENOS", at:"13:20" },
-      { t:"TIAGO BZRP", at:"15:00" },
-      { t:"MODELITO", at:"17:32" },
-      { t:"PUSH UP", at:"18:45" },
-      { t:"2PA2", at:"20:05" },
-      { t:"GENTLY", at:"21:10" },
-      { t:"REAL GANGSTA LOVE", at:"22:17" },
-      { t:"DIABÓLICA", at:"23:28" },
-      { t:"IGUALES", at:"24:10" },
-      { t:"GOTEO", at:"24:50" },
-      { t:"SHE DON’T GIVE A FO", at:"26:25" },
-      { t:"SE VUELVE LOCA", at:"27:56" },
-      { t:"CANDY", at:"30:15" },
-      { t:"IA", at:"33:39" },
-      { t:"NO PUEDO RESPONDER", at:"35:47" },
-      { t:"SE PONE LAS NIKE", at:"36:13" },
-      { t:"COCO CHANEL", at:"38:15" },
-      { t:"DAME LA VERDE", at:"39:31" },
-      { t:"SIN SEÑAL", at:"43:28" },
-      { t:"TAROT", at:"45:12" },
-      { t:"DIABLA", at:"48:30" },
-      { t:"GIRL", at:"50:00" },
-      { t:"HASTA QUE DIOS DIGA", at:"52:08" },
-      { t:"SERIO CON ESE Q", at:"56:00" },
-      { t:"LAS BRATZ REMIX", at:"1:00:18" },
-      { t:"BAD GYAL", at:"1:00:39" },
-      { t:"PERROS SALVAJES", at:"1:04:40" },
-      { t:"SOLTAD A LOS PERROS", at:"1:06:00" },
-      { t:"DURO", at:"1:07:14" },
-      { t:"SUPERMAN SIN CAPA", at:"1:07:36" },
-      { t:"EL TAXI", at:"1:09:40" },
-      { t:"LOS APARATOS", at:"1:10:24" },
-      { t:"MARIANELA", at:"1:12:32" },
-      { t:"LA DESPEDIDA", at:"1:13:51" },
-      { t:"COLUMBIA", at:"1:14:18" },
-      { t:"ESCLAVA", at:"1:19:54" },
-      { t:"STAR", at:"1:23:30" },
-      { t:"DÁKITI", at:"1:25:55" },
-      { t:"HOLANDA", at:"1:28:52" },
-      { t:"LEVELS", at:"1:31:08" },
-      { t:"ME PORTO BONITO", at:"1:32:28" },
-      { t:"PUNTO G", at:"1:35:21" },
-      { t:"LA ZONA", at:"1:38:29" },
-      { t:"NO TE QUIEREN CONMIGO", at:"1:40:48" },
-      { t:"EL FARSANTE", at:"1:42:54" },
-      { t:"CHAMBEA", at:"1:45:35" },
-      { t:"NUEVA ERA", at:"1:46:30" },
-      { t:"MALBEC", at:"1:47:45" },
-      { t:"THE NIGHTS", at:"1:48:15" },
-      { t:"MANDANGA STYLE", at:"1:51:16" },
-      { t:"HALO", at:"1:53:20" },
-      { t:"PRRRUM", at:"1:55:40" },
-      { t:"SOLITA", at:"1:57:18" },
+      { t:"FIEL", at:"0:16", unlocked:false },
+      { t:"QUE PASARÍA...", at:"2:06", unlocked:false },
+      { t:"DIABLITA", at:"3:02", unlocked:false },
+      { t:"SI SE DA", at:"4:07", unlocked:false },
+      { t:"MEDUSA", at:"6:42", unlocked:false },
+      { t:"WYA REMIX RED", at:"7:19", unlocked:false },
+      { t:"QUE VAS A HACER HOY ?", at:"7:58", unlocked:false },
+      { t:"SOLTERA REMIX", at:"10:05", unlocked:false },
+      { t:"MEMORIAS", at:"11:53", unlocked:false },
+      { t:"SIN FRENOS", at:"13:20", unlocked:false },
+      { t:"TIAGO BZRP", at:"15:00", unlocked:false },
+      { t:"MODELITO", at:"17:32", unlocked:false },
+      { t:"PUSH UP", at:"18:45", unlocked:false },
+      { t:"2PA2", at:"20:05", unlocked:false },
+      { t:"GENTLY", at:"21:10", unlocked:false },
+      { t:"REAL GANGSTA LOVE", at:"22:17", unlocked:false },
+      { t:"DIABÓLICA", at:"23:28", unlocked:false },
+      { t:"IGUALES", at:"24:10", unlocked:false },
+      { t:"GOTEO", at:"24:50", unlocked:false },
+      { t:"SHE DON’T GIVE A FO", at:"26:25", unlocked:false },
+      { t:"SE VUELVE LOCA", at:"27:56", unlocked:false },
+      { t:"CANDY", at:"30:15", unlocked:false },
+      { t:"IA", at:"33:39", unlocked:false },
+      { t:"NO PUEDO RESPONDER", at:"35:47", unlocked:false },
+      { t:"SE PONE LAS NIKE", at:"36:13", unlocked:false },
+      { t:"COCO CHANEL", at:"38:15", unlocked:false },
+      { t:"DAME LA VERDE", at:"39:31", unlocked:false },
+      { t:"SIN SEÑAL", at:"43:28", unlocked:false },
+      { t:"TAROT", at:"45:12", unlocked:false },
+      { t:"DIABLA", at:"48:30", unlocked:false },
+      { t:"GIRL", at:"50:00", unlocked:false },
+      { t:"HASTA QUE DIOS DIGA", at:"52:08", unlocked:false },
+      { t:"SERIO CON ESE Q", at:"56:00", unlocked:false },
+      { t:"LAS BRATZ REMIX", at:"1:00:18", unlocked:false },
+      { t:"BAD GYAL", at:"1:00:39", unlocked:false },
+      { t:"PERROS SALVAJES", at:"1:04:40", unlocked:false },
+      { t:"SOLTAD A LOS PERROS", at:"1:06:00", unlocked:false },
+      { t:"DURO", at:"1:07:14", unlocked:false },
+      { t:"SUPERMAN SIN CAPA", at:"1:07:36", unlocked:false },
+      { t:"EL TAXI", at:"1:09:40", unlocked:false },
+      { t:"LOS APARATOS", at:"1:10:24", unlocked:false },
+      { t:"MARIANELA", at:"1:12:32", unlocked:false },
+      { t:"LA DESPEDIDA", at:"1:13:51", unlocked:false },
+      { t:"COLUMBIA", at:"1:14:18", unlocked:false },
+      { t:"ESCLAVA", at:"1:19:54", unlocked:false },
+      { t:"STAR", at:"1:23:30", unlocked:false },
+      { t:"DÁKITI", at:"1:25:55", unlocked:false },
+      { t:"HOLANDA", at:"1:28:52", unlocked:false },
+      { t:"LEVELS", at:"1:31:08", unlocked:false },
+      { t:"ME PORTO BONITO", at:"1:32:28", unlocked:false },
+      { t:"PUNTO G", at:"1:35:21", unlocked:false },
+      { t:"LA ZONA", at:"1:38:29", unlocked:false },
+      { t:"NO TE QUIEREN CONMIGO", at:"1:40:48", unlocked:false },
+      { t:"EL FARSANTE", at:"1:42:54", unlocked:false },
+      { t:"CHAMBEA", at:"1:45:35", unlocked:false },
+      { t:"NUEVA ERA", at:"1:46:30", unlocked:false },
+      { t:"MALBEC", at:"1:47:45", unlocked:false },
+      { t:"THE NIGHTS", at:"1:48:15", unlocked:false },
+      { t:"MANDANGA STYLE", at:"1:51:16", unlocked:false },
+      { t:"HALO", at:"1:53:20", unlocked:false },
+      { t:"PRRRUM", at:"1:55:40", unlocked:false },
+      { t:"SOLITA", at:"1:57:18", unlocked:false },
     ];
 
     const SHOW_PLAY = () => {
@@ -497,8 +492,8 @@
     };
 
     vid.loop = true;
-    vid.defaultPlaybackRate = 1.2;
-    vid.playbackRate = 1.2;
+    vid.defaultPlaybackRate = VIDEO_RATE;
+    vid.playbackRate = VIDEO_RATE;
 
     function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
 
@@ -519,11 +514,11 @@
     }
 
     async function ensureVideoRunning(){
-      if (!videoStarted || vid.paused) {
-        vid.playbackRate = 1.2;
+      vid.playbackRate = VIDEO_RATE;
+      if (vid.paused) {
         await vid.play();
-        videoStarted = true;
       }
+      videoStarted = true;
     }
 
     async function playAll(){
@@ -539,7 +534,7 @@
     }
 
     function pauseAll(){
-      aud.pause();   // solo pausa audio
+      aud.pause();
       SHOW_PLAY();
     }
 
@@ -572,18 +567,25 @@
       updateSeekUI(0);
     });
 
-    // Mantener video siempre activo tras primer play
+    // Mantener video fluido y activo siempre
     vid.addEventListener("pause", () => {
-      if (videoStarted) {
-        vid.playbackRate = 1.2;
-        vid.play().catch(() => {});
-      }
+      if (videoStarted) vid.play().catch(() => {});
     });
 
     vid.addEventListener("stalled", () => {
-      if (videoStarted && vid.paused) {
-        vid.play().catch(() => {});
-      }
+      if (videoStarted) vid.play().catch(() => {});
+    });
+
+    vid.addEventListener("waiting", () => {
+      if (videoStarted) vid.play().catch(() => {});
+    });
+
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden) ensureVideoRunning().catch(() => {});
+    });
+
+    window.addEventListener("load", () => {
+      ensureVideoRunning().catch(() => {});
     });
 
     shareBtn.addEventListener("click", async () => {
@@ -624,22 +626,27 @@
     function renderTracks(){
       tracksEl.innerHTML = "";
       for (const tr of TRACKS){
-        const btn = document.createElement("button");
-        btn.className = "track";
-        btn.type = "button";
-        btn.innerHTML = `
+        const displayName = tr.unlocked ? tr.t : "¿?";
+        const trackBtn = document.createElement("button");
+        trackBtn.className = "track";
+        trackBtn.type = "button";
+        trackBtn.innerHTML = `
           <span class="cover"><img src="${COVER_SRC}" alt=""></span>
           <span class="meta">
-            <span class="name">${tr.t}</span>
+            <span class="name">${displayName}</span>
             <span class="time">${tr.at}</span>
           </span>
         `;
-        btn.addEventListener("click", () => {
+        trackBtn.addEventListener("click", () => {
+          tr.unlocked = true;
+          const nameEl = trackBtn.querySelector(".name");
+          if (nameEl) nameEl.textContent = tr.t;
+
           const sec = timeToSeconds(tr.at);
           seekTo(sec, true);
           closeDrawer();
         });
-        tracksEl.appendChild(btn);
+        tracksEl.appendChild(trackBtn);
       }
     }
 
