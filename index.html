@@ -413,6 +413,7 @@
     const COVER_SRC = "djsalva-icon.png";
     const VIDEO_RATE = 1.25;
     let videoStarted = false;
+    const trackNameEls = [];
 
     const TRACKS = [
       { t:"FIEL", at:"0:16", unlocked:false },
@@ -479,6 +480,8 @@
       { t:"SOLITA", at:"1:57:18", unlocked:false },
     ];
 
+    for (const tr of TRACKS) tr.sec = timeToSeconds(tr.at);
+
     const SHOW_PLAY = () => {
       iconPlay.style.display = "block";
       iconPause.style.display = "none";
@@ -511,6 +514,23 @@
 
     function updateSeekUI(time = aud.currentTime || 0){
       currentTimeEl.textContent = formatTime(time);
+    }
+
+    function unlockTrack(index){
+      const tr = TRACKS[index];
+      if (!tr || tr.unlocked) return false;
+      tr.unlocked = true;
+      const nameEl = trackNameEls[index];
+      if (nameEl) nameEl.textContent = tr.t;
+      return true;
+    }
+
+    function unlockTracksByTime(currentSec){
+      for (let i = 0; i < TRACKS.length; i++) {
+        if (!TRACKS[i].unlocked && currentSec >= TRACKS[i].sec) {
+          unlockTrack(i);
+        }
+      }
     }
 
     async function ensureVideoRunning(){
@@ -548,6 +568,7 @@
         SHOW_PLAY();
       }
 
+      unlockTracksByTime(aud.currentTime);
       updateSeekUI(aud.currentTime);
     }
 
@@ -558,8 +579,16 @@
 
     aud.addEventListener("loadedmetadata", () => updateSeekUI());
     aud.addEventListener("durationchange", () => updateSeekUI());
-    aud.addEventListener("timeupdate", () => updateSeekUI());
-    aud.addEventListener("seeking", () => updateSeekUI(aud.currentTime));
+    aud.addEventListener("timeupdate", () => {
+      const now = aud.currentTime || 0;
+      updateSeekUI(now);
+      unlockTracksByTime(now);
+    });
+    aud.addEventListener("seeking", () => {
+      const now = aud.currentTime || 0;
+      updateSeekUI(now);
+      unlockTracksByTime(now);
+    });
 
     aud.addEventListener("ended", () => {
       aud.currentTime = 0;
@@ -567,7 +596,6 @@
       updateSeekUI(0);
     });
 
-    // Mantener video fluido y activo siempre
     vid.addEventListener("pause", () => {
       if (videoStarted) vid.play().catch(() => {});
     });
@@ -625,7 +653,10 @@
 
     function renderTracks(){
       tracksEl.innerHTML = "";
-      for (const tr of TRACKS){
+      trackNameEls.length = 0;
+
+      for (let i = 0; i < TRACKS.length; i++){
+        const tr = TRACKS[i];
         const displayName = tr.unlocked ? tr.t : "¿?";
         const trackBtn = document.createElement("button");
         trackBtn.className = "track";
@@ -637,15 +668,17 @@
             <span class="time">${tr.at}</span>
           </span>
         `;
-        trackBtn.addEventListener("click", () => {
-          tr.unlocked = true;
-          const nameEl = trackBtn.querySelector(".name");
-          if (nameEl) nameEl.textContent = tr.t;
 
-          const sec = timeToSeconds(tr.at);
-          seekTo(sec, true);
+        const nameEl = trackBtn.querySelector(".name");
+        trackNameEls.push(nameEl);
+
+        trackBtn.addEventListener("click", () => {
+          unlockTrack(i);
+          unlockTracksByTime(tr.sec);
+          seekTo(tr.sec, true);
           closeDrawer();
         });
+
         tracksEl.appendChild(trackBtn);
       }
     }
