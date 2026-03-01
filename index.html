@@ -136,7 +136,7 @@
     .seek-wrap{
       position:absolute;
       left:50%;
-      bottom:calc(var(--btn-bottom) + 118px);
+      bottom:calc(var(--btn-bottom) + 88px); /* bajada */
       transform:translateX(-50%);
       width:min(470px, 82%);
       display:flex;
@@ -188,7 +188,7 @@
     }
 
     .seek-time{
-      min-width:88px;
+      min-width:56px;
       color:#fff;
       font-size:13px;
       font-weight:700;
@@ -359,12 +359,12 @@
       .icon{ width:95px; height:95px; }
 
       .seek-wrap{
-        bottom:calc(var(--btn-bottom) + 98px);
+        bottom:calc(var(--btn-bottom) + 72px); /* bajada en móvil */
         width:min(370px, 84%);
       }
 
       .seek-time{
-        min-width:78px;
+        min-width:48px;
         font-size:12px;
       }
 
@@ -392,7 +392,6 @@
         <source src="https://djsalva-cdn.b-cdn.net/audio.mp3" type="audio/mpeg">
       </audio>
 
-      <!-- Share + Menú arriba derecha (share a la izquierda de las dos líneas) -->
       <div class="top-actions">
         <button class="top-btn" id="shareBtn" aria-label="Compartir" title="Compartir">
           <svg class="mini-icon" viewBox="0 0 24 24" aria-hidden="true">
@@ -409,7 +408,6 @@
         </button>
       </div>
 
-      <!-- Línea de progreso + tiempo -->
       <div class="seek-wrap">
         <input
           id="seekBar"
@@ -421,10 +419,9 @@
           value="0"
           aria-label="Barra de progreso del audio"
         />
-        <div class="seek-time"><span id="currentTime">0:00</span> / <span id="totalTime">0:00</span></div>
+        <div class="seek-time"><span id="currentTime">0:00</span></div>
       </div>
 
-      <!-- Play/Pause -->
       <button id="toggle" class="play-btn" aria-label="Reproducir">
         <span class="sr">Play/Pause</span>
 
@@ -437,7 +434,6 @@
         </svg>
       </button>
 
-      <!-- Overlay + Drawer -->
       <div class="overlay" id="overlay"></div>
 
       <aside class="drawer" id="drawer" aria-label="Biblioteca">
@@ -457,7 +453,6 @@
   </div>
 
   <script>
-    // PWA: registrar Service Worker (si existe sw.js en raíz)
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
         navigator.serviceWorker.register("/sw.js").catch(console.log);
@@ -475,7 +470,6 @@
     const shareBtn = document.getElementById("shareBtn");
     const seekBar = document.getElementById("seekBar");
     const currentTimeEl = document.getElementById("currentTime");
-    const totalTimeEl = document.getElementById("totalTime");
 
     const openLibrary = document.getElementById("openLibrary");
     const closeLibrary = document.getElementById("closeLibrary");
@@ -483,6 +477,7 @@
     const tracksEl = document.getElementById("tracks");
 
     const COVER_SRC = "djsalva-icon.png";
+    let videoStarted = false;
 
     const TRACKS = [
       { t:"FIEL", at:"0:16" },
@@ -582,31 +577,35 @@
       seekBar.max = duration || 0;
       seekBar.value = clamp(time, 0, duration || 0);
       currentTimeEl.textContent = formatTime(time);
-      totalTimeEl.textContent = formatTime(duration);
+    }
+
+    async function ensureVideoRunning(){
+      if (!videoStarted || vid.paused) {
+        await vid.play();
+        videoStarted = true;
+      }
     }
 
     async function playAll(){
       try{
-        if (Math.abs(vid.currentTime - aud.currentTime) > 0.25) {
-          vid.currentTime = aud.currentTime;
-        }
-        await aud.play();
-        await vid.play();
+        await Promise.all([
+          aud.play(),
+          ensureVideoRunning()
+        ]);
         SHOW_PAUSE();
       }catch(e){
-        SHOW_PLAY();
+        if (aud.paused) SHOW_PLAY();
       }
     }
 
     function pauseAll(){
-      aud.pause();
-      vid.pause();
+      aud.pause();   // solo pausa audio
       SHOW_PLAY();
     }
 
     function seekTo(seconds, autoplay = true){
-      aud.currentTime = seconds;
-      vid.currentTime = seconds;
+      const max = Number.isFinite(aud.duration) ? aud.duration : Infinity;
+      aud.currentTime = clamp(seconds, 0, max);
 
       if (autoplay) {
         playAll();
@@ -614,7 +613,7 @@
         SHOW_PLAY();
       }
 
-      updateSeekUI(seconds);
+      updateSeekUI(aud.currentTime);
     }
 
     btn.addEventListener("click", () => {
@@ -635,29 +634,17 @@
     aud.addEventListener("loadedmetadata", () => updateSeekUI());
     aud.addEventListener("durationchange", () => updateSeekUI());
     aud.addEventListener("timeupdate", () => updateSeekUI());
-
-    aud.addEventListener("seeking", () => {
-      vid.currentTime = aud.currentTime;
-      updateSeekUI(aud.currentTime);
-    });
+    aud.addEventListener("seeking", () => updateSeekUI(aud.currentTime));
 
     aud.addEventListener("ended", () => {
       aud.currentTime = 0;
-      vid.currentTime = 0;
-      vid.pause();
       SHOW_PLAY();
       updateSeekUI(0);
     });
 
-    aud.addEventListener("pause", () => {
-      if (!aud.ended) {
-        vid.pause();
-        SHOW_PLAY();
-      }
-    });
-
+    // Si por cualquier motivo se pausa el video, lo reanudamos
     vid.addEventListener("pause", () => {
-      if (!aud.paused && !aud.ended) {
+      if (videoStarted) {
         vid.play().catch(() => {});
       }
     });
