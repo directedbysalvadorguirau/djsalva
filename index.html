@@ -333,13 +333,13 @@
       <img class="bg" src="laptop-session.png" alt="DJ SALVA #01">
 
       <div class="screen">
-        <!-- IMPORTANTE:
-             Quitamos el <source mp4> y cargamos HLS (m3u8) por JS para que vaya fluido -->
-        <video id="vid" playsinline webkit-playsinline muted autoplay preload="auto" loop></video>
+        <video id="vid" playsinline webkit-playsinline muted autoplay preload="auto" loop>
+          <source src="https://djsalva-cdn.b-cdn.net/video.mp4" type="video/mp4">
+        </video>
       </div>
 
       <audio id="aud" preload="auto">
-        <source src="https://vz-22bc6007-2d8.b-cdn.net/8e682bfd-fbb8-4a73-8a38-1b0f524f738a/playlist.m3u8" type="application/x-mpegURL">
+        <source src="https://djsalva-cdn.b-cdn.net/audio.mp3" type="audio/mpeg">
       </audio>
 
       <div class="top-actions">
@@ -391,7 +391,6 @@
   </div>
 
   <script>
-    // PWA / SW
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
         navigator.serviceWorker.register("/sw.js").catch(console.log);
@@ -403,36 +402,89 @@
     const aud = document.getElementById("aud");
 
     // ====== HLS SETUP (Bunny Stream) ======
-    const HLS_URL = "https://vz-22bc6007-2d8.b-cdn.net/2db186bd-0b99-45c9-ae41-cf4789d99972/playlist.m3u8";
+    const HLS_URL = "https://vz-3982164d-eb2.b-cdn.net/84df87ec-25fd-4343-b8ed-9ffc4ce32d8a/playlist.m3u8";
+    const AUDIO_HLS_URL = "https://vz-3982164d-eb2.b-cdn.net/a354b06c-0f1e-4bf5-b98e-ed90e965bd6a/playlist.m3u8";
+    const VIDEO_FALLBACK_URL = "https://djsalva-cdn.b-cdn.net/video.mp4";
+    const AUDIO_FALLBACK_URL = "https://djsalva-cdn.b-cdn.net/audio.mp3";
 
     let hlsInstance = null;
+    let audioHlsInstance = null;
 
-    function setupHls(){
-      // Safari (incluye iOS) soporta HLS nativo
-      if (vid.canPlayType("application/vnd.apple.mpegurl")) {
-        vid.src = HLS_URL;
-        return;
+    function applyFallbackSource(mediaEl, fallbackUrl, resumeTime = 0, shouldResume = false){
+      if (!fallbackUrl) return;
+
+      try{
+        mediaEl.pause();
+      }catch(e){}
+
+      mediaEl.src = fallbackUrl;
+      mediaEl.load();
+
+      mediaEl.addEventListener("loadedmetadata", () => {
+        if (Number.isFinite(resumeTime) && resumeTime > 0) {
+          try{
+            mediaEl.currentTime = resumeTime;
+          }catch(e){}
+        }
+
+        if (mediaEl === vid) {
+          mediaEl.loop = true;
+          mediaEl.playbackRate = VIDEO_RATE;
+        }
+
+        if (shouldResume) {
+          mediaEl.play().catch(() => {});
+        }
+      }, { once:true });
+    }
+
+    function setupSingleMediaHls(mediaEl, hlsUrl, fallbackUrl, isVideo){
+      const nativeType = "application/vnd.apple.mpegurl";
+
+      if (mediaEl.canPlayType(nativeType)) {
+        mediaEl.addEventListener("error", () => {
+          const resumeTime = isVideo ? 0 : (mediaEl.currentTime || 0);
+          const shouldResume = isVideo ? true : !mediaEl.paused;
+          applyFallbackSource(mediaEl, fallbackUrl, resumeTime, shouldResume);
+        }, { once:true });
+
+        mediaEl.src = hlsUrl;
+        return null;
       }
 
-      // Chrome/Firefox/Edge: Hls.js
       if (window.Hls && Hls.isSupported()) {
-        hlsInstance = new Hls({
-          // Buffers razonables para evitar cortes
+        const instance = new Hls({
           maxBufferLength: 30,
           maxMaxBufferLength: 60,
           lowLatencyMode: false
         });
 
-        hlsInstance.loadSource(HLS_URL);
-        hlsInstance.attachMedia(vid);
+        instance.loadSource(hlsUrl);
+        instance.attachMedia(mediaEl);
 
-        // Si quieres ver errores en consola:
-        // hlsInstance.on(Hls.Events.ERROR, (evt, data) => console.log("HLS error", data));
-        return;
+        instance.on(Hls.Events.ERROR, (_, data) => {
+          if (!data || !data.fatal) return;
+
+          const resumeTime = isVideo ? 0 : (mediaEl.currentTime || 0);
+          const shouldResume = isVideo ? true : !mediaEl.paused;
+
+          try{
+            instance.destroy();
+          }catch(e){}
+
+          applyFallbackSource(mediaEl, fallbackUrl, resumeTime, shouldResume);
+        });
+
+        return instance;
       }
 
-      // Fallback (muy raro)
-      console.warn("Este navegador no soporta HLS.");
+      applyFallbackSource(mediaEl, fallbackUrl, 0, isVideo);
+      return null;
+    }
+
+    function setupHls(){
+      hlsInstance = setupSingleMediaHls(vid, HLS_URL, VIDEO_FALLBACK_URL, true);
+      audioHlsInstance = setupSingleMediaHls(aud, AUDIO_HLS_URL, AUDIO_FALLBACK_URL, false);
     }
 
     setupHls();
@@ -452,6 +504,8 @@
 
     const COVER_SRC = "djsalva-icon.png";
     const VIDEO_RATE = 1.25;
+    const UNLOCK_STORAGE_KEY = "djsalva_track_unlocks_v1";
+
     let videoStarted = false;
     const trackNameEls = [];
 
@@ -522,6 +576,31 @@
 
     for (const tr of TRACKS) tr.sec = timeToSeconds(tr.at);
 
+    function saveUnlockedTracks(){
+      try{
+        const unlockedIndexes = [];
+        for (let i = 0; i < TRACKS.length; i++){
+          if (TRACKS[i].unlocked) unlockedIndexes.push(i);
+        }
+        localStorage.setItem(UNLOCK_STORAGE_KEY, JSON.stringify(unlockedIndexes));
+      }catch(e){}
+    }
+
+    function loadUnlockedTracks(){
+      try{
+        const raw = localStorage.getItem(UNLOCK_STORAGE_KEY);
+        if (!raw) return;
+        const unlockedIndexes = JSON.parse(raw);
+        if (!Array.isArray(unlockedIndexes)) return;
+
+        for (const idx of unlockedIndexes){
+          if (Number.isInteger(idx) && idx >= 0 && idx < TRACKS.length) {
+            TRACKS[idx].unlocked = true;
+          }
+        }
+      }catch(e){}
+    }
+
     const SHOW_PLAY = () => {
       iconPlay.style.display = "block";
       iconPause.style.display = "none";
@@ -560,17 +639,12 @@
       const tr = TRACKS[index];
       if (!tr || tr.unlocked) return false;
       tr.unlocked = true;
+
       const nameEl = trackNameEls[index];
       if (nameEl) nameEl.textContent = tr.t;
-      return true;
-    }
 
-    function unlockTracksByTime(currentSec){
-      for (let i = 0; i < TRACKS.length; i++) {
-        if (!TRACKS[i].unlocked && currentSec >= TRACKS[i].sec) {
-          unlockTrack(i);
-        }
-      }
+      saveUnlockedTracks();
+      return true;
     }
 
     async function ensureVideoRunning(){
@@ -608,7 +682,6 @@
         SHOW_PLAY();
       }
 
-      unlockTracksByTime(aud.currentTime);
       updateSeekUI(aud.currentTime);
     }
 
@@ -622,12 +695,10 @@
     aud.addEventListener("timeupdate", () => {
       const now = aud.currentTime || 0;
       updateSeekUI(now);
-      unlockTracksByTime(now);
     });
     aud.addEventListener("seeking", () => {
       const now = aud.currentTime || 0;
       updateSeekUI(now);
-      unlockTracksByTime(now);
     });
 
     aud.addEventListener("ended", () => {
@@ -714,7 +785,6 @@
 
         trackBtn.addEventListener("click", () => {
           unlockTrack(i);
-          unlockTracksByTime(tr.sec);
           seekTo(tr.sec, true);
           closeDrawer();
         });
@@ -723,6 +793,7 @@
       }
     }
 
+    loadUnlockedTracks();
     renderTracks();
     updateSeekUI(0);
   </script>
