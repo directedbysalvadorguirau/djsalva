@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DJ SALVA #01</title>
+  <title>DJ SALVA Sessions</title>
 
   <!-- PWA -->
   <link rel="manifest" href="/manifest.webmanifest">
@@ -12,18 +12,11 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="apple-touch-icon" href="/icons/icon-192.png">
 
-  <!-- HLS (para reproducir playlist.m3u8 en Chrome/Firefox) -->
+  <!-- HLS -->
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
   <style>
     :root{
-      --screen-left: 0%;
-      --screen-top: 20%;
-      --screen-width: 72%;
-      --screen-height: 26.9%;
-      --btn-bottom: 18.5%;
-      --video-scale: 1.2;
-
       --ui-pad: 14px;
       --panel-w: min(420px, 86vw);
     }
@@ -33,25 +26,66 @@
       margin:0;
       background:#000;
       font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      overflow:hidden;
+      overflow-x:hidden;
+      overflow-y:auto;
+      scroll-snap-type:y mandatory;
+      scroll-behavior:smooth;
+      overscroll-behavior-y:contain;
     }
+
+    body{
+      -ms-overflow-style:none;
+      scrollbar-width:none;
+    }
+    body::-webkit-scrollbar{ display:none; }
 
     .stage{
       height:100vh;
+      height:100svh;
       width:100vw;
       display:grid;
       place-items:center;
       background:#000;
+      scroll-snap-align:start;
+      scroll-snap-stop:always;
+      position:relative;
+      overflow:hidden;
     }
 
     .frame{
+      --screen-left: 0%;
+      --screen-top: 20%;
+      --screen-width: 72%;
+      --screen-height: 26.9%;
+      --btn-bottom: 18.5%;
+      --video-scale: 1.2;
+
       position:relative;
       height:100vh;
-      width:calc(100vh * 9 / 16);
+      height:100svh;
+      width:calc(100svh * 9 / 16);
       max-width:100vw;
-      max-height:100vh;
+      max-height:100svh;
       aspect-ratio:9/16;
       overflow:hidden;
+    }
+
+    .frame-classic{
+      --screen-left: 0%;
+      --screen-top: 20%;
+      --screen-width: 72%;
+      --screen-height: 26.9%;
+      --btn-bottom: 18.5%;
+      --video-scale: 1.2;
+    }
+
+    .frame-ibicenca{
+      --screen-left: 6.4%;
+      --screen-top: 18.1%;
+      --screen-width: 84.2%;
+      --screen-height: 29.1%;
+      --btn-bottom: 18.5%;
+      --video-scale: 1.04;
     }
 
     .bg{
@@ -131,6 +165,7 @@
       align-content:center;
       gap:6px;
     }
+
     .bars span{
       display:block;
       height:3px;
@@ -168,6 +203,7 @@
       z-index:20;
       -webkit-tap-highlight-color:transparent;
     }
+
     .play-btn:active{ transform:translateX(-50%) scale(0.95); }
 
     .icon{
@@ -229,12 +265,18 @@
       place-items:center;
       cursor:pointer;
     }
-    .close-btn svg{ width:18px; height:18px; fill:#fff; }
+
+    .close-btn svg{
+      width:18px;
+      height:18px;
+      fill:#fff;
+    }
 
     .tracks{
       padding:6px 10px 16px 10px;
       overflow:auto;
       -webkit-overflow-scrolling: touch;
+      overscroll-behavior:contain;
     }
 
     .track{
@@ -249,6 +291,7 @@
       cursor:pointer;
       text-align:left;
     }
+
     .track:hover{ background:rgba(255,255,255,0.06); }
 
     .cover{
@@ -259,6 +302,7 @@
       flex:0 0 auto;
       overflow:hidden;
     }
+
     .cover img{
       width:100%;
       height:100%;
@@ -294,6 +338,7 @@
       opacity:1;
       pointer-events:auto;
     }
+
     .open .drawer{
       transform:translateX(0);
     }
@@ -311,45 +356,59 @@
     }
 
     @media (max-width:600px){
-      .play-btn{ width:110px; height:110px; }
-      .icon{ width:95px; height:95px; }
+      .play-btn{
+        width:110px;
+        height:110px;
+      }
+
+      .icon{
+        width:95px;
+        height:95px;
+      }
 
       .audio-time{
         font-size:36px;
       }
 
-      .top-btn, .menu-btn{
+      .top-btn,
+      .menu-btn{
         width:44px;
         height:44px;
+      }
+
+      .frame-ibicenca{
+        --screen-left: 5.8%;
+        --screen-top: 18.5%;
+        --screen-width: 85.6%;
+        --screen-height: 28.6%;
       }
     }
   </style>
 </head>
 
 <body>
-  <div class="stage">
-    <div class="frame" id="app">
-
-      <img class="bg" src="laptop-session.png" alt="DJ SALVA #01">
+  <section class="stage" id="ibicenca">
+    <div class="frame frame-ibicenca" id="appIbicenca">
+      <img class="bg" src="fondo2.png" alt="Ibicenca Session">
 
       <div class="screen">
-        <video id="vid" playsinline webkit-playsinline muted autoplay preload="auto" loop>
-          <source src="https://djsalva-cdn.b-cdn.net/video.mp4" type="video/mp4">
+        <video id="vidIbicenca" playsinline webkit-playsinline muted autoplay preload="auto" loop>
+          <source src="ibicenca.mp4" type="video/mp4">
         </video>
       </div>
 
-      <audio id="aud" preload="auto">
-        <source src="https://djsalva-cdn.b-cdn.net/audio.mp3" type="audio/mpeg">
+      <audio id="audIbicenca" preload="auto">
+        <source src="ibicenca.mp3" type="audio/mpeg">
       </audio>
 
       <div class="top-actions">
-        <button class="top-btn" id="shareBtn" aria-label="Compartir" title="Compartir">
+        <button class="top-btn" id="shareBtnIbicenca" aria-label="Compartir" title="Compartir">
           <svg class="mini-icon" viewBox="0 0 24 24" aria-hidden="true">
             <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7a2.5 2.5 0 0 0 0-1.39l7-4.11A2.99 2.99 0 1 0 14 5a3 3 0 0 0 .05.5l-7 4.11a3 3 0 1 0 0 4.78l7.05 4.14c-.03.16-.05.31-.05.47a3 3 0 1 0 3-2.92z"></path>
           </svg>
         </button>
 
-        <button class="menu-btn" id="openLibrary" aria-label="Abrir biblioteca">
+        <button class="menu-btn" id="openLibraryIbicenca" aria-label="Abrir biblioteca">
           <span class="sr">Abrir biblioteca</span>
           <div class="bars" aria-hidden="true">
             <span></span>
@@ -358,37 +417,97 @@
         </button>
       </div>
 
-      <div class="audio-time"><span id="currentTime">0:00</span></div>
+      <div class="audio-time"><span id="currentTimeIbicenca">0:00</span></div>
 
-      <button id="toggle" class="play-btn" aria-label="Reproducir">
+      <button id="toggleIbicenca" class="play-btn" aria-label="Reproducir">
         <span class="sr">Play/Pause</span>
 
-        <svg id="iconPlay" class="icon" viewBox="0 0 24 24" aria-hidden="true">
+        <svg id="iconPlayIbicenca" class="icon" viewBox="0 0 24 24" aria-hidden="true">
           <path d="M8 5v14l11-7z"></path>
         </svg>
 
-        <svg id="iconPause" class="icon" viewBox="0 0 24 24" aria-hidden="true" style="display:none;">
+        <svg id="iconPauseIbicenca" class="icon" viewBox="0 0 24 24" aria-hidden="true" style="display:none;">
           <path d="M6 5h4v14H6zm8 0h4v14h-4z"></path>
         </svg>
       </button>
 
-      <div class="overlay" id="overlay"></div>
+      <div class="overlay" id="overlayIbicenca"></div>
 
-      <aside class="drawer" id="drawer" aria-label="Biblioteca">
+      <aside class="drawer" id="drawerIbicenca" aria-label="Biblioteca Ibicenca">
         <header>
-          <div class="drawer-title">DJ SALVA #01</div>
-          <button class="close-btn" id="closeLibrary" aria-label="Cerrar">
+          <div class="drawer-title">IBICENCA</div>
+          <button class="close-btn" id="closeLibraryIbicenca" aria-label="Cerrar">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M18.3 5.7 12 12l6.3 6.3-1.4 1.4L10.6 13.4 4.3 19.7 2.9 18.3 9.2 12 2.9 5.7 4.3 4.3l6.3 6.3 6.3-6.3z"></path>
             </svg>
           </button>
         </header>
 
-        <div class="tracks" id="tracks"></div>
+        <div class="tracks" id="tracksIbicenca"></div>
       </aside>
-
     </div>
-  </div>
+  </section>
+
+  <section class="stage" id="classic">
+    <div class="frame frame-classic" id="appClassic">
+      <img class="bg" src="laptop-session.png" alt="DJ SALVA #01">
+
+      <div class="screen">
+        <video id="vidClassic" playsinline webkit-playsinline muted autoplay preload="auto" loop>
+          <source src="https://djsalva-cdn.b-cdn.net/video.mp4" type="video/mp4">
+        </video>
+      </div>
+
+      <audio id="audClassic" preload="auto">
+        <source src="https://djsalva-cdn.b-cdn.net/audio.mp3" type="audio/mpeg">
+      </audio>
+
+      <div class="top-actions">
+        <button class="top-btn" id="shareBtnClassic" aria-label="Compartir" title="Compartir">
+          <svg class="mini-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7a2.5 2.5 0 0 0 0-1.39l7-4.11A2.99 2.99 0 1 0 14 5a3 3 0 0 0 .05.5l-7 4.11a3 3 0 1 0 0 4.78l7.05 4.14c-.03.16-.05.31-.05.47a3 3 0 1 0 3-2.92z"></path>
+          </svg>
+        </button>
+
+        <button class="menu-btn" id="openLibraryClassic" aria-label="Abrir biblioteca">
+          <span class="sr">Abrir biblioteca</span>
+          <div class="bars" aria-hidden="true">
+            <span></span>
+            <span></span>
+          </div>
+        </button>
+      </div>
+
+      <div class="audio-time"><span id="currentTimeClassic">0:00</span></div>
+
+      <button id="toggleClassic" class="play-btn" aria-label="Reproducir">
+        <span class="sr">Play/Pause</span>
+
+        <svg id="iconPlayClassic" class="icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M8 5v14l11-7z"></path>
+        </svg>
+
+        <svg id="iconPauseClassic" class="icon" viewBox="0 0 24 24" aria-hidden="true" style="display:none;">
+          <path d="M6 5h4v14H6zm8 0h4v14h-4z"></path>
+        </svg>
+      </button>
+
+      <div class="overlay" id="overlayClassic"></div>
+
+      <aside class="drawer" id="drawerClassic" aria-label="Biblioteca DJ SALVA #01">
+        <header>
+          <div class="drawer-title">DJ SALVA #01</div>
+          <button class="close-btn" id="closeLibraryClassic" aria-label="Cerrar">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M18.3 5.7 12 12l6.3 6.3-1.4 1.4L10.6 13.4 4.3 19.7 2.9 18.3 9.2 12 2.9 5.7 4.3 4.3l6.3 6.3 6.3-6.3z"></path>
+            </svg>
+          </button>
+        </header>
+
+        <div class="tracks" id="tracksClassic"></div>
+      </aside>
+    </div>
+  </section>
 
   <script>
     if ("serviceWorker" in navigator) {
@@ -397,20 +516,43 @@
       });
     }
 
-    const app = document.getElementById("app");
-    const vid = document.getElementById("vid");
-    const aud = document.getElementById("aud");
+    const VIDEO_RATE = 1.25;
+    const SHARE_BASE_URL = `${location.origin}${location.pathname}`;
+    const sessions = [];
 
-    // ====== HLS SETUP (Bunny Stream) ======
-    const HLS_URL = "https://vz-3982164d-eb2.b-cdn.net/84df87ec-25fd-4343-b8ed-9ffc4ce32d8a/playlist.m3u8";
-    const AUDIO_HLS_URL = "https://vz-3982164d-eb2.b-cdn.net/a354b06c-0f1e-4bf5-b98e-ed90e965bd6a/playlist.m3u8";
-    const VIDEO_FALLBACK_URL = "https://djsalva-cdn.b-cdn.net/video.mp4";
-    const AUDIO_FALLBACK_URL = "https://djsalva-cdn.b-cdn.net/audio.mp3";
+    function timeToSeconds(str){
+      const parts = str.split(":").map(part => part.trim());
+      if (parts.length === 2) {
+        const m = parseInt(parts[0], 10) || 0;
+        const s = parseInt(parts[1], 10) || 0;
+        return (m * 60) + s;
+      }
+      if (parts.length === 3) {
+        const h = parseInt(parts[0], 10) || 0;
+        const m = parseInt(parts[1], 10) || 0;
+        const s = parseInt(parts[2], 10) || 0;
+        return (h * 3600) + (m * 60) + s;
+      }
+      return 0;
+    }
 
-    let hlsInstance = null;
-    let audioHlsInstance = null;
+    function clamp(n, min, max){
+      return Math.max(min, Math.min(max, n));
+    }
 
-    function applyFallbackSource(mediaEl, fallbackUrl, resumeTime = 0, shouldResume = false){
+    function formatTime(sec){
+      if (!Number.isFinite(sec) || sec < 0) return "0:00";
+      const h = Math.floor(sec / 3600);
+      const m = Math.floor((sec % 3600) / 60);
+      const s = Math.floor(sec % 60);
+
+      if (h > 0) {
+        return `${h}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+      }
+      return `${m}:${String(s).padStart(2, "0")}`;
+    }
+
+    function applyFallbackSource(mediaEl, fallbackUrl, resumeTime = 0, shouldResume = false, isVideo = false){
       if (!fallbackUrl) return;
 
       try{
@@ -421,13 +563,13 @@
       mediaEl.load();
 
       mediaEl.addEventListener("loadedmetadata", () => {
-        if (Number.isFinite(resumeTime) && resumeTime > 0) {
+        if (!isVideo && Number.isFinite(resumeTime) && resumeTime > 0) {
           try{
             mediaEl.currentTime = resumeTime;
           }catch(e){}
         }
 
-        if (mediaEl === vid) {
+        if (isVideo) {
           mediaEl.loop = true;
           mediaEl.playbackRate = VIDEO_RATE;
         }
@@ -441,11 +583,19 @@
     function setupSingleMediaHls(mediaEl, hlsUrl, fallbackUrl, isVideo){
       const nativeType = "application/vnd.apple.mpegurl";
 
+      if (!hlsUrl) {
+        if (fallbackUrl) {
+          mediaEl.src = fallbackUrl;
+          mediaEl.load();
+        }
+        return null;
+      }
+
       if (mediaEl.canPlayType(nativeType)) {
         mediaEl.addEventListener("error", () => {
           const resumeTime = isVideo ? 0 : (mediaEl.currentTime || 0);
           const shouldResume = isVideo ? true : !mediaEl.paused;
-          applyFallbackSource(mediaEl, fallbackUrl, resumeTime, shouldResume);
+          applyFallbackSource(mediaEl, fallbackUrl, resumeTime, shouldResume, isVideo);
         }, { once:true });
 
         mediaEl.src = hlsUrl;
@@ -472,330 +622,427 @@
             instance.destroy();
           }catch(e){}
 
-          applyFallbackSource(mediaEl, fallbackUrl, resumeTime, shouldResume);
+          applyFallbackSource(mediaEl, fallbackUrl, resumeTime, shouldResume, isVideo);
         });
 
         return instance;
       }
 
-      applyFallbackSource(mediaEl, fallbackUrl, 0, isVideo);
+      applyFallbackSource(mediaEl, fallbackUrl, 0, isVideo, isVideo);
       return null;
     }
 
-    function setupHls(){
-      hlsInstance = setupSingleMediaHls(vid, HLS_URL, VIDEO_FALLBACK_URL, true);
-      audioHlsInstance = setupSingleMediaHls(aud, AUDIO_HLS_URL, AUDIO_FALLBACK_URL, false);
+    function closeOtherDrawers(currentId){
+      for (const session of sessions) {
+        if (session.id !== currentId) {
+          session.app.classList.remove("open");
+        }
+      }
     }
 
-    setupHls();
-    // =====================================
+    function pauseOtherAudios(currentId){
+      for (const session of sessions) {
+        if (session.id !== currentId) {
+          session.aud.pause();
+        }
+      }
+    }
 
-    const btn = document.getElementById("toggle");
-    const iconPlay = document.getElementById("iconPlay");
-    const iconPause = document.getElementById("iconPause");
+    function createSession(def){
+      const session = {
+        id: def.id,
+        title: def.title,
+        app: document.getElementById(def.appId),
+        section: document.getElementById(def.sectionId),
+        vid: document.getElementById(def.vidId),
+        aud: document.getElementById(def.audId),
+        btn: document.getElementById(def.btnId),
+        iconPlay: document.getElementById(def.iconPlayId),
+        iconPause: document.getElementById(def.iconPauseId),
+        shareBtn: document.getElementById(def.shareBtnId),
+        currentTimeEl: document.getElementById(def.currentTimeId),
+        openLibrary: document.getElementById(def.openLibraryId),
+        closeLibrary: document.getElementById(def.closeLibraryId),
+        overlay: document.getElementById(def.overlayId),
+        tracksEl: document.getElementById(def.tracksId),
+        coverSrc: def.coverSrc,
+        storageKey: def.storageKey,
+        videoHlsUrl: def.videoHlsUrl,
+        videoFallbackUrl: def.videoFallbackUrl,
+        audioHlsUrl: def.audioHlsUrl,
+        audioFallbackUrl: def.audioFallbackUrl,
+        trackNameEls: [],
+        videoStarted: false,
+        hlsVideo: null,
+        hlsAudio: null,
+        tracks: def.tracks.map(track => ({
+          t: track.t,
+          at: track.at,
+          sec: timeToSeconds(track.at),
+          unlocked: false
+        }))
+      };
 
-    const shareBtn = document.getElementById("shareBtn");
-    const currentTimeEl = document.getElementById("currentTime");
+      session.showPlay = () => {
+        session.iconPlay.style.display = "block";
+        session.iconPause.style.display = "none";
+        session.btn.setAttribute("aria-label", "Reproducir");
+      };
 
-    const openLibrary = document.getElementById("openLibrary");
-    const closeLibrary = document.getElementById("closeLibrary");
-    const overlay = document.getElementById("overlay");
-    const tracksEl = document.getElementById("tracks");
+      session.showPause = () => {
+        session.iconPlay.style.display = "none";
+        session.iconPause.style.display = "block";
+        session.btn.setAttribute("aria-label", "Pausar");
+      };
 
-    const COVER_SRC = "djsalva-icon.png";
-    const VIDEO_RATE = 1.25;
-    const UNLOCK_STORAGE_KEY = "djsalva_track_unlocks_v1";
+      session.updateTime = (time = session.aud.currentTime || 0) => {
+        session.currentTimeEl.textContent = formatTime(time);
+      };
 
-    let videoStarted = false;
-    const trackNameEls = [];
+      session.saveUnlockedTracks = () => {
+        try{
+          const unlockedIndexes = [];
+          for (let i = 0; i < session.tracks.length; i++) {
+            if (session.tracks[i].unlocked) unlockedIndexes.push(i);
+          }
+          localStorage.setItem(session.storageKey, JSON.stringify(unlockedIndexes));
+        }catch(e){}
+      };
 
-    const TRACKS = [
-      { t:"FIEL", at:"0:16", unlocked:false },
-      { t:"QUE PASARÍA...", at:"2:06", unlocked:false },
-      { t:"DIABLITA", at:"3:02", unlocked:false },
-      { t:"SI SE DA", at:"4:07", unlocked:false },
-      { t:"MEDUSA", at:"6:42", unlocked:false },
-      { t:"WYA REMIX RED", at:"7:19", unlocked:false },
-      { t:"QUE VAS A HACER HOY ?", at:"7:58", unlocked:false },
-      { t:"SOLTERA REMIX", at:"10:05", unlocked:false },
-      { t:"MEMORIAS", at:"11:53", unlocked:false },
-      { t:"SIN FRENOS", at:"13:20", unlocked:false },
-      { t:"TIAGO BZRP", at:"15:00", unlocked:false },
-      { t:"MODELITO", at:"17:32", unlocked:false },
-      { t:"PUSH UP", at:"18:45", unlocked:false },
-      { t:"2PA2", at:"20:05", unlocked:false },
-      { t:"GENTLY", at:"21:10", unlocked:false },
-      { t:"REAL GANGSTA LOVE", at:"22:17", unlocked:false },
-      { t:"DIABÓLICA", at:"23:28", unlocked:false },
-      { t:"IGUALES", at:"24:10", unlocked:false },
-      { t:"GOTEO", at:"24:50", unlocked:false },
-      { t:"SHE DON’T GIVE A FO", at:"26:25", unlocked:false },
-      { t:"SE VUELVE LOCA", at:"27:56", unlocked:false },
-      { t:"CANDY", at:"30:15", unlocked:false },
-      { t:"IA", at:"33:39", unlocked:false },
-      { t:"NO PUEDO RESPONDER", at:"35:47", unlocked:false },
-      { t:"SE PONE LAS NIKE", at:"36:13", unlocked:false },
-      { t:"COCO CHANEL", at:"38:15", unlocked:false },
-      { t:"DAME LA VERDE", at:"39:31", unlocked:false },
-      { t:"SIN SEÑAL", at:"43:28", unlocked:false },
-      { t:"TAROT", at:"45:12", unlocked:false },
-      { t:"DIABLA", at:"48:30", unlocked:false },
-      { t:"GIRL", at:"50:00", unlocked:false },
-      { t:"HASTA QUE DIOS DIGA", at:"52:08", unlocked:false },
-      { t:"SERIO CON ESE Q", at:"56:00", unlocked:false },
-      { t:"LAS BRATZ REMIX", at:"1:00:18", unlocked:false },
-      { t:"BAD GYAL", at:"1:00:39", unlocked:false },
-      { t:"PERROS SALVAJES", at:"1:04:40", unlocked:false },
-      { t:"SOLTAD A LOS PERROS", at:"1:06:00", unlocked:false },
-      { t:"DURO", at:"1:07:14", unlocked:false },
-      { t:"SUPERMAN SIN CAPA", at:"1:07:36", unlocked:false },
-      { t:"EL TAXI", at:"1:09:40", unlocked:false },
-      { t:"LOS APARATOS", at:"1:10:24", unlocked:false },
-      { t:"MARIANELA", at:"1:12:32", unlocked:false },
-      { t:"LA DESPEDIDA", at:"1:13:51", unlocked:false },
-      { t:"COLUMBIA", at:"1:14:18", unlocked:false },
-      { t:"ESCLAVA", at:"1:19:54", unlocked:false },
-      { t:"STAR", at:"1:23:30", unlocked:false },
-      { t:"DÁKITI", at:"1:25:55", unlocked:false },
-      { t:"HOLANDA", at:"1:28:52", unlocked:false },
-      { t:"LEVELS", at:"1:31:08", unlocked:false },
-      { t:"ME PORTO BONITO", at:"1:32:28", unlocked:false },
-      { t:"PUNTO G", at:"1:35:21", unlocked:false },
-      { t:"LA ZONA", at:"1:38:29", unlocked:false },
-      { t:"NO TE QUIEREN CONMIGO", at:"1:40:48", unlocked:false },
-      { t:"EL FARSANTE", at:"1:42:54", unlocked:false },
-      { t:"CHAMBEA", at:"1:45:35", unlocked:false },
-      { t:"NUEVA ERA", at:"1:46:30", unlocked:false },
-      { t:"MALBEC", at:"1:47:45", unlocked:false },
-      { t:"THE NIGHTS", at:"1:48:15", unlocked:false },
-      { t:"MANDANGA STYLE", at:"1:51:16", unlocked:false },
-      { t:"HALO", at:"1:53:20", unlocked:false },
-      { t:"PRRRUM", at:"1:55:40", unlocked:false },
-      { t:"SOLITA", at:"1:57:18", unlocked:false },
+      session.loadUnlockedTracks = () => {
+        try{
+          const raw = localStorage.getItem(session.storageKey);
+          if (!raw) return;
+          const unlockedIndexes = JSON.parse(raw);
+          if (!Array.isArray(unlockedIndexes)) return;
+
+          for (const idx of unlockedIndexes) {
+            if (Number.isInteger(idx) && idx >= 0 && idx < session.tracks.length) {
+              session.tracks[idx].unlocked = true;
+            }
+          }
+        }catch(e){}
+      };
+
+      session.unlockTrack = index => {
+        const track = session.tracks[index];
+        if (!track || track.unlocked) return false;
+
+        track.unlocked = true;
+        const nameEl = session.trackNameEls[index];
+        if (nameEl) nameEl.textContent = track.t;
+        session.saveUnlockedTracks();
+        return true;
+      };
+
+      session.closeDrawer = () => {
+        session.app.classList.remove("open");
+      };
+
+      session.openDrawer = () => {
+        closeOtherDrawers(session.id);
+        session.app.classList.add("open");
+      };
+
+      session.ensureVideoRunning = async () => {
+        session.vid.playbackRate = VIDEO_RATE;
+        if (session.vid.paused) {
+          await session.vid.play();
+        }
+        session.videoStarted = true;
+      };
+
+      session.playAll = async () => {
+        pauseOtherAudios(session.id);
+
+        try{
+          await Promise.all([
+            session.aud.play(),
+            session.ensureVideoRunning()
+          ]);
+          session.showPause();
+        }catch(e){
+          if (session.aud.paused) session.showPlay();
+        }
+      };
+
+      session.pauseAll = () => {
+        session.aud.pause();
+        session.showPlay();
+      };
+
+      session.seekTo = (seconds, autoplay = true) => {
+        const max = Number.isFinite(session.aud.duration) ? session.aud.duration : Infinity;
+        session.aud.currentTime = clamp(seconds, 0, max);
+
+        if (autoplay) {
+          session.playAll();
+        } else if (session.aud.paused) {
+          session.showPlay();
+        }
+
+        session.updateTime(session.aud.currentTime);
+      };
+
+      session.renderTracks = () => {
+        session.tracksEl.innerHTML = "";
+        session.trackNameEls.length = 0;
+
+        for (let i = 0; i < session.tracks.length; i++) {
+          const track = session.tracks[i];
+          const displayName = track.unlocked ? track.t : "¿?";
+          const trackBtn = document.createElement("button");
+          trackBtn.className = "track";
+          trackBtn.type = "button";
+          trackBtn.innerHTML = `
+            <span class="cover"><img src="${session.coverSrc}" alt=""></span>
+            <span class="meta">
+              <span class="name">${displayName}</span>
+              <span class="time">${track.at}</span>
+            </span>
+          `;
+
+          const nameEl = trackBtn.querySelector(".name");
+          session.trackNameEls.push(nameEl);
+
+          trackBtn.addEventListener("click", () => {
+            session.unlockTrack(i);
+            session.seekTo(track.sec, true);
+            session.closeDrawer();
+          });
+
+          session.tracksEl.appendChild(trackBtn);
+        }
+      };
+
+      session.hlsVideo = setupSingleMediaHls(session.vid, session.videoHlsUrl, session.videoFallbackUrl, true);
+      session.hlsAudio = setupSingleMediaHls(session.aud, session.audioHlsUrl, session.audioFallbackUrl, false);
+
+      session.loadUnlockedTracks();
+      session.renderTracks();
+      session.updateTime(0);
+      session.showPlay();
+
+      session.btn.addEventListener("click", () => {
+        if (session.aud.paused) session.playAll();
+        else session.pauseAll();
+      });
+
+      session.openLibrary.addEventListener("click", session.openDrawer);
+      session.closeLibrary.addEventListener("click", session.closeDrawer);
+      session.overlay.addEventListener("click", session.closeDrawer);
+
+      session.aud.addEventListener("loadedmetadata", () => session.updateTime());
+      session.aud.addEventListener("durationchange", () => session.updateTime());
+      session.aud.addEventListener("timeupdate", () => session.updateTime(session.aud.currentTime || 0));
+      session.aud.addEventListener("seeking", () => session.updateTime(session.aud.currentTime || 0));
+      session.aud.addEventListener("pause", () => {
+        if (!session.aud.ended) session.showPlay();
+      });
+      session.aud.addEventListener("play", () => session.showPause());
+      session.aud.addEventListener("ended", () => {
+        session.aud.currentTime = 0;
+        session.showPlay();
+        session.updateTime(0);
+      });
+
+      session.vid.addEventListener("pause", () => {
+        if (session.videoStarted) session.vid.play().catch(() => {});
+      });
+      session.vid.addEventListener("stalled", () => {
+        if (session.videoStarted) session.vid.play().catch(() => {});
+      });
+      session.vid.addEventListener("waiting", () => {
+        if (session.videoStarted) session.vid.play().catch(() => {});
+      });
+
+      session.shareBtn.addEventListener("click", async () => {
+        const url = `${SHARE_BASE_URL}#${session.section.id}`;
+        try{
+          if (navigator.share) {
+            await navigator.share({ title: session.title, text: session.title, url });
+          } else {
+            await navigator.clipboard.writeText(url);
+            if (navigator.vibrate) navigator.vibrate(30);
+          }
+        }catch(e){}
+      });
+
+      return session;
+    }
+
+    const sessionDefs = [
+      {
+        id: "ibicenca",
+        title: "IBICENCA",
+        sectionId: "ibicenca",
+        appId: "appIbicenca",
+        vidId: "vidIbicenca",
+        audId: "audIbicenca",
+        btnId: "toggleIbicenca",
+        iconPlayId: "iconPlayIbicenca",
+        iconPauseId: "iconPauseIbicenca",
+        shareBtnId: "shareBtnIbicenca",
+        currentTimeId: "currentTimeIbicenca",
+        openLibraryId: "openLibraryIbicenca",
+        closeLibraryId: "closeLibraryIbicenca",
+        overlayId: "overlayIbicenca",
+        tracksId: "tracksIbicenca",
+        coverSrc: "icon-ibicenca.png",
+        storageKey: "djsalva_ibicenca_unlocks_v1",
+        videoHlsUrl: "https://vz-3982164d-eb2.b-cdn.net/b943e6c3-8d7a-4141-a804-023fbb06f8d5/playlist.m3u8",
+        videoFallbackUrl: "ibicenca.mp4",
+        audioHlsUrl: null,
+        audioFallbackUrl: "ibicenca.mp3",
+        tracks: [
+          { t:"$UELTA GATITA $UELTA", at:"00:00" },
+          { t:"CAPRICHOSO", at:"03:26" },
+          { t:"BAD GYAL", at:"05:58" },
+          { t:"LOKENECESITAS", at:"08:49" },
+          { t:"FLAITEERA", at:"11:52" },
+          { t:"ALO", at:"15:38" },
+          { t:"TRAVESURAS", at:"16:03" },
+          { t:"SCANDIC", at:"17:07" },
+          { t:"VETE", at:"18:13" },
+          { t:"ADÁN Y EVA", at:"19:10" },
+          { t:"SCANDIC", at:"20:32" },
+          { t:"MALA", at:"22:28" },
+          { t:"HASTA QUE DIOS DIGA", at:"23:30" },
+          { t:"ALGO VA A PASAR", at:"27:02" },
+          { t:"COMO ANTES", at:"28:34" },
+          { t:"MEMORIAS", at:"30:03" },
+          { t:"SOLTERA REMIX", at:"30:32" },
+          { t:"DÁKITI", at:"33:19" },
+          { t:"BEAUTY AND A BEAT", at:"34:23" },
+          { t:"DE LEJITOS REMIX", at:"35:13" },
+          { t:"MOSCOW MULE", at:"38:10" },
+          { t:"COLUMBIA", at:"41:52" },
+          { t:"VOLVIÓ EL PERREO", at:"44:49" },
+          { t:"BICHIYAL", at:"46:11" },
+          { t:"DIOS LOS BENDIGA", at:"47:24" },
+          { t:"EL TELÉFONO", at:"49:02" },
+          { t:"DAME", at:"52:00" },
+          { t:"AMIGOS Y ENEMIGOS", at:"53:49" },
+          { t:"OTRA NOCHE EN MIAMI", at:"56:42" },
+          { t:"¿QUÉ NOS PASÓ?", at:"58:17" },
+          { t:"LOVE", at:"59:38" },
+          { t:"QUIERE BEBER", at:"01:01:15" },
+          { t:"COMO ANTES REMIX", at:"01:03:05" },
+          { t:"TOTO DE LOCA", at:"01:05:32" },
+          { t:"EOO", at:"01:07:44" },
+          { t:"CHUOS", at:"01:08:05" },
+          { t:"YO PERREO SOLA", at:"01:09:05" },
+          { t:"VOY A LLEVARTE PA PR", at:"01:11:43" },
+          { t:"120", at:"01:13:30" },
+          { t:"SIN FRENOS", at:"01:14:58" }
+        ]
+      },
+      {
+        id: "classic",
+        title: "DJ SALVA #01",
+        sectionId: "classic",
+        appId: "appClassic",
+        vidId: "vidClassic",
+        audId: "audClassic",
+        btnId: "toggleClassic",
+        iconPlayId: "iconPlayClassic",
+        iconPauseId: "iconPauseClassic",
+        shareBtnId: "shareBtnClassic",
+        currentTimeId: "currentTimeClassic",
+        openLibraryId: "openLibraryClassic",
+        closeLibraryId: "closeLibraryClassic",
+        overlayId: "overlayClassic",
+        tracksId: "tracksClassic",
+        coverSrc: "djsalva-icon.png",
+        storageKey: "djsalva_classic_unlocks_v1",
+        videoHlsUrl: "https://vz-3982164d-eb2.b-cdn.net/84df87ec-25fd-4343-b8ed-9ffc4ce32d8a/playlist.m3u8",
+        videoFallbackUrl: "https://djsalva-cdn.b-cdn.net/video.mp4",
+        audioHlsUrl: "https://vz-3982164d-eb2.b-cdn.net/a354b06c-0f1e-4bf5-b98e-ed90e965bd6a/playlist.m3u8",
+        audioFallbackUrl: "https://djsalva-cdn.b-cdn.net/audio.mp3",
+        tracks: [
+          { t:"FIEL", at:"0:16" },
+          { t:"QUE PASARÍA...", at:"2:06" },
+          { t:"DIABLITA", at:"3:02" },
+          { t:"SI SE DA", at:"4:07" },
+          { t:"MEDUSA", at:"6:42" },
+          { t:"WYA REMIX RED", at:"7:19" },
+          { t:"QUE VAS A HACER HOY ?", at:"7:58" },
+          { t:"SOLTERA REMIX", at:"10:05" },
+          { t:"MEMORIAS", at:"11:53" },
+          { t:"SIN FRENOS", at:"13:20" },
+          { t:"TIAGO BZRP", at:"15:00" },
+          { t:"MODELITO", at:"17:32" },
+          { t:"PUSH UP", at:"18:45" },
+          { t:"2PA2", at:"20:05" },
+          { t:"GENTLY", at:"21:10" },
+          { t:"REAL GANGSTA LOVE", at:"22:17" },
+          { t:"DIABÓLICA", at:"23:28" },
+          { t:"IGUALES", at:"24:10" },
+          { t:"GOTEO", at:"24:50" },
+          { t:"SHE DON’T GIVE A FO", at:"26:25" },
+          { t:"SE VUELVE LOCA", at:"27:56" },
+          { t:"CANDY", at:"30:15" },
+          { t:"IA", at:"33:39" },
+          { t:"NO PUEDO RESPONDER", at:"35:47" },
+          { t:"SE PONE LAS NIKE", at:"36:13" },
+          { t:"COCO CHANEL", at:"38:15" },
+          { t:"DAME LA VERDE", at:"39:31" },
+          { t:"SIN SEÑAL", at:"43:28" },
+          { t:"TAROT", at:"45:12" },
+          { t:"DIABLA", at:"48:30" },
+          { t:"GIRL", at:"50:00" },
+          { t:"HASTA QUE DIOS DIGA", at:"52:08" },
+          { t:"SERIO CON ESE Q", at:"56:00" },
+          { t:"LAS BRATZ REMIX", at:"1:00:18" },
+          { t:"BAD GYAL", at:"1:00:39" },
+          { t:"PERROS SALVAJES", at:"1:04:40" },
+          { t:"SOLTAD A LOS PERROS", at:"1:06:00" },
+          { t:"DURO", at:"1:07:14" },
+          { t:"SUPERMAN SIN CAPA", at:"1:07:36" },
+          { t:"EL TAXI", at:"1:09:40" },
+          { t:"LOS APARATOS", at:"1:10:24" },
+          { t:"MARIANELA", at:"1:12:32" },
+          { t:"LA DESPEDIDA", at:"1:13:51" },
+          { t:"COLUMBIA", at:"1:14:18" },
+          { t:"ESCLAVA", at:"1:19:54" },
+          { t:"STAR", at:"1:23:30" },
+          { t:"DÁKITI", at:"1:25:55" },
+          { t:"HOLANDA", at:"1:28:52" },
+          { t:"LEVELS", at:"1:31:08" },
+          { t:"ME PORTO BONITO", at:"1:32:28" },
+          { t:"PUNTO G", at:"1:35:21" },
+          { t:"LA ZONA", at:"1:38:29" },
+          { t:"NO TE QUIEREN CONMIGO", at:"1:40:48" },
+          { t:"EL FARSANTE", at:"1:42:54" },
+          { t:"CHAMBEA", at:"1:45:35" },
+          { t:"NUEVA ERA", at:"1:46:30" },
+          { t:"MALBEC", at:"1:47:45" },
+          { t:"THE NIGHTS", at:"1:48:15" },
+          { t:"MANDANGA STYLE", at:"1:51:16" },
+          { t:"HALO", at:"1:53:20" },
+          { t:"PRRRUM", at:"1:55:40" },
+          { t:"SOLITA", at:"1:57:18" }
+        ]
+      }
     ];
 
-    for (const tr of TRACKS) tr.sec = timeToSeconds(tr.at);
-
-    function saveUnlockedTracks(){
-      try{
-        const unlockedIndexes = [];
-        for (let i = 0; i < TRACKS.length; i++){
-          if (TRACKS[i].unlocked) unlockedIndexes.push(i);
-        }
-        localStorage.setItem(UNLOCK_STORAGE_KEY, JSON.stringify(unlockedIndexes));
-      }catch(e){}
+    for (const def of sessionDefs) {
+      sessions.push(createSession(def));
     }
 
-    function loadUnlockedTracks(){
-      try{
-        const raw = localStorage.getItem(UNLOCK_STORAGE_KEY);
-        if (!raw) return;
-        const unlockedIndexes = JSON.parse(raw);
-        if (!Array.isArray(unlockedIndexes)) return;
-
-        for (const idx of unlockedIndexes){
-          if (Number.isInteger(idx) && idx >= 0 && idx < TRACKS.length) {
-            TRACKS[idx].unlocked = true;
-          }
-        }
-      }catch(e){}
-    }
-
-    const SHOW_PLAY = () => {
-      iconPlay.style.display = "block";
-      iconPause.style.display = "none";
-      btn.setAttribute("aria-label", "Reproducir");
-    };
-
-    const SHOW_PAUSE = () => {
-      iconPlay.style.display = "none";
-      iconPause.style.display = "block";
-      btn.setAttribute("aria-label", "Pausar");
-    };
-
-    vid.loop = true;
-    vid.defaultPlaybackRate = VIDEO_RATE;
-    vid.playbackRate = VIDEO_RATE;
-
-    function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
-
-    function formatTime(sec){
-      if (!Number.isFinite(sec) || sec < 0) return "0:00";
-      const h = Math.floor(sec / 3600);
-      const m = Math.floor((sec % 3600) / 60);
-      const s = Math.floor(sec % 60);
-
-      if (h > 0) {
-        return `${h}:${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
+    window.addEventListener("load", () => {
+      for (const session of sessions) {
+        session.ensureVideoRunning().catch(() => {});
       }
-      return `${m}:${String(s).padStart(2,"0")}`;
-    }
-
-    function updateSeekUI(time = aud.currentTime || 0){
-      currentTimeEl.textContent = formatTime(time);
-    }
-
-    function unlockTrack(index){
-      const tr = TRACKS[index];
-      if (!tr || tr.unlocked) return false;
-      tr.unlocked = true;
-
-      const nameEl = trackNameEls[index];
-      if (nameEl) nameEl.textContent = tr.t;
-
-      saveUnlockedTracks();
-      return true;
-    }
-
-    async function ensureVideoRunning(){
-      vid.playbackRate = VIDEO_RATE;
-      if (vid.paused) {
-        await vid.play();
-      }
-      videoStarted = true;
-    }
-
-    async function playAll(){
-      try{
-        await Promise.all([
-          aud.play(),
-          ensureVideoRunning()
-        ]);
-        SHOW_PAUSE();
-      }catch(e){
-        if (aud.paused) SHOW_PLAY();
-      }
-    }
-
-    function pauseAll(){
-      aud.pause();
-      SHOW_PLAY();
-    }
-
-    function seekTo(seconds, autoplay = true){
-      const max = Number.isFinite(aud.duration) ? aud.duration : Infinity;
-      aud.currentTime = clamp(seconds, 0, max);
-
-      if (autoplay) {
-        playAll();
-      } else if (aud.paused) {
-        SHOW_PLAY();
-      }
-
-      updateSeekUI(aud.currentTime);
-    }
-
-    btn.addEventListener("click", () => {
-      if (aud.paused) playAll();
-      else pauseAll();
-    });
-
-    aud.addEventListener("loadedmetadata", () => updateSeekUI());
-    aud.addEventListener("durationchange", () => updateSeekUI());
-    aud.addEventListener("timeupdate", () => {
-      const now = aud.currentTime || 0;
-      updateSeekUI(now);
-    });
-    aud.addEventListener("seeking", () => {
-      const now = aud.currentTime || 0;
-      updateSeekUI(now);
-    });
-
-    aud.addEventListener("ended", () => {
-      aud.currentTime = 0;
-      SHOW_PLAY();
-      updateSeekUI(0);
-    });
-
-    vid.addEventListener("pause", () => {
-      if (videoStarted) vid.play().catch(() => {});
-    });
-
-    vid.addEventListener("stalled", () => {
-      if (videoStarted) vid.play().catch(() => {});
-    });
-
-    vid.addEventListener("waiting", () => {
-      if (videoStarted) vid.play().catch(() => {});
     });
 
     document.addEventListener("visibilitychange", () => {
-      if (!document.hidden) ensureVideoRunning().catch(() => {});
-    });
-
-    window.addEventListener("load", () => {
-      ensureVideoRunning().catch(() => {});
-    });
-
-    shareBtn.addEventListener("click", async () => {
-      const url = location.href;
-      try{
-        if (navigator.share) {
-          await navigator.share({ title: "DJ SALVA #01", text: "DJ SALVA #01", url });
-        } else {
-          await navigator.clipboard.writeText(url);
-          if (navigator.vibrate) navigator.vibrate(30);
+      if (!document.hidden) {
+        for (const session of sessions) {
+          session.ensureVideoRunning().catch(() => {});
         }
-      }catch(e){ }
+      }
     });
-
-    function openDrawer(){ app.classList.add("open"); }
-    function closeDrawer(){ app.classList.remove("open"); }
-
-    openLibrary.addEventListener("click", openDrawer);
-    closeLibrary.addEventListener("click", closeDrawer);
-    overlay.addEventListener("click", closeDrawer);
-
-    function timeToSeconds(str){
-      const parts = str.split(":").map(p => p.trim());
-      if (parts.length === 2) {
-        const m = parseInt(parts[0], 10) || 0;
-        const s = parseInt(parts[1], 10) || 0;
-        return m * 60 + s;
-      }
-      if (parts.length === 3) {
-        const h = parseInt(parts[0], 10) || 0;
-        const m = parseInt(parts[1], 10) || 0;
-        const s = parseInt(parts[2], 10) || 0;
-        return h * 3600 + m * 60 + s;
-      }
-      return 0;
-    }
-
-    function renderTracks(){
-      tracksEl.innerHTML = "";
-      trackNameEls.length = 0;
-
-      for (let i = 0; i < TRACKS.length; i++){
-        const tr = TRACKS[i];
-        const displayName = tr.unlocked ? tr.t : "¿?";
-        const trackBtn = document.createElement("button");
-        trackBtn.className = "track";
-        trackBtn.type = "button";
-        trackBtn.innerHTML = `
-          <span class="cover"><img src="${COVER_SRC}" alt=""></span>
-          <span class="meta">
-            <span class="name">${displayName}</span>
-            <span class="time">${tr.at}</span>
-          </span>
-        `;
-
-        const nameEl = trackBtn.querySelector(".name");
-        trackNameEls.push(nameEl);
-
-        trackBtn.addEventListener("click", () => {
-          unlockTrack(i);
-          seekTo(tr.sec, true);
-          closeDrawer();
-        });
-
-        tracksEl.appendChild(trackBtn);
-      }
-    }
-
-    loadUnlockedTracks();
-    renderTracks();
-    updateSeekUI(0);
   </script>
 </body>
 </html>
