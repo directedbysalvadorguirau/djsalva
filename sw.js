@@ -1,10 +1,9 @@
-const CACHE_NAME = "djsalva-pwa-v2";
+const CACHE_NAME = "djsalva-pwa-v3";
 const ASSETS = [
   "/",
   "/index.html",
   "/manifest.webmanifest",
   "/brand-mark.svg",
-  "/firebase-config.js",
   "/favicon.png",
   "/fondo2.png",
   "/laptop-session.png",
@@ -35,6 +34,21 @@ self.addEventListener("fetch", (event) => {
   const req = event.request;
 
   if (req.method !== "GET") return;
+
+  const url = new URL(req.url);
+
+  if (url.origin === self.location.origin && url.pathname === "/firebase-config.js") {
+    event.respondWith(
+      fetch(req)
+        .then((response) => {
+          const copy = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(req, copy));
+          return response;
+        })
+        .catch(() => caches.match(req))
+    );
+    return;
+  }
 
   event.respondWith(
     caches.match(req).then((cached) => cached || fetch(req))
