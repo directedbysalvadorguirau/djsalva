@@ -1,9 +1,15 @@
-const CACHE_NAME = "djsalva-pwa-v1";
+const CACHE_NAME = "djsalva-pwa-v2";
 const ASSETS = [
   "/",
   "/index.html",
-  "/laptop-session.png",
   "/manifest.webmanifest",
+  "/brand-mark.svg",
+  "/firebase-config.js",
+  "/favicon.png",
+  "/fondo2.png",
+  "/laptop-session.png",
+  "/icon-ibicenca.png",
+  "/djsalva-icon.png",
   "/icons/icon-192.png",
   "/icons/icon-512.png",
   "/icons/maskable-512.png"
@@ -28,7 +34,6 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   const req = event.request;
 
-  // Solo cache-first para GET del mismo origen
   if (req.method !== "GET") return;
 
   event.respondWith(
