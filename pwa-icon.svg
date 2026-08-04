@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-labelledby="title desc">
+  <title id="title">DJ SALVA</title>
+  <desc id="desc">Icono PWA de DJ SALVA con fondo negro y lettering blanco.</desc>
+  <rect width="1024" height="1024" fill="#000000"/>
+  <g fill="#ffffff" text-anchor="middle" font-family="'Bradley Hand','Chalkboard SE','Marker Felt','Segoe Print','Comic Sans MS',cursive" font-weight="700">
+    <text x="512" y="390" font-size="268" letter-spacing="8">DJ</text>
+    <text x="512" y="760" font-size="302" letter-spacing="2">SALVA</text>
+  </g>
+</svg>
