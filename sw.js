@@ -1,4 +1,4 @@
-const CACHE_NAME = "djsalva-pwa-v5";
+const CACHE_NAME = "djsalva-pwa-v6";
 const ASSETS = [
   "/",
   "/index.html",
@@ -15,6 +15,79 @@ const ASSETS = [
   "/icons/icon-512.png",
   "/icons/maskable-512.png"
 ];
+
+const SALVA03_DEVICE_FIX = `
+<style id="salva03-device-fix">
+  .frame-salva03{
+    --screen-left: 22.15% !important;
+    --screen-top: 41.85% !important;
+    --screen-width: 40.75% !important;
+    --screen-height: 14.1% !important;
+    --video-scale: 1.08 !important;
+  }
+
+  .frame-salva03 .screen{
+    background:#000 !important;
+  }
+
+  .frame-salva03 .screen video{
+    position:absolute !important;
+    inset:0 !important;
+    min-width:100% !important;
+    min-height:100% !important;
+    background:#000 !important;
+  }
+
+  @media (max-width:600px){
+    .frame-salva03{
+      --screen-left: 22.05% !important;
+      --screen-top: 41.75% !important;
+      --screen-width: 40.95% !important;
+      --screen-height: 14.25% !important;
+      --video-scale: 1.09 !important;
+    }
+  }
+
+  @supports (-webkit-touch-callout: none){
+    @media (max-width:600px){
+      .frame-salva03{
+        --screen-left: 21.9% !important;
+        --screen-top: 41.7% !important;
+        --screen-width: 41.25% !important;
+        --screen-height: 14.55% !important;
+        --video-scale: 1.11 !important;
+      }
+    }
+  }
+
+  @media (display-mode: standalone) and (max-width:600px){
+    .frame-salva03{
+      --screen-left: 21.8% !important;
+      --screen-top: 41.65% !important;
+      --screen-width: 41.45% !important;
+      --screen-height: 14.75% !important;
+      --video-scale: 1.12 !important;
+    }
+  }
+</style>`;
+
+function injectSalva03Fix(html) {
+  if (!html || html.includes("id=\"salva03-device-fix\"")) return html;
+  return html.replace("</head>", `${SALVA03_DEVICE_FIX}</head>`);
+}
+
+async function buildPatchedHtmlResponse(response) {
+  const html = await response.text();
+  const headers = new Headers(response.headers);
+  headers.set("content-type", "text/html; charset=utf-8");
+  headers.delete("content-length");
+
+  return new Response(injectSalva03Fix(html), {
+    status: response.status,
+    statusText: response.statusText,
+    headers
+  });
+}
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -36,6 +109,20 @@ self.addEventListener("fetch", (event) => {
   const req = event.request;
 
   if (req.method !== "GET") return;
+
+  if (req.mode === "navigate") {
+    event.respondWith((async () => {
+      try {
+        const network = await fetch(req);
+        return await buildPatchedHtmlResponse(network);
+      } catch (error) {
+        const cached = await caches.match(req) || await caches.match("/index.html");
+        if (cached) return buildPatchedHtmlResponse(cached);
+        throw error;
+      }
+    })());
+    return;
+  }
 
   event.respondWith(
     caches.match(req).then((cached) => {
