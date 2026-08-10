@@ -1,4 +1,4 @@
-const CACHE_NAME = "djsalva-pwa-v2";
+const CACHE_NAME = "djsalva-pwa-v3";
 const ASSETS = [
   "/",
   "/index.html",
@@ -38,6 +38,14 @@ self.addEventListener("fetch", (event) => {
   if (req.method !== "GET") return;
 
   event.respondWith(
-    caches.match(req).then((cached) => cached || fetch(req))
+    caches.match(req).then((cached) => {
+      if (cached) return cached;
+      return fetch(req).then((res) => {
+        if (!res || res.status !== 200 || res.type !== "basic") return res;
+        const copy = res.clone();
+        caches.open(CACHE_NAME).then((cache) => cache.put(req, copy));
+        return res;
+      }).catch(() => caches.match("/index.html"));
+    })
   );
 });
