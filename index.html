@@ -39,6 +39,7 @@
       -ms-overflow-style:none;
       scrollbar-width:none;
     }
+
     body::-webkit-scrollbar{ display:none; }
 
     .stage{
@@ -72,13 +73,13 @@
       overflow:hidden;
     }
 
-    .frame-classic{
-      --screen-left: 0%;
-      --screen-top: 20%;
-      --screen-width: 72%;
-      --screen-height: 26.9%;
+    .frame-salva03{
+      --screen-left: 12.4%;
+      --screen-top: 33.8%;
+      --screen-width: 41.05%;
+      --screen-height: 17.2%;
       --btn-bottom: 18.5%;
-      --video-scale: 1.2;
+      --video-scale: 1.03;
     }
 
     .frame-ibicenca{
@@ -88,6 +89,15 @@
       --screen-height: 12.3%;
       --btn-bottom: 18.5%;
       --video-scale: 1.03;
+    }
+
+    .frame-classic{
+      --screen-left: 0%;
+      --screen-top: 20%;
+      --screen-width: 72%;
+      --screen-height: 26.9%;
+      --btn-bottom: 18.5%;
+      --video-scale: 1.2;
     }
 
     .bg{
@@ -141,8 +151,8 @@
       height:48px;
       border:none;
       background:rgba(0,0,0,0.25);
-      backdrop-filter: blur(6px);
-      -webkit-backdrop-filter: blur(6px);
+      backdrop-filter:blur(6px);
+      -webkit-backdrop-filter:blur(6px);
       border-radius:14px;
       display:grid;
       place-items:center;
@@ -232,8 +242,8 @@
       height:100%;
       width:var(--panel-w);
       background:rgba(10,10,10,0.92);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter:blur(10px);
+      -webkit-backdrop-filter:blur(10px);
       transform:translateX(102%);
       transition:transform .22s ease;
       z-index:61;
@@ -277,7 +287,7 @@
     .tracks{
       padding:6px 10px 16px 10px;
       overflow:auto;
-      -webkit-overflow-scrolling: touch;
+      -webkit-overflow-scrolling:touch;
       overscroll-behavior:contain;
     }
 
@@ -378,6 +388,14 @@
         height:44px;
       }
 
+      .frame-salva03{
+        --screen-left: 12.2%;
+        --screen-top: 33.9%;
+        --screen-width: 41.15%;
+        --screen-height: 17.15%;
+        --video-scale: 1.04;
+      }
+
       .frame-ibicenca{
         --screen-left: 30.6%;
         --screen-top: 49%;
@@ -390,6 +408,64 @@
 </head>
 
 <body>
+  <section class="stage" id="salva03">
+    <div class="frame frame-salva03" id="appSalva03">
+      <img class="bg" src="fondo3.png" alt="DJ SALVA #03">
+
+      <div class="screen">
+        <video id="vidSalva03" playsinline webkit-playsinline muted autoplay preload="auto" loop></video>
+      </div>
+
+      <audio id="audSalva03Part1" preload="auto"></audio>
+      <audio id="audSalva03Part2" preload="auto"></audio>
+
+      <div class="top-actions">
+        <button class="top-btn" id="shareBtnSalva03" aria-label="Compartir" title="Compartir">
+          <svg class="mini-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7a2.5 2.5 0 0 0 0-1.39l7-4.11A2.99 2.99 0 1 0 14 5a3 3 0 0 0 .05.5l-7 4.11a3 3 0 1 0 0 4.78l7.05 4.14c-.03.16-.05.31-.05.47a3 3 0 1 0 3-2.92z"></path>
+          </svg>
+        </button>
+
+        <button class="menu-btn" id="openLibrarySalva03" aria-label="Abrir biblioteca">
+          <span class="sr">Abrir biblioteca</span>
+          <div class="bars" aria-hidden="true">
+            <span></span>
+            <span></span>
+          </div>
+        </button>
+      </div>
+
+      <div class="audio-time"><span id="currentTimeSalva03">0:00</span></div>
+
+      <button id="toggleSalva03" class="play-btn" aria-label="Reproducir">
+        <span class="sr">Play/Pause</span>
+
+        <svg id="iconPlaySalva03" class="icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M8 5v14l11-7z"></path>
+        </svg>
+
+        <svg id="iconPauseSalva03" class="icon" viewBox="0 0 24 24" aria-hidden="true" style="display:none;">
+          <path d="M6 5h4v14H6zm8 0h4v14h-4z"></path>
+        </svg>
+      </button>
+
+      <div class="overlay" id="overlaySalva03"></div>
+
+      <aside class="drawer" id="drawerSalva03" aria-label="Biblioteca DJ SALVA #03">
+        <header>
+          <div class="drawer-title">DJ SALVA #03</div>
+          <button class="close-btn" id="closeLibrarySalva03" aria-label="Cerrar">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M18.3 5.7 12 12l6.3 6.3-1.4 1.4L10.6 13.4 4.3 19.7 2.9 18.3 9.2 12 2.9 5.7 4.3 4.3l6.3 6.3 6.3-6.3z"></path>
+            </svg>
+          </button>
+        </header>
+
+        <div class="tracks" id="tracksSalva03"></div>
+      </aside>
+    </div>
+  </section>
+
   <section class="stage" id="ibicenca">
     <div class="frame frame-ibicenca" id="appIbicenca">
       <img class="bg" src="fondo2.png" alt="Ibicenca Session">
@@ -646,19 +722,30 @@
     function pauseOtherAudios(currentId){
       for (const session of sessions) {
         if (session.id !== currentId) {
-          session.aud.pause();
+          session.pauseAll();
         }
       }
     }
 
     function createSession(def){
+      const audioDefs = Array.isArray(def.audioSegments) && def.audioSegments.length
+        ? def.audioSegments
+        : [{
+            audioId: def.audId,
+            hlsUrl: def.audioHlsUrl,
+            fallbackUrl: def.audioFallbackUrl,
+            startAt: 0
+          }];
+
       const session = {
         id: def.id,
         title: def.title,
         app: document.getElementById(def.appId),
         section: document.getElementById(def.sectionId),
         vid: document.getElementById(def.vidId),
-        aud: document.getElementById(def.audId),
+        aud: null,
+        audioSegments: [],
+        activeAudioSegment: null,
         btn: document.getElementById(def.btnId),
         iconPlay: document.getElementById(def.iconPlayId),
         iconPause: document.getElementById(def.iconPauseId),
@@ -672,18 +759,60 @@
         storageKey: def.storageKey,
         videoHlsUrl: def.videoHlsUrl,
         videoFallbackUrl: def.videoFallbackUrl,
-        audioHlsUrl: def.audioHlsUrl,
-        audioFallbackUrl: def.audioFallbackUrl,
         trackNameEls: [],
         videoStarted: false,
         hlsVideo: null,
-        hlsAudio: null,
+        hlsAudio: [],
         tracks: def.tracks.map(track => ({
           t: track.t,
           at: track.at,
           sec: timeToSeconds(track.at),
           unlocked: false
         }))
+      };
+
+      session.audioSegments = audioDefs
+        .map((segmentDef, index) => ({
+          index,
+          el: document.getElementById(segmentDef.audioId),
+          hlsUrl: segmentDef.hlsUrl || "",
+          fallbackUrl: segmentDef.fallbackUrl || "",
+          startAt: typeof segmentDef.startAt === "number"
+            ? segmentDef.startAt
+            : timeToSeconds(segmentDef.startAt || "0:00"),
+          hls: null
+        }))
+        .sort((a, b) => a.startAt - b.startAt);
+
+      session.activeAudioSegment = session.audioSegments[0];
+      session.aud = session.activeAudioSegment.el;
+
+      session.setActiveAudioSegment = segment => {
+        if (!segment) return;
+        session.activeAudioSegment = segment;
+        session.aud = segment.el;
+      };
+
+      session.getActiveAudio = () => {
+        return session.activeAudioSegment ? session.activeAudioSegment.el : null;
+      };
+
+      session.getCurrentTime = () => {
+        const activeAudio = session.getActiveAudio();
+        if (!activeAudio || !session.activeAudioSegment) return 0;
+        return session.activeAudioSegment.startAt + (activeAudio.currentTime || 0);
+      };
+
+      session.findSegmentForTime = seconds => {
+        let chosen = session.audioSegments[0];
+        for (const segment of session.audioSegments) {
+          if (seconds >= segment.startAt) {
+            chosen = segment;
+          } else {
+            break;
+          }
+        }
+        return chosen;
       };
 
       session.showPlay = () => {
@@ -698,7 +827,7 @@
         session.btn.setAttribute("aria-label", "Pausar");
       };
 
-      session.updateTime = (time = session.aud.currentTime || 0) => {
+      session.updateTime = (time = session.getCurrentTime()) => {
         session.currentTimeEl.textContent = formatTime(time);
       };
 
@@ -758,33 +887,79 @@
       session.playAll = async () => {
         pauseOtherAudios(session.id);
 
+        const activeAudio = session.getActiveAudio();
+        if (!activeAudio) return;
+
         try{
           await Promise.all([
-            session.aud.play(),
+            activeAudio.play(),
             session.ensureVideoRunning()
           ]);
           session.showPause();
         }catch(e){
-          if (session.aud.paused) session.showPlay();
+          if (activeAudio.paused) session.showPlay();
         }
       };
 
       session.pauseAll = () => {
-        session.aud.pause();
+        for (const segment of session.audioSegments) {
+          segment.el.pause();
+        }
         session.showPlay();
       };
 
-      session.seekTo = (seconds, autoplay = true) => {
-        const max = Number.isFinite(session.aud.duration) ? session.aud.duration : Infinity;
-        session.aud.currentTime = clamp(seconds, 0, max);
+      session.resetAllAudios = () => {
+        for (const segment of session.audioSegments) {
+          try{
+            segment.el.pause();
+          }catch(e){}
+          try{
+            segment.el.currentTime = 0;
+          }catch(e){}
+        }
+        session.setActiveAudioSegment(session.audioSegments[0]);
+      };
 
-        if (autoplay) {
-          session.playAll();
-        } else if (session.aud.paused) {
-          session.showPlay();
+      session.setRelativeTime = (segment, relativeTime, autoplay = true) => {
+        if (!segment) return;
+
+        session.setActiveAudioSegment(segment);
+
+        for (const other of session.audioSegments) {
+          if (other !== segment) {
+            other.el.pause();
+          }
         }
 
-        session.updateTime(session.aud.currentTime);
+        const audioEl = segment.el;
+        const applyTime = () => {
+          const max = Number.isFinite(audioEl.duration) ? audioEl.duration : relativeTime;
+          const target = clamp(relativeTime, 0, max);
+          try{
+            audioEl.currentTime = target;
+          }catch(e){}
+
+          session.updateTime(segment.startAt + target);
+
+          if (autoplay) {
+            session.playAll();
+          } else if (audioEl.paused) {
+            session.showPlay();
+          }
+        };
+
+        if (audioEl.readyState >= 1) {
+          applyTime();
+        } else {
+          audioEl.addEventListener("loadedmetadata", applyTime, { once:true });
+        }
+      };
+
+      session.seekTo = (seconds, autoplay = true) => {
+        const segment = session.findSegmentForTime(seconds);
+        const relativeTime = Math.max(0, seconds - segment.startAt);
+        session.setRelativeTime(segment, relativeTime, autoplay);
+        session.updateTime(seconds);
       };
 
       session.renderTracks = () => {
@@ -819,7 +994,10 @@
       };
 
       session.hlsVideo = setupSingleMediaHls(session.vid, session.videoHlsUrl, session.videoFallbackUrl, true);
-      session.hlsAudio = setupSingleMediaHls(session.aud, session.audioHlsUrl, session.audioFallbackUrl, false);
+      session.hlsAudio = session.audioSegments.map(segment => {
+        segment.hls = setupSingleMediaHls(segment.el, segment.hlsUrl, segment.fallbackUrl, false);
+        return segment.hls;
+      });
 
       session.loadUnlockedTracks();
       session.renderTracks();
@@ -827,7 +1005,8 @@
       session.showPlay();
 
       session.btn.addEventListener("click", () => {
-        if (session.aud.paused) session.playAll();
+        const activeAudio = session.getActiveAudio();
+        if (!activeAudio || activeAudio.paused) session.playAll();
         else session.pauseAll();
       });
 
@@ -835,26 +1014,69 @@
       session.closeLibrary.addEventListener("click", session.closeDrawer);
       session.overlay.addEventListener("click", session.closeDrawer);
 
-      session.aud.addEventListener("loadedmetadata", () => session.updateTime());
-      session.aud.addEventListener("durationchange", () => session.updateTime());
-      session.aud.addEventListener("timeupdate", () => session.updateTime(session.aud.currentTime || 0));
-      session.aud.addEventListener("seeking", () => session.updateTime(session.aud.currentTime || 0));
-      session.aud.addEventListener("pause", () => {
-        if (!session.aud.ended) session.showPlay();
-      });
-      session.aud.addEventListener("play", () => session.showPause());
-      session.aud.addEventListener("ended", () => {
-        session.aud.currentTime = 0;
-        session.showPlay();
-        session.updateTime(0);
-      });
+      for (let i = 0; i < session.audioSegments.length; i++) {
+        const segment = session.audioSegments[i];
+        const audioEl = segment.el;
+
+        audioEl.addEventListener("loadedmetadata", () => {
+          if (session.activeAudioSegment === segment) session.updateTime();
+        });
+
+        audioEl.addEventListener("durationchange", () => {
+          if (session.activeAudioSegment === segment) session.updateTime();
+        });
+
+        audioEl.addEventListener("timeupdate", () => {
+          if (session.activeAudioSegment === segment) session.updateTime();
+        });
+
+        audioEl.addEventListener("seeking", () => {
+          if (session.activeAudioSegment === segment) session.updateTime();
+        });
+
+        audioEl.addEventListener("pause", () => {
+          if (session.activeAudioSegment === segment && !audioEl.ended) {
+            session.showPlay();
+          }
+        });
+
+        audioEl.addEventListener("play", () => {
+          if (session.activeAudioSegment === segment) {
+            session.showPause();
+          }
+        });
+
+        audioEl.addEventListener("ended", () => {
+          const nextSegment = session.audioSegments[i + 1];
+
+          if (nextSegment) {
+            session.setActiveAudioSegment(nextSegment);
+            session.updateTime(nextSegment.startAt);
+            try{
+              nextSegment.el.currentTime = 0;
+            }catch(e){}
+            nextSegment.el.play().then(() => {
+              session.showPause();
+            }).catch(() => {
+              session.showPlay();
+            });
+            return;
+          }
+
+          session.resetAllAudios();
+          session.showPlay();
+          session.updateTime(0);
+        });
+      }
 
       session.vid.addEventListener("pause", () => {
         if (session.videoStarted) session.vid.play().catch(() => {});
       });
+
       session.vid.addEventListener("stalled", () => {
         if (session.videoStarted) session.vid.play().catch(() => {});
       });
+
       session.vid.addEventListener("waiting", () => {
         if (session.videoStarted) session.vid.play().catch(() => {});
       });
@@ -875,6 +1097,143 @@
     }
 
     const sessionDefs = [
+      {
+        id: "salva03",
+        title: "DJ SALVA #03",
+        sectionId: "salva03",
+        appId: "appSalva03",
+        vidId: "vidSalva03",
+        btnId: "toggleSalva03",
+        iconPlayId: "iconPlaySalva03",
+        iconPauseId: "iconPauseSalva03",
+        shareBtnId: "shareBtnSalva03",
+        currentTimeId: "currentTimeSalva03",
+        openLibraryId: "openLibrarySalva03",
+        closeLibraryId: "closeLibrarySalva03",
+        overlayId: "overlaySalva03",
+        tracksId: "tracksSalva03",
+        coverSrc: "icon3.png",
+        storageKey: "djsalva_salva03_unlocks_v1",
+        videoHlsUrl: "https://vz-aaeb7dee-388.b-cdn.net/d504011a-4d2a-4c1f-96dd-ff11662b90e1/playlist.m3u8",
+        videoFallbackUrl: "",
+        audioSegments: [
+          {
+            audioId: "audSalva03Part1",
+            hlsUrl: "https://vz-aaeb7dee-388.b-cdn.net/b2952976-9991-475a-aaf8-c55e942d3025/playlist.m3u8",
+            fallbackUrl: "",
+            startAt: "0:00"
+          },
+          {
+            audioId: "audSalva03Part2",
+            hlsUrl: "https://vz-aaeb7dee-388.b-cdn.net/e1b8bce7-16d0-4828-aec9-c6f356e2b274/playlist.m3u8",
+            fallbackUrl: "",
+            startAt: "1:25:57"
+          }
+        ],
+        tracks: [
+          { t:"120", at:"00:00" },
+          { t:"SIN FRENOS", at:"01:40" },
+          { t:"NO TE HAGAS", at:"04:59" },
+          { t:"ESCLAVA REMIX", at:"05:27" },
+          { t:"LAS MAS BONITAS SON P#TAS", at:"07:47" },
+          { t:"4K", at:"08:02" },
+          { t:"LA ROMANA", at:"10:28" },
+          { t:"CHAMBEA", at:"11:42" },
+          { t:"MERA WOO", at:"13:00" },
+          { t:"38", at:"14:49" },
+          { t:"CANDY", at:"15:36" },
+          { t:"PAM PAM", at:"17:16" },
+          { t:"FLAITEERA", at:"18:18" },
+          { t:"ALO", at:"21:47" },
+          { t:"TRAVESURAS", at:"22:12" },
+          { t:"SCANDIC", at:"23:17" },
+          { t:"VETE", at:"24:23" },
+          { t:"ADÁN Y EVA", at:"25:21" },
+          { t:"QUE PRETENDES", at:"25:58" },
+          { t:"34 AMOR Y MAFIA", at:"27:08" },
+          { t:"COMO ANTES REMIX", at:"29:12" },
+          { t:"TOTO DE LOCA", at:"31:03" },
+          { t:"EOO", at:"33:13" },
+          { t:"CHUOS", at:"33:34" },
+          { t:"YO PERREO SOLA", at:"34:37" },
+          { t:"VOY A LLEVARTE PA PR", at:"37:13" },
+          { t:"LA JEEPETA REMIX", at:"38:50" },
+          { t:"VELDÁ", at:"41:33" },
+          { t:"$UELTA GATITA $UELTA", at:"43:25" },
+          { t:"CAPRICHOSO", at:"46:28" },
+          { t:"BAD GYAL", at:"49:00" },
+          { t:"LOKENECESITAS", at:"51:52" },
+          { t:"MI VECINITA", at:"54:35" },
+          { t:"2010YPICO", at:"54:54" },
+          { t:"ALGO VA A PASAR", at:"58:07" },
+          { t:"NO ME GUILLO V2", at:"01:02:08" },
+          { t:"QUIERO MÁS", at:"01:03:35" },
+          { t:"TOKISCHA", at:"01:03:59" },
+          { t:"LAS MUÑEQUITAS", at:"01:04:10" },
+          { t:"MIRÁNDOTE", at:"01:04:27" },
+          { t:"MALA", at:"01:05:24" },
+          { t:"PLAKITO", at:"01:05:51" },
+          { t:"SI TE DEJAS LLEVAR", at:"01:07:00" },
+          { t:"HASTA QUE DIOS DIGA", at:"01:08:26" },
+          { t:"MAYORES", at:"01:10:24" },
+          { t:"LA ROMPE CORAZONES", at:"01:10:59" },
+          { t:"MAMITA MOLONA", at:"01:12:20" },
+          { t:"BNB", at:"01:13:44" },
+          { t:"MUCHACHA", at:"01:14:57" },
+          { t:"LA GRACIOSA", at:"01:16:28" },
+          { t:"DONDE ESTAN LAS GATAS", at:"01:19:01" },
+          { t:"TITÍ ME PREGUNTÓ", at:"01:21:20" },
+          { t:"NUEVAYOL", at:"01:22:58" },
+          { t:"EOO", at:"01:25:57" },
+          { t:"DALE DON DALE", at:"01:27:18" },
+          { t:"GASOLINA", at:"01:28:28" },
+          { t:"X REMIX", at:"01:30:54" },
+          { t:"SI NO TE QUIERE", at:"01:31:48" },
+          { t:"ZIZI", at:"01:33:11" },
+          { t:"EL EFECTO", at:"01:36:11" },
+          { t:"FOREVER TU GANTEL", at:"01:38:37" },
+          { t:"BORRO CASSETTE", at:"01:41:20" },
+          { t:"EL PERDEDOR", at:"01:42:38" },
+          { t:"SOLA REMIX", at:"01:43:57" },
+          { t:"AMANECE", at:"01:46:20" },
+          { t:"GIRL", at:"01:47:46" },
+          { t:"DIOSA", at:"01:49:39" },
+          { t:"SI SE DA", at:"01:52:40" },
+          { t:"MEDUSA", at:"01:55:18" },
+          { t:"QUE VAS A HACER HOY?", at:"01:55:57" },
+          { t:"SOLTERA REMIX", at:"01:59:00" },
+          { t:"MEMORIAS", at:"02:00:30" },
+          { t:"DILES", at:"02:03:16" },
+          { t:"PEPAS", at:"02:04:00" },
+          { t:"LOS DEL ESPACIO", at:"02:07:41" },
+          { t:"BEAUTY AND A BEAT", at:"02:11:03" },
+          { t:"DE LEJITOS REMIX", at:"02:11:48" },
+          { t:"MOSCOW MULE", at:"02:14:49" },
+          { t:"COLUMBIA", at:"02:18:19" },
+          { t:"VOLVIÓ EL PERREO", at:"02:21:29" },
+          { t:"BICHIYAL", at:"02:22:47" },
+          { t:"DIOS LOS BENDIGA", at:"02:23:59" },
+          { t:"EL TELÉFONO", at:"02:25:37" },
+          { t:"DA ME", at:"02:28:35" },
+          { t:"AMIGOS Y ENEMIGOS", at:"02:30:24" },
+          { t:"OTRA NOCHE EN MIAMI", at:"02:33:17" },
+          { t:"¿QUÉ NOS PASÓ?", at:"02:34:52" },
+          { t:"LOVE", at:"02:36:15" },
+          { t:"QUIERE BEBER", at:"02:37:51" },
+          { t:"YONAGUNI", at:"02:39:40" },
+          { t:"LA INOCENTE", at:"02:42:11" },
+          { t:"ARENA Y SAL", at:"02:44:22" },
+          { t:"CHULO PT2", at:"02:45:44" },
+          { t:"LA SACAPUNTAS", at:"02:48:31" },
+          { t:"ESTAMOS BIEN", at:"02:49:43" },
+          { t:"MALBEC", at:"02:50:20" },
+          { t:"LOQUITA", at:"02:51:22" },
+          { t:"111", at:"02:52:25" },
+          { t:"ME GUSTAS CC", at:"02:54:26" },
+          { t:"YOGURCITO REMIX", at:"02:56:03" },
+          { t:"WO OH OH", at:"03:00:11" }
+        ]
+      },
       {
         id: "ibicenca",
         title: "IBICENCA",
