@@ -1,4 +1,4 @@
-const CACHE_NAME = "djsalva-pwa-v7";
+const CACHE_NAME = "djsalva-pwa-v8";
 const ASSETS = [
   "/",
   "/index.html",
@@ -19,10 +19,10 @@ const ASSETS = [
 const SALVA03_DEVICE_FIX = `
 <style id="salva03-device-fix">
   .frame-salva03{
-    --screen-left: 21.3% !important;
-    --screen-top: 40.5% !important;
-    --screen-width: 41% !important;
-    --screen-height: 14.35% !important;
+    --screen-left: 21.22% !important;
+    --screen-top: 39.86% !important;
+    --screen-width: 41.08% !important;
+    --screen-height: 14.92% !important;
     --video-scale: 1.08 !important;
   }
 
@@ -40,10 +40,10 @@ const SALVA03_DEVICE_FIX = `
 
   @media (max-width:600px){
     .frame-salva03{
-      --screen-left: 21.2% !important;
-      --screen-top: 40.45% !important;
-      --screen-width: 41.2% !important;
-      --screen-height: 14.5% !important;
+      --screen-left: 21.14% !important;
+      --screen-top: 39.82% !important;
+      --screen-width: 41.26% !important;
+      --screen-height: 15.02% !important;
       --video-scale: 1.09 !important;
     }
   }
@@ -51,10 +51,10 @@ const SALVA03_DEVICE_FIX = `
   @supports (-webkit-touch-callout: none){
     @media (max-width:600px){
       .frame-salva03{
-        --screen-left: 21.05% !important;
-        --screen-top: 40.4% !important;
-        --screen-width: 41.45% !important;
-        --screen-height: 14.75% !important;
+        --screen-left: 20.98% !important;
+        --screen-top: 39.76% !important;
+        --screen-width: 41.52% !important;
+        --screen-height: 15.28% !important;
         --video-scale: 1.11 !important;
       }
     }
@@ -62,10 +62,10 @@ const SALVA03_DEVICE_FIX = `
 
   @media (display-mode: standalone) and (max-width:600px){
     .frame-salva03{
-      --screen-left: 20.95% !important;
-      --screen-top: 40.35% !important;
-      --screen-width: 41.65% !important;
-      --screen-height: 14.9% !important;
+      --screen-left: 20.9% !important;
+      --screen-top: 39.72% !important;
+      --screen-width: 41.72% !important;
+      --screen-height: 15.42% !important;
       --video-scale: 1.12 !important;
     }
   }
