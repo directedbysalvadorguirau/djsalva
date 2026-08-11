@@ -74,12 +74,12 @@
     }
 
     .frame-salva03{
-      --screen-left: 20%;
-      --screen-top: 34.2%;
-      --screen-width: 36.45%;
-      --screen-height: 12.15%;
+      --screen-left: 21.22%;
+      --screen-top: 39.86%;
+      --screen-width: 41.08%;
+      --screen-height: 14.92%;
       --btn-bottom: 18.5%;
-      --video-scale: 1.04;
+      --video-scale: 1.08;
     }
 
     .frame-ibicenca{
@@ -121,6 +121,10 @@
       background:#fff;
     }
 
+    .frame-salva03 .screen{
+      background:#000;
+    }
+
     .screen video{
       width:100%;
       height:100%;
@@ -133,6 +137,14 @@
       border-radius:0;
       will-change:transform;
       backface-visibility:hidden;
+    }
+
+    .frame-salva03 .screen video{
+      position:absolute;
+      inset:0;
+      min-width:100%;
+      min-height:100%;
+      background:#000;
     }
 
     .top-actions{
@@ -389,11 +401,11 @@
       }
 
       .frame-salva03{
-        --screen-left: 26%;
-        --screen-top: 34.2%;
-        --screen-width: 36.7%;
-        --screen-height: 12.2%;
-        --video-scale: 1.05;
+        --screen-left: 21.14%;
+        --screen-top: 39.82%;
+        --screen-width: 41.26%;
+        --screen-height: 15.02%;
+        --video-scale: 1.09;
       }
 
       .frame-ibicenca{
@@ -402,6 +414,28 @@
         --screen-width: 39%;
         --screen-height: 12.2%;
         --video-scale: 1.04;
+      }
+    }
+
+    @supports (-webkit-touch-callout:none){
+      @media (max-width:600px){
+        .frame-salva03{
+          --screen-left: 20.98%;
+          --screen-top: 39.76%;
+          --screen-width: 41.52%;
+          --screen-height: 15.28%;
+          --video-scale: 1.11;
+        }
+      }
+    }
+
+    @media (display-mode:standalone) and (max-width:600px){
+      .frame-salva03{
+        --screen-left: 21.16%;
+        --screen-top: 39.88%;
+        --screen-width: 40.96%;
+        --screen-height: 14.96%;
+        --video-scale: 1.11;
       }
     }
   </style>
