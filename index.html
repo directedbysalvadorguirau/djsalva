@@ -767,7 +767,7 @@
           t: track.t,
           at: track.at,
           sec: timeToSeconds(track.at),
-          unlocked: true
+          unlocked: def.tracksStartUnlocked !== false
         }))
       };
 
@@ -1113,7 +1113,8 @@
         overlayId: "overlaySalva03",
         tracksId: "tracksSalva03",
         coverSrc: "icon3.png",
-        storageKey: "djsalva_salva03_unlocks_v1",
+        storageKey: "djsalva_salva03_unlocks_v2",
+        tracksStartUnlocked: false,
         videoHlsUrl: "https://vz-aaeb7dee-388.b-cdn.net/d504011a-4d2a-4c1f-96dd-ff11662b90e1/playlist.m3u8",
         videoFallbackUrl: "",
         audioSegments: [
