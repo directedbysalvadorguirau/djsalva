@@ -1,4 +1,4 @@
-const CACHE_NAME = "djsalva-pwa-v9";
+const CACHE_NAME = "djsalva-pwa-v10";
 const ASSETS = [
   "/",
   "/index.html",
@@ -62,11 +62,11 @@ const SALVA03_DEVICE_FIX = `
 
   @media (display-mode: standalone) and (max-width:600px){
     .frame-salva03{
-      --screen-left: 20.18% !important;
-      --screen-top: 39.58% !important;
-      --screen-width: 42.32% !important;
-      --screen-height: 15.74% !important;
-      --video-scale: 1.13 !important;
+      --screen-left: 21.16% !important;
+      --screen-top: 39.88% !important;
+      --screen-width: 40.96% !important;
+      --screen-height: 14.96% !important;
+      --video-scale: 1.11 !important;
     }
   }
 </style>`;
