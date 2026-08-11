@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="referrer" content="origin">
   <title>DJ SALVA Sessions</title>
   <link rel="icon" type="image/png" href="/favicon.png">
   <link rel="shortcut icon" type="image/png" href="/favicon.png">
@@ -696,6 +697,14 @@
     function setupSingleMediaHls(mediaEl, hlsUrl, fallbackUrl, isVideo){
       const nativeType = "application/vnd.apple.mpegurl";
 
+      if (isVideo) {
+        mediaEl.muted = true;
+        mediaEl.defaultMuted = true;
+        mediaEl.setAttribute("muted", "");
+        mediaEl.setAttribute("playsinline", "");
+        mediaEl.setAttribute("webkit-playsinline", "");
+      }
+
       if (!hlsUrl) {
         if (fallbackUrl) {
           mediaEl.src = fallbackUrl;
@@ -712,6 +721,7 @@
         }, { once:true });
 
         mediaEl.src = hlsUrl;
+        mediaEl.load();
         return null;
       }
 
@@ -1150,7 +1160,7 @@
         storageKey: "djsalva_salva03_unlocks_v2",
         tracksStartUnlocked: false,
         videoHlsUrl: "https://vz-aaeb7dee-388.b-cdn.net/d504011a-4d2a-4c1f-96dd-ff11662b90e1/playlist.m3u8",
-        videoFallbackUrl: "",
+        videoFallbackUrl: "https://vz-aaeb7dee-388.b-cdn.net/d504011a-4d2a-4c1f-96dd-ff11662b90e1/play_720p.mp4",
         audioSegments: [
           {
             audioId: "audSalva03Part1",
