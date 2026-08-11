@@ -1,4 +1,4 @@
-const CACHE_NAME = "djsalva-pwa-v10";
+const CACHE_NAME = "djsalva-pwa-v11";
 const ASSETS = [
   "/",
   "/index.html",
@@ -71,9 +71,26 @@ const SALVA03_DEVICE_FIX = `
   }
 </style>`;
 
-function injectSalva03Fix(html) {
-  if (!html || html.includes("id=\"salva03-device-fix\"")) return html;
-  return html.replace("</head>", `${SALVA03_DEVICE_FIX}</head>`);
+const VERCEL_ANALYTICS_SNIPPET = `
+<script id="vercel-analytics-loader">
+  window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+</script>
+<script defer src="/_vercel/insights/script.js"></script>`;
+
+function injectRuntimeFixes(html) {
+  if (!html) return html;
+
+  let patched = html;
+
+  if (!patched.includes('id="salva03-device-fix"')) {
+    patched = patched.replace("</head>", `${SALVA03_DEVICE_FIX}</head>`);
+  }
+
+  if (!patched.includes('id="vercel-analytics-loader"') && !patched.includes('/_vercel/insights/script.js')) {
+    patched = patched.replace("</head>", `${VERCEL_ANALYTICS_SNIPPET}</head>`);
+  }
+
+  return patched;
 }
 
 async function buildPatchedHtmlResponse(response) {
@@ -82,7 +99,7 @@ async function buildPatchedHtmlResponse(response) {
   headers.set("content-type", "text/html; charset=utf-8");
   headers.delete("content-length");
 
-  return new Response(injectSalva03Fix(html), {
+  return new Response(injectRuntimeFixes(html), {
     status: response.status,
     statusText: response.statusText,
     headers
