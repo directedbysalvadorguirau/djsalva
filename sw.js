@@ -1,10 +1,11 @@
-const CACHE_NAME = "djsalva-pwa-v11";
+const CACHE_NAME = "djsalva-pwa-v12";
 const ASSETS = [
   "/",
   "/index.html",
   "/manifest.webmanifest",
   "/brand-mark.svg",
   "/favicon.png",
+  "/pegatina-djsalva.png",
   "/laptop-session.png",
   "/fondo2.png",
   "/fondo3.png",
