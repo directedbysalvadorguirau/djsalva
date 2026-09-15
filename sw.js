@@ -1,4 +1,4 @@
-const CACHE_NAME = "djsalva-pwa-v13";
+const CACHE_NAME = "djsalva-pwa-v14";
 const ASSETS = [
   "/",
   "/index.html",

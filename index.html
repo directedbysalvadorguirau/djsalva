@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="referrer" content="origin">
   <title>DJ SALVA Sessions</title>
   <link rel="icon" type="image/png" href="/favicon.png">
@@ -31,6 +31,9 @@
       font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
       overflow:hidden;
       overscroll-behavior:none;
+      touch-action:pan-x pan-y;
+      -webkit-touch-callout:none;
+      -webkit-text-size-adjust:100%;
     }
 
     body{
@@ -39,6 +42,14 @@
     }
 
     body::-webkit-scrollbar{ display:none; }
+
+    img,
+    svg{
+      user-select:none;
+      -webkit-user-select:none;
+      -webkit-user-drag:none;
+      -webkit-touch-callout:none;
+    }
 
     [hidden]{ display:none !important; }
 
@@ -64,17 +75,17 @@
       flex-direction:column;
       align-items:center;
       justify-content:center;
-      gap:clamp(24px, 5vh, 52px);
+      gap:clamp(18px, 3vh, 34px);
       background:
         radial-gradient(circle at 50% 18%, rgba(208,208,208,0.2), transparent 35%),
         #fff;
     }
 
     .portal-brand{
-      width:min(92vw, 540px);
-      height:min(39svh, 450px);
-      object-fit:contain;
-      object-position:center;
+      width:min(100vw, 780px);
+      height:min(48svh, 520px);
+      object-fit:cover;
+      object-position:center 49%;
       user-select:none;
       -webkit-user-drag:none;
       animation:portalBrandIn .6s cubic-bezier(.2,.75,.25,1) both;
@@ -116,7 +127,10 @@
     .portal-link:nth-child(4){ animation-delay:.18s; }
 
     .portal-link:active .portal-icon,
-    .session-link:active .session-cover{ transform:scale(.94); }
+    .session-link:active .session-cover{
+      --motion-scale:.94;
+      transition-duration:80ms;
+    }
 
     .portal-link:focus-visible,
     .session-link:focus-visible,
@@ -127,12 +141,18 @@
     }
 
     .portal-icon{
+      --motion-x:0px;
+      --motion-y:0px;
+      --motion-rotate:0deg;
+      --motion-scale:1;
       width:clamp(88px, 12vw, 126px);
       height:clamp(88px, 12vw, 126px);
       display:grid;
       place-items:center;
-      transition:transform .16s ease;
+      transform:translate3d(var(--motion-x), var(--motion-y), 0) rotate(var(--motion-rotate)) scale(var(--motion-scale));
+      transition:transform .24s cubic-bezier(.2,.8,.2,1), filter .24s ease;
       filter:drop-shadow(0 9px 16px rgba(0,0,0,.12));
+      will-change:transform;
     }
 
     .portal-icon svg{
@@ -217,12 +237,35 @@
     }
 
     .session-cover{
+      --motion-x:0px;
+      --motion-y:0px;
+      --motion-rotate:0deg;
+      --motion-scale:1;
       width:clamp(82px, 16vw, 150px);
       aspect-ratio:1;
       border-radius:25%;
       object-fit:cover;
       box-shadow:0 12px 28px rgba(0,0,0,.16);
-      transition:transform .16s ease;
+      transform:translate3d(var(--motion-x), var(--motion-y), 0) rotate(var(--motion-rotate)) scale(var(--motion-scale));
+      transition:transform .24s cubic-bezier(.2,.8,.2,1), box-shadow .24s ease;
+      will-change:transform;
+    }
+
+    @media (hover:hover) and (pointer:fine){
+      .portal-link:hover .portal-icon,
+      .portal-link:focus-visible .portal-icon,
+      .session-link:hover .session-cover,
+      .session-link:focus-visible .session-cover{
+        --motion-scale:1.045;
+      }
+
+      .portal-link:hover .portal-icon{
+        filter:drop-shadow(0 15px 22px rgba(0,0,0,.17));
+      }
+
+      .session-link:hover .session-cover{
+        box-shadow:0 18px 34px rgba(0,0,0,.21);
+      }
     }
 
     @keyframes portalBrandIn{
@@ -578,8 +621,8 @@
       }
 
       .portal-brand{
-        width:min(92vw, 430px);
-        height:min(35svh, 330px);
+        width:min(100vw, 520px);
+        height:min(40svh, 360px);
       }
 
       .portal-grid{
@@ -967,6 +1010,53 @@
     const openSessions = document.getElementById("openSessions");
     const backHome = document.getElementById("backHome");
     const calendarLink = document.getElementById("calendarLink");
+
+    const preventDefault = event => event.preventDefault();
+
+    document.addEventListener("contextmenu", preventDefault);
+    document.addEventListener("gesturestart", preventDefault, { passive:false });
+    document.addEventListener("gesturechange", preventDefault, { passive:false });
+    document.addEventListener("gestureend", preventDefault, { passive:false });
+    document.addEventListener("touchmove", event => {
+      if (event.touches.length > 1) event.preventDefault();
+    }, { passive:false });
+    document.addEventListener("dblclick", preventDefault);
+    document.addEventListener("dragstart", event => {
+      if (event.target instanceof Element && event.target.closest("img, svg")) {
+        event.preventDefault();
+      }
+    });
+    document.addEventListener("keydown", event => {
+      if ((event.ctrlKey || event.metaKey) && ["+", "-", "=", "0"].includes(event.key)) {
+        event.preventDefault();
+      }
+    });
+    window.addEventListener("wheel", event => {
+      if (event.ctrlKey) event.preventDefault();
+    }, { passive:false });
+
+    document.querySelectorAll(".portal-link, .session-link").forEach(link => {
+      const visual = link.querySelector(".portal-icon, .session-cover");
+      if (!visual) return;
+
+      const resetMotion = () => {
+        visual.style.setProperty("--motion-x", "0px");
+        visual.style.setProperty("--motion-y", "0px");
+        visual.style.setProperty("--motion-rotate", "0deg");
+      };
+
+      link.addEventListener("pointermove", event => {
+        if (event.pointerType === "touch") return;
+        const rect = link.getBoundingClientRect();
+        const x = ((event.clientX - rect.left) / rect.width) - .5;
+        const y = ((event.clientY - rect.top) / rect.height) - .5;
+        visual.style.setProperty("--motion-x", `${(x * 7).toFixed(2)}px`);
+        visual.style.setProperty("--motion-y", `${(y * 5).toFixed(2)}px`);
+        visual.style.setProperty("--motion-rotate", `${(x * 2.4).toFixed(2)}deg`);
+      });
+      link.addEventListener("pointerleave", resetMotion);
+      link.addEventListener("pointercancel", resetMotion);
+    });
 
     openSessions.addEventListener("click", () => {
       navigateTo("sesiones");
