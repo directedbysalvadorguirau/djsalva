@@ -1,13 +1,13 @@
-const CACHE_NAME = "djsalva-pwa-v19";
+const CACHE_NAME = "djsalva-pwa-v20";
 const ASSETS = [
   "/",
   "/index.html",
-  "/manifest.webmanifest",
+  "/manifest-v20.webmanifest",
   "/brand-mark.svg",
   "/favicon.ico",
-  "/favicon-djsalva-v18.ico",
-  "/favicon-djsalva-v18-32.png",
-  "/favicon-djsalva-v18-64.png",
+  "/favicon-djsalva-v20.ico",
+  "/favicon-djsalva-v20-32.png",
+  "/favicon-djsalva-v20-64.png",
   "/pegatina-djsalva.png",
   "/instagram-icon.svg",
   "/gmail-icon.webp",
@@ -19,7 +19,7 @@ const ASSETS = [
   "/icon3.png",
   "/icons/icon-192.png",
   "/icons/icon-512.png",
-  "/icons/apple-touch-icon.png",
+  "/icons/apple-touch-icon-v20.png",
   "/icons/maskable-512.png"
 ];
 

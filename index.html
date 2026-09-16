@@ -4,18 +4,20 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="referrer" content="origin">
+  <meta name="application-name" content="DJ SALVA">
+  <meta name="apple-mobile-web-app-title" content="DJ SALVA">
   <title>DJ SALVA</title>
-  <link rel="icon" type="image/x-icon" href="/favicon-djsalva-v18.ico">
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-djsalva-v18-32.png">
-  <link rel="icon" type="image/png" sizes="64x64" href="/favicon-djsalva-v18-64.png">
-  <link rel="shortcut icon" href="/favicon-djsalva-v18.ico">
+  <link rel="icon" type="image/x-icon" href="/favicon-djsalva-v20.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-djsalva-v20-32.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="/favicon-djsalva-v20-64.png">
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon-djsalva-v20.ico">
 
   <!-- PWA -->
-  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="manifest" href="/manifest-v20.webmanifest">
   <meta name="theme-color" content="#000000">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon-v20.png">
 
   <!-- HLS -->
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
@@ -999,10 +1001,23 @@
   </section>
 
   <script>
+    document.title = "DJ SALVA";
+
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("/sw.js").catch(console.log);
+        navigator.serviceWorker
+          .register("/sw.js?v=20", { updateViaCache: "none" })
+          .then(registration => registration.update())
+          .catch(console.log);
       });
+    }
+
+    if ("caches" in window) {
+      caches.keys().then(keys => Promise.all(
+        keys
+          .filter(key => key.startsWith("djsalva-pwa-") && key !== "djsalva-pwa-v20")
+          .map(key => caches.delete(key))
+      )).catch(() => {});
     }
 
     const VIDEO_RATE = 1.25;
