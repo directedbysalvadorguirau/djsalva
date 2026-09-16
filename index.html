@@ -5,8 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="referrer" content="origin">
   <title>DJ SALVA Sessions</title>
-  <link rel="icon" type="image/png" href="/favicon.png">
-  <link rel="shortcut icon" type="image/png" href="/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-djsalva-20260916-32.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="/favicon-djsalva-20260916-64.png">
+  <link rel="shortcut icon" type="image/png" href="/favicon-djsalva-20260916-64.png">
 
   <!-- PWA -->
   <link rel="manifest" href="/manifest.webmanifest">
@@ -693,13 +694,21 @@
       }
     }
 
+    @media (display-mode:standalone){
+      .frame-salva03{
+        --screen-left: 19.15%;
+        --screen-width: 43.8%;
+        --video-scale: 1.1;
+      }
+    }
+
     @media (display-mode:standalone) and (max-width:600px){
       .frame-salva03{
-        --screen-left: 21.16%;
+        --screen-left: 19.15%;
         --screen-top: 39.88%;
-        --screen-width: 40.96%;
+        --screen-width: 43.8%;
         --screen-height: 14.96%;
-        --video-scale: 1.11;
+        --video-scale: 1.12;
       }
     }
   </style>

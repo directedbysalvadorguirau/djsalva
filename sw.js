@@ -1,10 +1,12 @@
-const CACHE_NAME = "djsalva-pwa-v16";
+const CACHE_NAME = "djsalva-pwa-v17";
 const ASSETS = [
   "/",
   "/index.html",
   "/manifest.webmanifest",
   "/brand-mark.svg",
-  "/favicon.png",
+  "/favicon-djsalva-20260916.png",
+  "/favicon-djsalva-20260916-32.png",
+  "/favicon-djsalva-20260916-64.png",
   "/pegatina-djsalva.png",
   "/instagram-icon.svg",
   "/gmail-icon.webp",
@@ -64,13 +66,21 @@ const SALVA03_DEVICE_FIX = `
     }
   }
 
+  @media (display-mode: standalone){
+    .frame-salva03{
+      --screen-left: 19.15% !important;
+      --screen-width: 43.8% !important;
+      --video-scale: 1.1 !important;
+    }
+  }
+
   @media (display-mode: standalone) and (max-width:600px){
     .frame-salva03{
-      --screen-left: 21.16% !important;
+      --screen-left: 19.15% !important;
       --screen-top: 39.88% !important;
-      --screen-width: 40.96% !important;
+      --screen-width: 43.8% !important;
       --screen-height: 14.96% !important;
-      --video-scale: 1.11 !important;
+      --video-scale: 1.12 !important;
     }
   }
 </style>`;
