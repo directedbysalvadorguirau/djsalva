@@ -729,7 +729,7 @@
         --screen-top: 25.23%;
         --screen-width: 34.12%;
         --screen-height: 26.89%;
-        --video-scale: 1.02;
+        --video-scale: 1.16;
       }
 
       .frame-ibicenca{
@@ -1050,7 +1050,7 @@
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
         navigator.serviceWorker
-          .register("/sw.js?v=21", { updateViaCache: "none" })
+          .register("/sw.js?v=22", { updateViaCache: "none" })
           .then(registration => registration.update())
           .catch(console.log);
       });
@@ -1059,7 +1059,7 @@
     if ("caches" in window) {
       caches.keys().then(keys => Promise.all(
         keys
-          .filter(key => key.startsWith("djsalva-pwa-") && key !== "djsalva-pwa-v21")
+          .filter(key => key.startsWith("djsalva-pwa-") && key !== "djsalva-pwa-v22")
           .map(key => caches.delete(key))
       )).catch(() => {});
     }
