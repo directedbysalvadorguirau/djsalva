@@ -714,6 +714,40 @@
         --video-scale: 1.12;
       }
     }
+
+    @media (min-aspect-ratio:1/1){
+      .frame{
+        width:min(100vw, calc(100svh * 4 / 3));
+        height:min(100svh, calc(100vw * 3 / 4));
+        max-width:100vw;
+        max-height:100svh;
+        aspect-ratio:4/3;
+      }
+
+      .frame-classic{
+        --screen-left: 24.45%;
+        --screen-top: 25.23%;
+        --screen-width: 34.12%;
+        --screen-height: 26.89%;
+        --video-scale: 1.02;
+      }
+
+      .frame-ibicenca{
+        --screen-left: 40.54%;
+        --screen-top: 49.26%;
+        --screen-width: 19.06%;
+        --screen-height: 14.82%;
+        --video-scale: 1.03;
+      }
+
+      .frame-salva03{
+        --screen-left: 37.78%;
+        --screen-top: 36.19%;
+        --screen-width: 20.10%;
+        --screen-height: 14.73%;
+        --video-scale: 1.03;
+      }
+    }
   </style>
 </head>
 
@@ -784,15 +818,15 @@
 
       <nav class="sessions-grid" aria-label="Sesiones DJ SALVA">
         <a class="session-link" href="#classic">
-          <img class="session-cover" src="djsalva-icon.png" alt="Portada DJ SALVA #01">
+          <img class="session-cover" src="session-01-icon.png" alt="Portada DJ SALVA #01">
           <span>DJ SALVA #01</span>
         </a>
         <a class="session-link" href="#ibicenca">
-          <img class="session-cover" src="icon-ibicenca.png" alt="Portada DJ SALVA #02">
+          <img class="session-cover" src="session-02-icon.png" alt="Portada DJ SALVA #02">
           <span>DJ SALVA #02</span>
         </a>
         <a class="session-link" href="#salva03">
-          <img class="session-cover" src="icon3.png" alt="Portada DJ SALVA #03">
+          <img class="session-cover" src="session-03-icon.png" alt="Portada DJ SALVA #03">
           <span>DJ SALVA #03</span>
         </a>
       </nav>
@@ -801,7 +835,10 @@
 
   <section class="stage" id="salva03" hidden>
     <div class="frame frame-salva03" id="appSalva03">
-      <img class="bg" src="fondo3.png" alt="DJ SALVA #03">
+      <picture>
+        <source media="(min-aspect-ratio:1/1)" srcset="session-03-landscape.png">
+        <img class="bg" src="fondo3.png" alt="DJ SALVA #03">
+      </picture>
 
       <div class="screen">
         <video id="vidSalva03" playsinline webkit-playsinline muted preload="auto" loop></video>
@@ -866,7 +903,10 @@
 
   <section class="stage" id="ibicenca" hidden>
     <div class="frame frame-ibicenca" id="appIbicenca">
-      <img class="bg" src="fondo2.png" alt="Ibicenca Session">
+      <picture>
+        <source media="(min-aspect-ratio:1/1)" srcset="session-02-landscape.png">
+        <img class="bg" src="fondo2.png" alt="DJ SALVA #02">
+      </picture>
 
       <div class="screen">
         <video id="vidIbicenca" playsinline webkit-playsinline muted preload="auto" loop>
@@ -934,7 +974,10 @@
 
   <section class="stage" id="classic" hidden>
     <div class="frame frame-classic" id="appClassic">
-      <img class="bg" src="laptop-session.png" alt="DJ SALVA #01">
+      <picture>
+        <source media="(min-aspect-ratio:1/1)" srcset="session-01-landscape.png">
+        <img class="bg" src="laptop-session.png" alt="DJ SALVA #01">
+      </picture>
 
       <div class="screen">
         <video id="vidClassic" playsinline webkit-playsinline muted preload="auto" loop>
@@ -1002,11 +1045,12 @@
 
   <script>
     document.title = "DJ SALVA";
+    document.getElementById("salva03-device-fix")?.remove();
 
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
         navigator.serviceWorker
-          .register("/sw.js?v=20", { updateViaCache: "none" })
+          .register("/sw.js?v=21", { updateViaCache: "none" })
           .then(registration => registration.update())
           .catch(console.log);
       });
@@ -1015,7 +1059,7 @@
     if ("caches" in window) {
       caches.keys().then(keys => Promise.all(
         keys
-          .filter(key => key.startsWith("djsalva-pwa-") && key !== "djsalva-pwa-v20")
+          .filter(key => key.startsWith("djsalva-pwa-") && key !== "djsalva-pwa-v21")
           .map(key => caches.delete(key))
       )).catch(() => {});
     }
@@ -1632,7 +1676,7 @@
         closeLibraryId: "closeLibrarySalva03",
         overlayId: "overlaySalva03",
         tracksId: "tracksSalva03",
-        coverSrc: "icon3.png",
+        coverSrc: "session-03-icon.png",
         storageKey: "djsalva_salva03_unlocks_v2",
         tracksStartUnlocked: true,
         videoHlsUrl: "https://vz-cec5811b-8a2.b-cdn.net/e63d1a75-c415-41c8-ac50-8e66bb00cef1/playlist.m3u8",
@@ -1771,7 +1815,7 @@
         closeLibraryId: "closeLibraryIbicenca",
         overlayId: "overlayIbicenca",
         tracksId: "tracksIbicenca",
-        coverSrc: "icon-ibicenca.png",
+        coverSrc: "session-02-icon.png",
         storageKey: "djsalva_ibicenca_unlocks_v1",
         videoHlsUrl: "https://vz-cec5811b-8a2.b-cdn.net/0aea3def-091f-456c-bbab-e3c7f9c134b8/playlist.m3u8",
         videoFallbackUrl: "ibicenca.mp4",
@@ -1836,7 +1880,7 @@
         closeLibraryId: "closeLibraryClassic",
         overlayId: "overlayClassic",
         tracksId: "tracksClassic",
-        coverSrc: "djsalva-icon.png",
+        coverSrc: "session-01-icon.png",
         storageKey: "djsalva_classic_unlocks_v1",
         videoHlsUrl: "https://vz-cec5811b-8a2.b-cdn.net/e2229fa8-fde2-4eec-b1de-b4103ea4e4b4/playlist.m3u8",
         videoFallbackUrl: "https://djsalva-cdn.b-cdn.net/video.mp4",

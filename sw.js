@@ -1,4 +1,4 @@
-const CACHE_NAME = "djsalva-pwa-v20";
+const CACHE_NAME = "djsalva-pwa-v21";
 const ASSETS = [
   "/",
   "/index.html",
@@ -14,77 +14,17 @@ const ASSETS = [
   "/laptop-session.png",
   "/fondo2.png",
   "/fondo3.png",
-  "/djsalva-icon.png",
-  "/icon-ibicenca.png",
-  "/icon3.png",
+  "/session-01-icon.png",
+  "/session-02-icon.png",
+  "/session-03-icon.png",
+  "/session-01-landscape.png",
+  "/session-02-landscape.png",
+  "/session-03-landscape.png",
   "/icons/icon-192.png",
   "/icons/icon-512.png",
   "/icons/apple-touch-icon-v20.png",
   "/icons/maskable-512.png"
 ];
-
-const SALVA03_DEVICE_FIX = `
-<style id="salva03-device-fix">
-  .frame-salva03{
-    --screen-left: 21.22% !important;
-    --screen-top: 39.86% !important;
-    --screen-width: 41.08% !important;
-    --screen-height: 14.92% !important;
-    --video-scale: 1.08 !important;
-  }
-
-  .frame-salva03 .screen{
-    background:#000 !important;
-  }
-
-  .frame-salva03 .screen video{
-    position:absolute !important;
-    inset:0 !important;
-    min-width:100% !important;
-    min-height:100% !important;
-    background:#000 !important;
-  }
-
-  @media (max-width:600px){
-    .frame-salva03{
-      --screen-left: 21.14% !important;
-      --screen-top: 39.82% !important;
-      --screen-width: 41.26% !important;
-      --screen-height: 15.02% !important;
-      --video-scale: 1.09 !important;
-    }
-  }
-
-  @supports (-webkit-touch-callout: none){
-    @media (max-width:600px){
-      .frame-salva03{
-        --screen-left: 20.98% !important;
-        --screen-top: 39.76% !important;
-        --screen-width: 41.52% !important;
-        --screen-height: 15.28% !important;
-        --video-scale: 1.11 !important;
-      }
-    }
-  }
-
-  @media (display-mode: standalone){
-    .frame-salva03{
-      --screen-left: 19.15% !important;
-      --screen-width: 43.8% !important;
-      --video-scale: 1.1 !important;
-    }
-  }
-
-  @media (display-mode: standalone) and (max-width:600px){
-    .frame-salva03{
-      --screen-left: 19.15% !important;
-      --screen-top: 39.88% !important;
-      --screen-width: 43.8% !important;
-      --screen-height: 14.96% !important;
-      --video-scale: 1.12 !important;
-    }
-  }
-</style>`;
 
 const VERCEL_ANALYTICS_SNIPPET = `
 <script id="vercel-analytics-loader">
@@ -96,10 +36,6 @@ function injectRuntimeFixes(html) {
   if (!html) return html;
 
   let patched = html;
-
-  if (!patched.includes('id="salva03-device-fix"')) {
-    patched = patched.replace("</head>", `${SALVA03_DEVICE_FIX}</head>`);
-  }
 
   if (!patched.includes('id="vercel-analytics-loader"') && !patched.includes('/_vercel/insights/script.js')) {
     patched = patched.replace("</head>", `${VERCEL_ANALYTICS_SNIPPET}</head>`);
