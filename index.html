@@ -125,7 +125,8 @@
     .session-link:nth-child(2){ animation-delay:.06s; }
     .portal-link:nth-child(3),
     .session-link:nth-child(3){ animation-delay:.12s; }
-    .portal-link:nth-child(4){ animation-delay:.18s; }
+    .portal-link:nth-child(4),
+    .session-link:nth-child(4){ animation-delay:.18s; }
 
     .portal-link:active .portal-icon,
     .session-link:active .session-cover{
@@ -230,12 +231,22 @@
     }
 
     .sessions-grid{
-      width:min(690px, 100%);
+      width:min(820px, 100%);
       display:grid;
-      grid-template-columns:repeat(3, minmax(0, 1fr));
+      grid-template-columns:repeat(4, minmax(0, 1fr));
       gap:clamp(22px, 5vw, 54px);
       align-items:start;
     }
+
+    #portalSessions{ gap:clamp(12px, 2svh, 24px); }
+
+    #portalSessions .portal-brand{
+      width:min(64vw, 360px, 35svh);
+      height:min(47.4vw, 267px, 26svh);
+      flex-shrink:0;
+    }
+
+    #portalSessions .session-cover{ width:min(100%, 150px, 20svh); }
 
     .session-cover{
       --motion-x:0px;
@@ -315,6 +326,36 @@
       --screen-height: 14.92%;
       --btn-bottom: 18.5%;
       --video-scale: 1.08;
+    }
+
+    /* Match the image aspect ratio, including when a PWA has a taller viewport. */
+    .frame-salva04{
+      width:min(100vw, calc(100svh * 941 / 1672));
+      height:min(100svh, calc(100vw * 1672 / 941));
+      aspect-ratio:941/1672;
+      --screen-left: 28.37407%;
+      --screen-top: 49.82057%;
+      --screen-width: 33.90011%;
+      --screen-height: 10.70575%;
+      --video-scale: 1.01;
+      --btn-bottom: 16%;
+    }
+
+    .frame-salva04 .screen{ background:#000; }
+
+    .media-status{
+      position:absolute;
+      top:76px;
+      left:14px;
+      right:14px;
+      z-index:56;
+      margin:0;
+      padding:8px 12px;
+      border-radius:10px;
+      color:#fff;
+      background:rgba(0,0,0,.8);
+      font-size:13px;
+      text-align:center;
     }
 
     .frame-ibicenca{
@@ -637,8 +678,12 @@
       }
 
       .sessions-grid{
-        gap:14px;
+        width:min(330px, 100%);
+        grid-template-columns:repeat(2, minmax(0, 1fr));
+        gap:18px 24px;
       }
+
+      #portalSessions .session-cover{ width:min(22vw, 108px, 13svh); }
 
       .session-cover{
         width:min(25vw, 108px);
@@ -744,6 +789,14 @@
         --screen-height: 14.73%;
         --video-scale: 1.03;
       }
+
+      .frame-salva04{
+        --screen-left: 37.36187%;
+        --screen-top: 44.47513%;
+        --screen-width: 21.54697%;
+        --screen-height: 16.11419%;
+        --btn-bottom: 12%;
+      }
     }
   </style>
 </head>
@@ -826,7 +879,80 @@
           <img class="session-cover" src="session-03-icon.png" alt="Portada DJ SALVA #03">
           <span>DJ SALVA #03</span>
         </a>
+        <a class="session-link" href="#salva04">
+          <img class="session-cover" src="session-04-portrait.png" alt="Portada DJ SALVA #04">
+          <span>DJ SALVA #04</span>
+        </a>
       </nav>
+    </div>
+  </section>
+
+  <section class="stage" id="salva04" hidden>
+    <div class="frame frame-salva04" id="appSalva04">
+      <picture>
+        <source media="(min-aspect-ratio:1/1)" srcset="session-04-landscape.png">
+        <img class="bg" src="session-04-portrait.png" alt="DJ SALVA #04">
+      </picture>
+
+      <div class="screen">
+        <video id="vidSalva04" playsinline webkit-playsinline muted preload="metadata" loop></video>
+      </div>
+
+      <audio id="audSalva04Part1" preload="metadata"></audio>
+      <audio id="audSalva04Part2" preload="metadata"></audio>
+      <p class="media-status" id="statusSalva04" role="status" hidden></p>
+
+      <div class="top-actions">
+        <button class="top-btn" id="shareBtnSalva04" aria-label="Compartir" title="Compartir">
+          <svg class="mini-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7a2.5 2.5 0 0 0 0-1.39l7-4.11A2.99 2.99 0 1 0 14 5a3 3 0 0 0 .05.5l-7 4.11a3 3 0 1 0 0 4.78l7.05 4.14c-.03.16-.05.31-.05.47a3 3 0 1 0 3-2.92z"></path>
+          </svg>
+        </button>
+
+        <button class="menu-btn" id="openLibrarySalva04" aria-label="Abrir biblioteca">
+          <span class="sr">Abrir biblioteca</span>
+          <div class="bars" aria-hidden="true">
+            <span></span>
+            <span></span>
+          </div>
+        </button>
+      </div>
+
+      <div class="audio-time"><span id="currentTimeSalva04">0:00</span></div>
+
+      <button id="toggleSalva04" class="play-btn" aria-label="Reproducir">
+        <span class="sr">Play/Pause</span>
+
+        <svg id="iconPlaySalva04" class="icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M8 5v14l11-7z"></path>
+        </svg>
+
+        <svg id="iconPauseSalva04" class="icon" viewBox="0 0 24 24" aria-hidden="true" style="display:none;">
+          <path d="M6 5h4v14H6zm8 0h4v14h-4z"></path>
+        </svg>
+      </button>
+
+      <button class="session-back" type="button" aria-label="Volver a elegir sesión">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="m15 5-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>Sesiones</span>
+      </button>
+
+      <div class="overlay" id="overlaySalva04"></div>
+
+      <aside class="drawer" id="drawerSalva04" aria-label="Biblioteca DJ SALVA #04">
+        <header>
+          <div class="drawer-title">DJ SALVA #04</div>
+          <button class="close-btn" id="closeLibrarySalva04" aria-label="Cerrar">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M18.3 5.7 12 12l6.3 6.3-1.4 1.4L10.6 13.4 4.3 19.7 2.9 18.3 9.2 12 2.9 5.7 4.3 4.3l6.3 6.3 6.3-6.3z"></path>
+            </svg>
+          </button>
+        </header>
+
+        <div class="tracks" id="tracksSalva04"></div>
+      </aside>
     </div>
   </section>
 
@@ -1039,7 +1165,7 @@
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
         navigator.serviceWorker
-          .register("/sw.js?v=23", { updateViaCache: "none" })
+          .register("/sw.js?v=24", { updateViaCache: "none" })
           .then(registration => registration.update())
           .catch(console.log);
       });
@@ -1048,7 +1174,7 @@
     if ("caches" in window) {
       caches.keys().then(keys => Promise.all(
         keys
-          .filter(key => key.startsWith("djsalva-pwa-") && key !== "djsalva-pwa-v23")
+          .filter(key => key.startsWith("djsalva-pwa-") && key !== "djsalva-pwa-v24")
           .map(key => caches.delete(key))
       )).catch(() => {});
     }
@@ -1237,12 +1363,18 @@
         coverSrc: def.coverSrc,
         storageKey: def.storageKey,
         videoUrl: def.videoUrl,
+        statusEl: def.statusId ? document.getElementById(def.statusId) : null,
         trackNameEls: [],
+        trackTimeEls: [],
+        cancelPendingSeek: () => {},
         videoStarted: false,
         tracks: def.tracks.map(track => ({
           t: track.t,
           at: track.at,
           sec: timeToSeconds(track.at),
+          relativeAt: track.at,
+          relativeSec: timeToSeconds(track.at),
+          segmentIndex: track.segment || 0,
           unlocked: def.tracksStartUnlocked !== false
         }))
       };
@@ -1302,7 +1434,49 @@
       };
 
       session.updateTime = (time = session.getCurrentTime()) => {
-        session.currentTimeEl.textContent = formatTime(time);
+        session.currentTimeEl.textContent = Number.isFinite(time) ? formatTime(time) : "...";
+      };
+
+      session.refreshTimeline = () => {
+        if (!def.deriveTimelineFromAudio) return;
+        let startAt = 0;
+        for (const segment of session.audioSegments) {
+          segment.startAt = startAt;
+          const duration = segment.el.duration;
+          startAt = Number.isFinite(duration) && duration > 0 ? startAt + duration : NaN;
+        }
+        for (let i = 0; i < session.tracks.length; i++) {
+          const track = session.tracks[i];
+          track.sec = session.audioSegments[track.segmentIndex].startAt + track.relativeSec;
+          track.at = Number.isFinite(track.sec)
+            ? formatTime(track.sec)
+            : `Parte ${track.segmentIndex + 1} · ${track.relativeAt}`;
+          if (session.trackTimeEls[i]) session.trackTimeEls[i].textContent = track.at;
+        }
+        session.updateTime();
+      };
+
+      session.prepareNextAudio = () => {
+        if (!def.preloadNextAudio) return;
+        const current = session.activeAudioSegment;
+        const next = session.audioSegments[current.index + 1];
+        // Buffer the next part near the boundary, not an entire extra hour on entry.
+        if (next && Number.isFinite(current.el.duration) &&
+            current.el.duration - current.el.currentTime <= 45) {
+          next.el.preload = "auto";
+        }
+      };
+
+      session.showMediaError = () => {
+        if (!session.statusEl) return;
+        session.statusEl.textContent = "No se ha podido cargar el audio o vídeo. Pulsa reproducir para reintentarlo.";
+        session.statusEl.hidden = false;
+      };
+
+      session.clearMediaError = () => {
+        if (session.statusEl && !session.vid.error && !session.getActiveAudio().error) {
+          session.statusEl.hidden = true;
+        }
       };
 
       session.saveUnlockedTracks = () => {
@@ -1351,6 +1525,7 @@
       };
 
       session.ensureVideoRunning = async () => {
+        if (session.vid.error) session.vid.load();
         session.vid.playbackRate = VIDEO_RATE;
         if (session.vid.paused) {
           await session.vid.play();
@@ -1363,6 +1538,8 @@
 
         const activeAudio = session.getActiveAudio();
         if (!activeAudio) return;
+        if (activeAudio.error) activeAudio.load();
+        session.prepareNextAudio();
 
         try{
           await Promise.all([
@@ -1376,6 +1553,7 @@
       };
 
       session.pauseAll = () => {
+        session.cancelPendingSeek();
         for (const segment of session.audioSegments) {
           segment.el.pause();
         }
@@ -1396,6 +1574,7 @@
 
       session.setRelativeTime = (segment, relativeTime, autoplay = true) => {
         if (!segment) return;
+        session.cancelPendingSeek();
 
         session.setActiveAudioSegment(segment);
 
@@ -1407,6 +1586,7 @@
 
         const audioEl = segment.el;
         const applyTime = () => {
+          session.cancelPendingSeek();
           const max = Number.isFinite(audioEl.duration) ? audioEl.duration : relativeTime;
           const target = clamp(relativeTime, 0, max);
           try{
@@ -1426,6 +1606,12 @@
           applyTime();
         } else {
           audioEl.addEventListener("loadedmetadata", applyTime, { once:true });
+          session.cancelPendingSeek = () => {
+            audioEl.removeEventListener("loadedmetadata", applyTime);
+            session.cancelPendingSeek = () => {};
+          };
+          // Start inside the user's gesture if iOS has deferred metadata loading.
+          if (autoplay) session.playAll();
         }
       };
 
@@ -1439,6 +1625,7 @@
       session.renderTracks = () => {
         session.tracksEl.innerHTML = "";
         session.trackNameEls.length = 0;
+        session.trackTimeEls.length = 0;
 
         for (let i = 0; i < session.tracks.length; i++) {
           const track = session.tracks[i];
@@ -1456,10 +1643,15 @@
 
           const nameEl = trackBtn.querySelector(".name");
           session.trackNameEls.push(nameEl);
+          session.trackTimeEls.push(trackBtn.querySelector(".time"));
 
           trackBtn.addEventListener("click", () => {
             session.unlockTrack(i);
-            session.seekTo(track.sec, true);
+            if (def.deriveTimelineFromAudio) {
+              session.setRelativeTime(session.audioSegments[track.segmentIndex], track.relativeSec, true);
+            } else {
+              session.seekTo(track.sec, true);
+            }
             session.closeDrawer();
           });
 
@@ -1473,6 +1665,7 @@
       });
 
       session.loadUnlockedTracks();
+      session.refreshTimeline();
       session.renderTracks();
       session.updateTime(0);
       session.showPlay();
@@ -1492,15 +1685,20 @@
         const audioEl = segment.el;
 
         audioEl.addEventListener("loadedmetadata", () => {
+          session.refreshTimeline();
           if (session.activeAudioSegment === segment) session.updateTime();
         });
 
         audioEl.addEventListener("durationchange", () => {
+          session.refreshTimeline();
           if (session.activeAudioSegment === segment) session.updateTime();
         });
 
         audioEl.addEventListener("timeupdate", () => {
-          if (session.activeAudioSegment === segment) session.updateTime();
+          if (session.activeAudioSegment === segment) {
+            session.updateTime();
+            if (!audioEl.paused) session.prepareNextAudio();
+          }
         });
 
         audioEl.addEventListener("seeking", () => {
@@ -1516,10 +1714,18 @@
         audioEl.addEventListener("play", () => {
           if (session.activeAudioSegment === segment) {
             session.showPause();
+            session.clearMediaError();
+            session.prepareNextAudio();
           }
         });
 
+        audioEl.addEventListener("error", () => {
+          if (session.activeAudioSegment === segment) session.showMediaError();
+        });
+
         audioEl.addEventListener("ended", () => {
+          if (session.activeAudioSegment !== segment || session.section.hidden) return;
+          session.refreshTimeline();
           const nextSegment = session.audioSegments[i + 1];
 
           if (nextSegment) {
@@ -1532,6 +1738,7 @@
               session.showPause();
             }).catch(() => {
               session.showPlay();
+              session.showMediaError();
             });
             return;
           }
@@ -1541,6 +1748,9 @@
           session.updateTime(0);
         });
       }
+
+      session.vid.addEventListener("error", session.showMediaError);
+      session.vid.addEventListener("playing", session.clearMediaError);
 
       session.vid.addEventListener("pause", () => {
         if (session.videoStarted) session.vid.play().catch(() => {});
@@ -1570,6 +1780,112 @@
     }
 
     const sessionDefs = [
+      {
+        id: "salva04",
+        title: "DJ SALVA #04",
+        sectionId: "salva04",
+        appId: "appSalva04",
+        vidId: "vidSalva04",
+        btnId: "toggleSalva04",
+        iconPlayId: "iconPlaySalva04",
+        iconPauseId: "iconPauseSalva04",
+        shareBtnId: "shareBtnSalva04",
+        currentTimeId: "currentTimeSalva04",
+        openLibraryId: "openLibrarySalva04",
+        closeLibraryId: "closeLibrarySalva04",
+        overlayId: "overlaySalva04",
+        tracksId: "tracksSalva04",
+        statusId: "statusSalva04",
+        coverSrc: "session-04-portrait.png",
+        storageKey: "djsalva_salva04_unlocks_v1",
+        tracksStartUnlocked: true,
+        deriveTimelineFromAudio: true,
+        preloadNextAudio: true,
+        videoUrl: "https://4r1ck5gfgtthlmqr.public.blob.vercel-storage.com/audio/sesion04.mp4",
+        audioSegments: [
+          { audioId: "audSalva04Part1", url: "https://4r1ck5gfgtthlmqr.public.blob.vercel-storage.com/sesion04-1.mp3" },
+          { audioId: "audSalva04Part2", url: "https://4r1ck5gfgtthlmqr.public.blob.vercel-storage.com/sesion04-2.mp3" }
+        ],
+        tracks: [
+          { t:"SOLITA", at:"00:00" },
+          { t:"SETEADORA", at:"03:09" },
+          { t:"MUEVE ESE CULO", at:"03:25" },
+          { t:"ENZACIAO", at:"04:17" },
+          { t:"DILE QUE TU ME QUIERES", at:"05:35" },
+          { t:"NO ME CONOCE RMX", at:"07:22" },
+          { t:"TU$$I", at:"09:25" },
+          { t:"NO LOVE", at:"10:36" },
+          { t:"HASTA QUE DIOS DIGA", at:"12:57" },
+          { t:"BABY LOVER", at:"15:54" },
+          { t:"VAMO A VEL", at:"16:51" },
+          { t:"AIRE", at:"19:36" },
+          { t:"CAILE", at:"21:36" },
+          { t:"UH MA BB", at:"23:37" },
+          { t:"BÁILAME RMX", at:"24:20" },
+          { t:"NO ME GUILLO V2", at:"25:48" },
+          { t:"QUIERO MÁS", at:"27:09" },
+          { t:"TOKISCHA", at:"27:33" },
+          { t:"LAS MUÑEQUITAS", at:"27:43" },
+          { t:"MIRÁNDOTE", at:"28:01" },
+          { t:"EL TELÉFONO", at:"29:17" },
+          { t:"DA ME", at:"31:59" },
+          { t:"AMIGOS Y ENEMIGOS", at:"33:51" },
+          { t:"OTRA NOCHE EN MIAMI", at:"36:42" },
+          { t:"¿QUÉ NOS PASÓ?", at:"38:17" },
+          { t:"LOVE", at:"39:39" },
+          { t:"QUIERE BEBER", at:"41:32" },
+          { t:"YONAGUNI", at:"43:04" },
+          { t:"LA INOCENTE", at:"45:35" },
+          { t:"ARENA Y SAL", at:"47:47" },
+          { t:"CHULO PT.2", at:"49:25" },
+          { t:"LA SACAPUNTAS", at:"51:54" },
+          { t:"ESTAMOS BIEN", at:"53:07" },
+          { t:"MALBEC", at:"53:58" },
+          { t:"LOQUITA", at:"54:45" },
+          { t:"DE LAS 2", at:"55:33" },
+          { t:"MUEVELO", at:"56:13" },
+          { t:"GOLFAS DE VERDAD", at:"57:58" },
+          { t:"SI ME HICIERA EL DE LA LENGUA RMX", at:"59:08" },
+          { t:"SOLDADO Y PROFETA", at:"59:30" },
+          { t:"47 RMX", at:"1:02:42" },
+          { t:"NO TE HAGAS", at:"00:00", segment:1 },
+          { t:"ESCLAVA REMIX", at:"01:10", segment:1 },
+          { t:"LAS MÁS BONITAS SON P#TAS", at:"03:10", segment:1 },
+          { t:"4K", at:"03:31", segment:1 },
+          { t:"LA ROMANA", at:"05:57", segment:1 },
+          { t:"CHAMBEA", at:"06:57", segment:1 },
+          { t:"MERA WOO", at:"08:13", segment:1 },
+          { t:"38", at:"10:03", segment:1 },
+          { t:"CANDY", at:"10:50", segment:1 },
+          { t:"PAM PAM", at:"12:30", segment:1 },
+          { t:"FLAITEERA", at:"13:51", segment:1 },
+          { t:"ALO", at:"17:05", segment:1 },
+          { t:"TRAVESURAS", at:"17:26", segment:1 },
+          { t:"SCANDIC", at:"18:50", segment:1 },
+          { t:"VETE", at:"19:36", segment:1 },
+          { t:"ADÁN Y EVA", at:"20:35", segment:1 },
+          { t:"QUE PRETENDES", at:"21:13", segment:1 },
+          { t:"34 AMOR Y MAFIA", at:"22:27", segment:1 },
+          { t:"CUANDO NO ERA CANTANTE RMX", at:"24:27", segment:1 },
+          { t:"TOTO DE LOCA", at:"26:18", segment:1 },
+          { t:"EOO", at:"28:27", segment:1 },
+          { t:"CHUOS", at:"28:48", segment:1 },
+          { t:"YO PERREO SOLA", at:"29:52", segment:1 },
+          { t:"VOY A LLEVARTE PA PR", at:"32:27", segment:1 },
+          { t:"LA JEEPETA RMX", at:"34:12", segment:1 },
+          { t:"VELDÁ", at:"36:46", segment:1 },
+          { t:"$UELTA GATITA $UELTA", at:"38:47", segment:1 },
+          { t:"CAPRICHOSO", at:"41:49", segment:1 },
+          { t:"BAD GYAL", at:"44:23", segment:1 },
+          { t:"LOKENECESITAS", at:"47:45", segment:1 },
+          { t:"MI VECINITA", at:"50:05", segment:1 },
+          { t:"2010YPICO", at:"50:28", segment:1 },
+          { t:"ALGO VA A PASAR", at:"53:29", segment:1 },
+          { t:"LA OCASIÓN", at:"57:03", segment:1 },
+          { t:"VUELVE", at:"59:37", segment:1 },
+          { t:"DRACUKEO", at:"1:01:49", segment:1 }
+        ]
+      },
       {
         id: "salva03",
         title: "DJ SALVA #03",
