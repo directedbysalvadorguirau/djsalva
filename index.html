@@ -19,9 +19,6 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon-v20.png">
 
-  <!-- HLS -->
-  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-
   <style>
     :root{
       --ui-pad: 14px;
@@ -841,11 +838,11 @@
       </picture>
 
       <div class="screen">
-        <video id="vidSalva03" playsinline webkit-playsinline muted preload="auto" loop></video>
+        <video id="vidSalva03" playsinline webkit-playsinline muted preload="metadata" loop></video>
       </div>
 
-      <audio id="audSalva03Part1" preload="auto"></audio>
-      <audio id="audSalva03Part2" preload="auto"></audio>
+      <audio id="audSalva03Part1" preload="metadata"></audio>
+      <audio id="audSalva03Part2" preload="metadata"></audio>
 
       <div class="top-actions">
         <button class="top-btn" id="shareBtnSalva03" aria-label="Compartir" title="Compartir">
@@ -909,14 +906,10 @@
       </picture>
 
       <div class="screen">
-        <video id="vidIbicenca" playsinline webkit-playsinline muted preload="auto" loop>
-          <source src="ibicenca.mp4" type="video/mp4">
-        </video>
+        <video id="vidIbicenca" playsinline webkit-playsinline muted preload="metadata" loop></video>
       </div>
 
-      <audio id="audIbicenca" preload="auto">
-        <source src="ibicencacompleta.mp3" type="audio/mpeg">
-      </audio>
+      <audio id="audIbicenca" preload="metadata"></audio>
 
       <div class="top-actions">
         <button class="top-btn" id="shareBtnIbicenca" aria-label="Compartir" title="Compartir">
@@ -980,14 +973,10 @@
       </picture>
 
       <div class="screen">
-        <video id="vidClassic" playsinline webkit-playsinline muted preload="auto" loop>
-          <source src="https://djsalva-cdn.b-cdn.net/video.mp4" type="video/mp4">
-        </video>
+        <video id="vidClassic" playsinline webkit-playsinline muted preload="metadata" loop></video>
       </div>
 
-      <audio id="audClassic" preload="auto">
-        <source src="https://djsalva-cdn.b-cdn.net/audio.mp3" type="audio/mpeg">
-      </audio>
+      <audio id="audClassic" preload="metadata"></audio>
 
       <div class="top-actions">
         <button class="top-btn" id="shareBtnClassic" aria-label="Compartir" title="Compartir">
@@ -1050,7 +1039,7 @@
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
         navigator.serviceWorker
-          .register("/sw.js?v=22", { updateViaCache: "none" })
+          .register("/sw.js?v=23", { updateViaCache: "none" })
           .then(registration => registration.update())
           .catch(console.log);
       });
@@ -1059,7 +1048,7 @@
     if ("caches" in window) {
       caches.keys().then(keys => Promise.all(
         keys
-          .filter(key => key.startsWith("djsalva-pwa-") && key !== "djsalva-pwa-v22")
+          .filter(key => key.startsWith("djsalva-pwa-") && key !== "djsalva-pwa-v23")
           .map(key => caches.delete(key))
       )).catch(() => {});
     }
@@ -1186,93 +1175,20 @@
       return `${m}:${String(s).padStart(2, "0")}`;
     }
 
-    function applyFallbackSource(mediaEl, fallbackUrl, resumeTime = 0, shouldResume = false, isVideo = false){
-      if (!fallbackUrl) return;
-
-      try{
-        mediaEl.pause();
-      }catch(e){}
-
-      mediaEl.src = fallbackUrl;
-      mediaEl.load();
-
-      mediaEl.addEventListener("loadedmetadata", () => {
-        if (!isVideo && Number.isFinite(resumeTime) && resumeTime > 0) {
-          try{
-            mediaEl.currentTime = resumeTime;
-          }catch(e){}
-        }
-
-        if (isVideo) {
-          mediaEl.loop = true;
-          mediaEl.playbackRate = VIDEO_RATE;
-        }
-
-        if (shouldResume) {
-          mediaEl.play().catch(() => {});
-        }
-      }, { once:true });
-    }
-
-    function setupSingleMediaHls(mediaEl, hlsUrl, fallbackUrl, isVideo){
-      const nativeType = "application/vnd.apple.mpegurl";
-
+    function setupSingleMedia(mediaEl, url, isVideo){
+      // Native MP4/MP3 playback uses Blob byte ranges, not an HLS manifest.
+      mediaEl.preload = "metadata";
       if (isVideo) {
         mediaEl.muted = true;
         mediaEl.defaultMuted = true;
+        mediaEl.loop = true;
+        mediaEl.playbackRate = VIDEO_RATE;
         mediaEl.setAttribute("muted", "");
         mediaEl.setAttribute("playsinline", "");
         mediaEl.setAttribute("webkit-playsinline", "");
       }
-
-      if (!hlsUrl) {
-        if (fallbackUrl) {
-          mediaEl.src = fallbackUrl;
-          mediaEl.load();
-        }
-        return null;
-      }
-
-      if (mediaEl.canPlayType(nativeType)) {
-        mediaEl.addEventListener("error", () => {
-          const resumeTime = isVideo ? 0 : (mediaEl.currentTime || 0);
-          const shouldResume = isVideo ? true : !mediaEl.paused;
-          applyFallbackSource(mediaEl, fallbackUrl, resumeTime, shouldResume, isVideo);
-        }, { once:true });
-
-        mediaEl.src = hlsUrl;
-        mediaEl.load();
-        return null;
-      }
-
-      if (window.Hls && Hls.isSupported()) {
-        const instance = new Hls({
-          maxBufferLength: 30,
-          maxMaxBufferLength: 60,
-          lowLatencyMode: false
-        });
-
-        instance.loadSource(hlsUrl);
-        instance.attachMedia(mediaEl);
-
-        instance.on(Hls.Events.ERROR, (_, data) => {
-          if (!data || !data.fatal) return;
-
-          const resumeTime = isVideo ? 0 : (mediaEl.currentTime || 0);
-          const shouldResume = isVideo ? true : !mediaEl.paused;
-
-          try{
-            instance.destroy();
-          }catch(e){}
-
-          applyFallbackSource(mediaEl, fallbackUrl, resumeTime, shouldResume, isVideo);
-        });
-
-        return instance;
-      }
-
-      applyFallbackSource(mediaEl, fallbackUrl, 0, isVideo, isVideo);
-      return null;
+      mediaEl.src = url;
+      mediaEl.load();
     }
 
     function closeOtherDrawers(currentId){
@@ -1296,8 +1212,7 @@
         ? def.audioSegments
         : [{
             audioId: def.audId,
-            hlsUrl: def.audioHlsUrl,
-            fallbackUrl: def.audioFallbackUrl,
+            url: def.audioUrl,
             startAt: 0
           }];
 
@@ -1321,12 +1236,9 @@
         tracksEl: document.getElementById(def.tracksId),
         coverSrc: def.coverSrc,
         storageKey: def.storageKey,
-        videoHlsUrl: def.videoHlsUrl,
-        videoFallbackUrl: def.videoFallbackUrl,
+        videoUrl: def.videoUrl,
         trackNameEls: [],
         videoStarted: false,
-        hlsVideo: null,
-        hlsAudio: [],
         tracks: def.tracks.map(track => ({
           t: track.t,
           at: track.at,
@@ -1339,12 +1251,10 @@
         .map((segmentDef, index) => ({
           index,
           el: document.getElementById(segmentDef.audioId),
-          hlsUrl: segmentDef.hlsUrl || "",
-          fallbackUrl: segmentDef.fallbackUrl || "",
+          url: segmentDef.url,
           startAt: typeof segmentDef.startAt === "number"
             ? segmentDef.startAt
-            : timeToSeconds(segmentDef.startAt || "0:00"),
-          hls: null
+            : timeToSeconds(segmentDef.startAt || "0:00")
         }))
         .sort((a, b) => a.startAt - b.startAt);
 
@@ -1557,10 +1467,9 @@
         }
       };
 
-      session.hlsVideo = setupSingleMediaHls(session.vid, session.videoHlsUrl, session.videoFallbackUrl, true);
-      session.hlsAudio = session.audioSegments.map(segment => {
-        segment.hls = setupSingleMediaHls(segment.el, segment.hlsUrl, segment.fallbackUrl, false);
-        return segment.hls;
+      setupSingleMedia(session.vid, session.videoUrl, true);
+      session.audioSegments.forEach(segment => {
+        setupSingleMedia(segment.el, segment.url, false);
       });
 
       session.loadUnlockedTracks();
@@ -1679,19 +1588,16 @@
         coverSrc: "session-03-icon.png",
         storageKey: "djsalva_salva03_unlocks_v2",
         tracksStartUnlocked: true,
-        videoHlsUrl: "https://vz-cec5811b-8a2.b-cdn.net/e63d1a75-c415-41c8-ac50-8e66bb00cef1/playlist.m3u8",
-        videoFallbackUrl: "https://vz-cec5811b-8a2.b-cdn.net/e63d1a75-c415-41c8-ac50-8e66bb00cef1/play_720p.mp4",
+        videoUrl: "https://4r1ck5gfgtthlmqr.public.blob.vercel-storage.com/audio/sesion03.mp4",
         audioSegments: [
           {
             audioId: "audSalva03Part1",
-            hlsUrl: "https://vz-cec5811b-8a2.b-cdn.net/27b486e5-7c39-42bf-bdbb-1974022ae6a1/playlist.m3u8",
-            fallbackUrl: "https://vz-cec5811b-8a2.b-cdn.net/27b486e5-7c39-42bf-bdbb-1974022ae6a1/original",
+            url: "https://4r1ck5gfgtthlmqr.public.blob.vercel-storage.com/sesion03-1.mp3",
             startAt: "0:00"
           },
           {
             audioId: "audSalva03Part2",
-            hlsUrl: "https://vz-cec5811b-8a2.b-cdn.net/51ee2f26-9665-4cdc-8d59-683a4902660e/playlist.m3u8",
-            fallbackUrl: "https://vz-cec5811b-8a2.b-cdn.net/51ee2f26-9665-4cdc-8d59-683a4902660e/original",
+            url: "https://4r1ck5gfgtthlmqr.public.blob.vercel-storage.com/sesion03-2.mp3",
             startAt: "1:25:57"
           }
         ],
@@ -1817,10 +1723,8 @@
         tracksId: "tracksIbicenca",
         coverSrc: "session-02-icon.png",
         storageKey: "djsalva_ibicenca_unlocks_v1",
-        videoHlsUrl: "https://vz-cec5811b-8a2.b-cdn.net/0aea3def-091f-456c-bbab-e3c7f9c134b8/playlist.m3u8",
-        videoFallbackUrl: "ibicenca.mp4",
-        audioHlsUrl: "https://vz-cec5811b-8a2.b-cdn.net/76837107-d809-4476-8010-302f02bc2e9e/playlist.m3u8",
-        audioFallbackUrl: "https://vz-cec5811b-8a2.b-cdn.net/76837107-d809-4476-8010-302f02bc2e9e/original",
+        videoUrl: "https://4r1ck5gfgtthlmqr.public.blob.vercel-storage.com/audio/sesion02.mp4",
+        audioUrl: "https://4r1ck5gfgtthlmqr.public.blob.vercel-storage.com/sesion02.mp3",
         tracks: [
           { t:"$UELTA GATITA $UELTA", at:"00:00" },
           { t:"CAPRICHOSO", at:"03:26" },
@@ -1882,10 +1786,8 @@
         tracksId: "tracksClassic",
         coverSrc: "session-01-icon.png",
         storageKey: "djsalva_classic_unlocks_v1",
-        videoHlsUrl: "https://vz-cec5811b-8a2.b-cdn.net/e2229fa8-fde2-4eec-b1de-b4103ea4e4b4/playlist.m3u8",
-        videoFallbackUrl: "https://djsalva-cdn.b-cdn.net/video.mp4",
-        audioHlsUrl: "https://vz-cec5811b-8a2.b-cdn.net/ecc8351b-c862-4711-a857-dd1e41abaa16/playlist.m3u8",
-        audioFallbackUrl: "https://vz-cec5811b-8a2.b-cdn.net/ecc8351b-c862-4711-a857-dd1e41abaa16/original",
+        videoUrl: "https://4r1ck5gfgtthlmqr.public.blob.vercel-storage.com/audio/sesion01.mp4",
+        audioUrl: "https://4r1ck5gfgtthlmqr.public.blob.vercel-storage.com/sesion01.mp3",
         tracks: [
           { t:"FIEL", at:"0:16" },
           { t:"QUE PASARÍA...", at:"2:06" },

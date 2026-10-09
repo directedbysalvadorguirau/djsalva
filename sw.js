@@ -1,4 +1,4 @@
-const CACHE_NAME = "djsalva-pwa-v22";
+const CACHE_NAME = "djsalva-pwa-v23";
 const ASSETS = [
   "/",
   "/index.html",
@@ -77,6 +77,10 @@ self.addEventListener("fetch", (event) => {
   const req = event.request;
 
   if (req.method !== "GET") return;
+
+  // Let the browser handle media byte ranges; never return cached HTML for them.
+  if (req.destination === "audio" || req.destination === "video" ||
+      req.headers.has("range") || new URL(req.url).origin !== self.location.origin) return;
 
   if (req.mode === "navigate") {
     event.respondWith((async () => {
