@@ -53,6 +53,20 @@ test('04 uses the two requested audio files, not part 3, and all 77 visible titl
   assert(!html.includes('sesion04-3.mp3'));
 });
 
+test('04 shares its new square cover across the picker and tracks, not the player backgrounds', () => {
+  const { s } = app();
+  assert.equal(s.coverSrc, 'session-04-icon.png');
+  assert.match(html, /href="#salva04">\s*<img class="session-cover" src="session-04-icon\.png"/);
+  assert(s.tracksEl.children.every(track => track.innerHTML.includes('src="session-04-icon.png"')));
+  assert.match(html, /srcset="session-04-landscape\.png"/);
+  assert.match(html, /class="bg" src="session-04-portrait\.png"/);
+  const png = fs.readFileSync(path.join(root, s.coverSrc));
+  assert.equal(png.subarray(1, 4).toString(), 'PNG');
+  assert.equal(png.readUInt32BE(16), 1254);
+  assert.equal(png.readUInt32BE(20), 1254);
+  assert(fs.readFileSync(path.join(root, 'sw.js'), 'utf8').includes('"/session-04-icon.png"'));
+});
+
 test('part 2 timeline derives from actual metadata, in either load order', () => {
   const { s, formatTime } = app();
   s.audioSegments[1].el.metadata(3900);

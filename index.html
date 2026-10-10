@@ -328,17 +328,40 @@
       --video-scale: 1.08;
     }
 
-    /* Match the image aspect ratio, including when a PWA has a taller viewport. */
+    #salva04{
+      height:100vh;
+      height:100dvh;
+    }
+
     .frame-salva04{
-      width:min(100vw, calc(100svh * 941 / 1672));
-      height:min(100svh, calc(100vw * 1672 / 941));
-      aspect-ratio:941/1672;
+      width:100vw;
+      height:100%;
+      max-height:none;
+      aspect-ratio:auto;
       --screen-left: 28.37407%;
       --screen-top: 49.82057%;
       --screen-width: 33.90011%;
       --screen-height: 10.70575%;
       --video-scale: 1.01;
       --btn-bottom: 16%;
+    }
+
+    /* Scale the background and laptop video as one cover-sized scene. */
+    .frame-salva04 .session-scene{
+      position:absolute;
+      left:50%;
+      top:50%;
+      transform:translate(-50%, -50%);
+      width:max(100vw, calc(100vh * 941 / 1672));
+      height:max(100vh, calc(100vw * 1672 / 941));
+      pointer-events:none;
+    }
+
+    @supports (height:100dvh){
+      .frame-salva04 .session-scene{
+        width:max(100vw, calc(100dvh * 941 / 1672));
+        height:max(100dvh, calc(100vw * 1672 / 941));
+      }
     }
 
     .frame-salva04 .screen{ background:#000; }
@@ -797,6 +820,11 @@
         --screen-height: 16.11419%;
         --btn-bottom: 12%;
       }
+
+      .frame-salva04 .session-scene{
+        width:100%;
+        height:100%;
+      }
     }
   </style>
 </head>
@@ -880,7 +908,7 @@
           <span>DJ SALVA #03</span>
         </a>
         <a class="session-link" href="#salva04">
-          <img class="session-cover" src="session-04-portrait.png" alt="Portada DJ SALVA #04">
+          <img class="session-cover" src="session-04-icon.png" alt="Portada DJ SALVA #04">
           <span>DJ SALVA #04</span>
         </a>
       </nav>
@@ -889,13 +917,15 @@
 
   <section class="stage" id="salva04" hidden>
     <div class="frame frame-salva04" id="appSalva04">
-      <picture>
-        <source media="(min-aspect-ratio:1/1)" srcset="session-04-landscape.png">
-        <img class="bg" src="session-04-portrait.png" alt="DJ SALVA #04">
-      </picture>
+      <div class="session-scene">
+        <picture>
+          <source media="(min-aspect-ratio:1/1)" srcset="session-04-landscape.png">
+          <img class="bg" src="session-04-portrait.png" alt="DJ SALVA #04">
+        </picture>
 
-      <div class="screen">
-        <video id="vidSalva04" playsinline webkit-playsinline muted preload="metadata" loop></video>
+        <div class="screen">
+          <video id="vidSalva04" playsinline webkit-playsinline muted preload="metadata" loop></video>
+        </div>
       </div>
 
       <audio id="audSalva04Part1" preload="metadata"></audio>
@@ -1165,7 +1195,7 @@
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
         navigator.serviceWorker
-          .register("/sw.js?v=25", { updateViaCache: "none" })
+          .register("/sw.js?v=26", { updateViaCache: "none" })
           .then(registration => registration.update())
           .catch(console.log);
       });
@@ -1174,7 +1204,7 @@
     if ("caches" in window) {
       caches.keys().then(keys => Promise.all(
         keys
-          .filter(key => key.startsWith("djsalva-pwa-") && key !== "djsalva-pwa-v25")
+          .filter(key => key.startsWith("djsalva-pwa-") && key !== "djsalva-pwa-v26")
           .map(key => caches.delete(key))
       )).catch(() => {});
     }
@@ -1796,7 +1826,7 @@
         overlayId: "overlaySalva04",
         tracksId: "tracksSalva04",
         statusId: "statusSalva04",
-        coverSrc: "session-04-portrait.png",
+        coverSrc: "session-04-icon.png",
         storageKey: "djsalva_salva04_unlocks_v1",
         tracksStartUnlocked: true,
         deriveTimelineFromAudio: true,
