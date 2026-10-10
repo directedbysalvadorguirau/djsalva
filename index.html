@@ -1165,7 +1165,7 @@
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
         navigator.serviceWorker
-          .register("/sw.js?v=24", { updateViaCache: "none" })
+          .register("/sw.js?v=25", { updateViaCache: "none" })
           .then(registration => registration.update())
           .catch(console.log);
       });
@@ -1174,7 +1174,7 @@
     if ("caches" in window) {
       caches.keys().then(keys => Promise.all(
         keys
-          .filter(key => key.startsWith("djsalva-pwa-") && key !== "djsalva-pwa-v24")
+          .filter(key => key.startsWith("djsalva-pwa-") && key !== "djsalva-pwa-v25")
           .map(key => caches.delete(key))
       )).catch(() => {});
     }
@@ -1801,10 +1801,10 @@
         tracksStartUnlocked: true,
         deriveTimelineFromAudio: true,
         preloadNextAudio: true,
-        videoUrl: "https://4r1ck5gfgtthlmqr.public.blob.vercel-storage.com/audio/sesion04.mp4",
+        videoUrl: "https://djsalva-media.salva00000001.workers.dev/audio/sesion04.mp4",
         audioSegments: [
-          { audioId: "audSalva04Part1", url: "https://4r1ck5gfgtthlmqr.public.blob.vercel-storage.com/sesion04-1.mp3" },
-          { audioId: "audSalva04Part2", url: "https://4r1ck5gfgtthlmqr.public.blob.vercel-storage.com/sesion04-2.mp3" }
+          { audioId: "audSalva04Part1", url: "https://djsalva-media.salva00000001.workers.dev/sesion04-1.mp3" },
+          { audioId: "audSalva04Part2", url: "https://djsalva-media.salva00000001.workers.dev/sesion04-2.mp3" }
         ],
         tracks: [
           { t:"SOLITA", at:"00:00" },
@@ -1904,16 +1904,16 @@
         coverSrc: "session-03-icon.png",
         storageKey: "djsalva_salva03_unlocks_v2",
         tracksStartUnlocked: true,
-        videoUrl: "https://4r1ck5gfgtthlmqr.public.blob.vercel-storage.com/audio/sesion03.mp4",
+        videoUrl: "https://djsalva-media.salva00000001.workers.dev/audio/sesion03.mp4",
         audioSegments: [
           {
             audioId: "audSalva03Part1",
-            url: "https://4r1ck5gfgtthlmqr.public.blob.vercel-storage.com/sesion03-1.mp3",
+            url: "https://djsalva-media.salva00000001.workers.dev/sesion03-1.mp3",
             startAt: "0:00"
           },
           {
             audioId: "audSalva03Part2",
-            url: "https://4r1ck5gfgtthlmqr.public.blob.vercel-storage.com/sesion03-2.mp3",
+            url: "https://djsalva-media.salva00000001.workers.dev/sesion03-2.mp3",
             startAt: "1:25:57"
           }
         ],
@@ -2039,8 +2039,8 @@
         tracksId: "tracksIbicenca",
         coverSrc: "session-02-icon.png",
         storageKey: "djsalva_ibicenca_unlocks_v1",
-        videoUrl: "https://4r1ck5gfgtthlmqr.public.blob.vercel-storage.com/audio/sesion02.mp4",
-        audioUrl: "https://4r1ck5gfgtthlmqr.public.blob.vercel-storage.com/sesion02.mp3",
+        videoUrl: "https://djsalva-media.salva00000001.workers.dev/audio/sesion02.mp4",
+        audioUrl: "https://djsalva-media.salva00000001.workers.dev/sesion02.mp3",
         tracks: [
           { t:"$UELTA GATITA $UELTA", at:"00:00" },
           { t:"CAPRICHOSO", at:"03:26" },
@@ -2102,8 +2102,8 @@
         tracksId: "tracksClassic",
         coverSrc: "session-01-icon.png",
         storageKey: "djsalva_classic_unlocks_v1",
-        videoUrl: "https://4r1ck5gfgtthlmqr.public.blob.vercel-storage.com/audio/sesion01.mp4",
-        audioUrl: "https://4r1ck5gfgtthlmqr.public.blob.vercel-storage.com/sesion01.mp3",
+        videoUrl: "https://djsalva-media.salva00000001.workers.dev/audio/sesion01.mp4",
+        audioUrl: "https://djsalva-media.salva00000001.workers.dev/sesion01.mp3",
         tracks: [
           { t:"FIEL", at:"0:16" },
           { t:"QUE PASARÍA...", at:"2:06" },

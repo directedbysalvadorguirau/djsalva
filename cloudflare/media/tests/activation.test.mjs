@@ -6,8 +6,25 @@ import { migrationPlan, validateOrigin, previousOrigin, verifyMedia } from "../s
 import worker from "../worker.mjs";
 
 const newOrigin = "https://djsalva-media.example.workers.dev";
-const html = await readFile(new URL("../../../index.html", import.meta.url), "utf8");
-const sw = await readFile(new URL("../../../sw.js", import.meta.url), "utf8");
+// Keep the migration fixture independent of the site's already-migrated URLs.
+const html = `<!doctype html><title>DJ SALVA</title><script>
+const sources = ${JSON.stringify(mediaFiles.map(file => `${previousOrigin}/${file.key}`))};
+const cacheName = "djsalva-pwa-v24";
+navigator.serviceWorker.register("/sw.js?v=24");
+</script>`;
+const sw = 'const CACHE_NAME = "djsalva-pwa-v24";';
+
+test("website uses all ten Cloudflare media files and matching PWA cache versions", async () => {
+  const site = await readFile(new URL("../../../index.html", import.meta.url), "utf8");
+  const serviceWorker = await readFile(new URL("../../../sw.js", import.meta.url), "utf8");
+  const origin = "https://djsalva-media.salva00000001.workers.dev";
+  assert(!site.includes(previousOrigin));
+  assert.equal(site.split(origin).length - 1, mediaFiles.length);
+  for (const file of mediaFiles) assert.equal(site.split(`${origin}/${file.key}`).length - 1, 1);
+  const version = /djsalva-pwa-v(\d+)/.exec(serviceWorker)[1];
+  assert(site.includes(`/sw.js?v=${version}`));
+  assert(site.includes(`djsalva-pwa-v${version}`));
+});
 
 test("activation accepts only an HTTPS workers.dev origin, not keys or arbitrary URLs", () => {
   assert.equal(validateOrigin(newOrigin + "/"), newOrigin);
@@ -27,6 +44,7 @@ test("migration changes only the ten media origins and PWA cache version", () =>
     .replaceAll(`djsalva-pwa-v${oldVersion + 1}`, `djsalva-pwa-v${oldVersion}`), html);
   assert.throws(() => migrationPlan(html.replace("sesion01.mp3", "missing.mp3"), sw, newOrigin));
   assert.throws(() => migrationPlan(html + previousOrigin + "/unreviewed.mp3", sw, newOrigin));
+  assert.throws(() => migrationPlan(next.html, next.sw, newOrigin));
 });
 
 test("preflight checks all ten files while reading only 340 content bytes total", async () => {

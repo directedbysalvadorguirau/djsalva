@@ -1,6 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "djsalva-media",
+  "account_id": "54c80a6b21a5661dbf1c595ecfd9cd35",
   "main": "worker.mjs",
   "compatibility_date": "2026-10-10",
   "workers_dev": true,

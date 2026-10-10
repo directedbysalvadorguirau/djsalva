@@ -1,8 +1,11 @@
 # DJ SALVA: R2 + Workers
 
-Estado: preparado, todavia no activado en Cloudflare. La web sigue apuntando a Vercel Blob hasta comprobar
-los diez archivos en Cloudflare y ejecutar la activacion. No se incluye el tercer
-audio de la sesion 04. No hay contrasenas ni claves en el repositorio.
+Estado: activado en Cloudflare el 10 de octubre de 2026. Los diez originales estan
+en el bucket privado `djsalva-media` (Standard, WEUR). La configuracion de la web
+utiliza `https://djsalva-media.salva00000001.workers.dev` y la cache PWA v25.
+La web permanece en `https://djsalva.vercel.app`; solo cambian sus medios.
+No se incluye el tercer audio de la sesion 04. No hay contrasenas ni claves en el
+repositorio. Se conservan los originales y el almacenamiento anterior.
 
 ## Requisitos y coste
 
@@ -42,6 +45,8 @@ en este proyecto. Si hay varias cuentas, seleccionar la correcta con
 Activar R2 en el panel solo despues de revisar las condiciones de facturacion.
 Crear un bucket **Standard** llamado `djsalva-media`, preferiblemente en Europa:
 
+El bucket de este proyecto ya existe. No repetir su creacion para actualizar medios.
+
 ```sh
 npx wrangler r2 bucket create djsalva-media --location weur
 ```
@@ -77,19 +82,22 @@ Usar la URL **real** que devuelva el despliegue, por ejemplo una con el formato
 `https://djsalva-media.TU_SUBDOMINIO.workers.dev`, nunca publicar el ejemplo.
 
 ```sh
-node scripts/activate.mjs https://djsalva-media.TU_SUBDOMINIO.workers.dev
+node scripts/activate.mjs https://djsalva-media.salva00000001.workers.dev
 ```
 
 Se verifica salud, tamano, MIME, CORS y GET parcial del principio y del final de
 cada archivo. Solo lee 34 bytes de contenido por archivo, sin descargar sesiones
-completas. La salud por si sola no verifica que los objetos existan.
+completas. Esta comprobacion se puede repetir despues de activar la migracion.
+La salud por si sola no verifica que los objetos existan.
 
 ## Activar en la web
 
-Solo despues de que todas las comprobaciones pasen:
+La migracion inicial ya esta aplicada. El comando siguiente se documenta para
+una copia anterior que aun utilice Blob; rechaza activarla dos veces. Solo
+ejecutarlo despues de que todas las comprobaciones pasen:
 
 ```sh
-node scripts/activate.mjs https://djsalva-media.TU_SUBDOMINIO.workers.dev --activate
+node scripts/activate.mjs https://djsalva-media.salva00000001.workers.dev --activate
 ```
 
 El script sustituye las diez URLs en `index.html` y aumenta la version del service
@@ -114,7 +122,7 @@ No borrar los originales ni el almacenamiento anterior hasta validar produccion.
 
 ## Comprobaciones realizadas (10 de octubre de 2026)
 
-- 22 pruebas automaticas superadas, incluyendo el runtime real de Workers con
+- 23 pruebas automaticas, incluyendo el runtime real de Workers con
   R2 emulado y las pruebas existentes de la sesion 04.
 - Compilacion `wrangler deploy --dry-run` correcta; no despliega ni crea recursos.
 - Diez originales verificados: 763.272.579 bytes en total.
@@ -124,5 +132,9 @@ No borrar los originales ni el almacenamiento anterior hasta validar produccion.
 - No se accedio a Vercel Blob durante esas pruebas. Se bloquearon las peticiones
   externas del navegador. No equivale a una prueba en Cloudflare en produccion
   ni a una comprobacion en un iPhone fisico.
-- Pendiente: cuenta Cloudflare/R2, autorizacion de Wrangler, subida remota,
-  despliegue del Worker, verificacion de su URL y publicacion de la activacion.
+- Cuenta autorizada por OAuth, bucket Standard creado y diez originales subidos.
+- Worker desplegado: `875fcf82-994d-483a-8117-d1fe9e12e62a`.
+- Verificacion remota correcta: diez HEAD y veinte rangos GET, MIME y CORS.
+- Antes de publicar, Chromium y WebKit reproducen los medios reales de Cloudflare
+  en las cuatro sesiones; verifican saltos de canciones y el paso automatico entre
+  las partes de 03/04 con tiempo acumulado. No es una prueba en un iPhone fisico.

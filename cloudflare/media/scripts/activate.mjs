@@ -70,9 +70,9 @@ async function main() {
   const inventory = JSON.parse(await readFile(new URL("../media-inventory.json", import.meta.url), "utf8"));
   const html = await readFile(htmlPath, "utf8");
   const sw = await readFile(swPath, "utf8");
-  const plan = migrationPlan(html, sw, origin);
+  const plan = process.argv.includes("--activate") ? migrationPlan(html, sw, origin) : null;
   await verifyMedia(origin, inventory);
-  if (!process.argv.includes("--activate")) {
+  if (!plan) {
     console.log("Verificacion completada. No se ha cambiado la web. Usa --activate para sustituir las URLs locales.");
     return;
   }
