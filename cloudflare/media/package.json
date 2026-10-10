@@ -1,0 +1,19 @@
+{
+  "name": "djsalva-media-worker",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "login": "wrangler login",
+    "dev": "wrangler dev --local",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "4.149.0",
+    "miniflare": "5.20261006.1-alpha"
+  }
+}

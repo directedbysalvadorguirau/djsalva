@@ -1,0 +1,52 @@
+[
+  {
+    "key": "audio/sesion01.mp4",
+    "bytes": 2030022,
+    "sha256": "5bae47b9202b9eeb835b3bb4fc3ce66e46497c5f860ad1d55d5ce9e6347cd916"
+  },
+  {
+    "key": "audio/sesion02.mp4",
+    "bytes": 65903520,
+    "sha256": "253fa4c083f39181a3df6113b1d67852ccf5d3f01e61cd6cb48199f4b164a5a7"
+  },
+  {
+    "key": "audio/sesion03.mp4",
+    "bytes": 57262681,
+    "sha256": "5fcfb03ff775ea2f42e43dfcffba8a986058216425c7d9cce018464d2574a864"
+  },
+  {
+    "key": "audio/sesion04.mp4",
+    "bytes": 50154242,
+    "sha256": "cf12d80844ec9b2b97891aaf7df44727589e96956ba9d4eaa0c5cfa178bad78b"
+  },
+  {
+    "key": "sesion01.mp3",
+    "bytes": 112667069,
+    "sha256": "53bfa439a6e4f390aaaae8d78bfd2515888a2b653179c8a4f9a28dc5a34af38b"
+  },
+  {
+    "key": "sesion02.mp3",
+    "bytes": 75118452,
+    "sha256": "ff3039f0f082a70492423506a5d8421b35aacbe192c21d22350e55a5194a5254"
+  },
+  {
+    "key": "sesion03-1.mp3",
+    "bytes": 82472862,
+    "sha256": "9060ec926bdeed1a5c9b761eaf2b0db7417e920924c9fc55c7b9fec831cbe2e4"
+  },
+  {
+    "key": "sesion03-2.mp3",
+    "bytes": 94719484,
+    "sha256": "295ae3fc0e4a76712efda6c778edc6232659b966b1537bcb40ef9aed0717d5b8"
+  },
+  {
+    "key": "sesion04-1.mp3",
+    "bytes": 161692009,
+    "sha256": "8a47045160d4df41f5548330fc3306ed1af67f12a12ee6632d4ce164f56850cc"
+  },
+  {
+    "key": "sesion04-2.mp3",
+    "bytes": 61252238,
+    "sha256": "4df3d156485adb010cc60a3dcf1a4380c4c8944a3806974f468e09b0d3e311eb"
+  }
+]
